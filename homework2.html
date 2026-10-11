@@ -1,0 +1,1222 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&display=swap"
+        rel="stylesheet"
+    >
+
+    <title>Homework 2</title>
+
+    <style>
+
+        :root {
+            --sfondo: #FFF8DC;
+            --tan: #D2B48C;
+            --black: #000;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+
+            padding:
+                clamp(1.5rem, 5vw, 4rem);
+
+            background-color:
+                var(--sfondo);
+
+            color:
+                var(--black);
+
+            font-family:
+                'DM Serif Display', serif;
+
+            font-size: 1.1rem;
+
+            line-height: 1.5;
+        }
+
+        main {
+            width: 100%;
+            max-width: 1000px;
+
+            margin: 0 auto;
+        }
+
+        h1 {
+            max-width: 900px;
+
+            margin:
+                0 auto;
+
+            font-size:
+                clamp(3rem, 7vw, 6rem);
+
+            font-weight: normal;
+
+            line-height: 1.05;
+        }
+
+        h2 {
+            margin:
+                0 0 1.5rem;
+
+            font-size:
+                clamp(1.8rem, 3vw, 2.6rem);
+
+            font-weight: normal;
+
+            line-height: 1.1;
+        }
+
+        h3 {
+            margin:
+                0 0 0.5rem;
+
+            font-size: 1.4rem;
+
+            font-weight: normal;
+        }
+
+        p {
+            max-width: 850px;
+        }
+
+        .intro {
+            max-width: 900px;
+
+            margin:
+                2rem auto 0;
+
+            font-size: 1.3rem;
+        }
+
+        section {
+            width: 100%;
+            max-width: 900px;
+
+            margin:
+                clamp(4rem, 8vw, 6rem)
+                auto
+                0;
+        }
+
+        .input-area {
+            width: 100%;
+
+            display: grid;
+
+            gap: 1.5rem;
+        }
+
+        label {
+            display: grid;
+
+            gap: 0.5rem;
+
+            font-size: 1.3rem;
+        }
+
+        textarea,
+        input {
+            width: 100%;
+
+            padding:
+                0.8rem 1rem;
+
+            border:
+                3px solid
+                var(--black);
+
+            border-radius: 14px;
+
+            background-color:
+                var(--tan);
+
+            font-family: inherit;
+
+            font-size: 1rem;
+
+            outline: none;
+        }
+
+        textarea {
+            min-height: 100px;
+
+            resize: vertical;
+        }
+
+        textarea:focus,
+        input:focus {
+            box-shadow:
+                4px 4px 0
+                var(--black);
+        }
+
+        button {
+            width: fit-content;
+
+            padding:
+                0.7rem 1.2rem;
+
+            border:
+                3px solid
+                var(--black);
+
+            border-radius: 14px;
+
+            background-color:
+                var(--tan);
+
+            font-family: inherit;
+
+            font-size: 1rem;
+
+            cursor: pointer;
+
+            transition:
+                transform 0.15s ease,
+                box-shadow 0.15s ease;
+        }
+
+        button:hover {
+            transform:
+                translateY(-2px);
+
+            box-shadow:
+                4px 4px 0
+                var(--black);
+        }
+
+        button:active {
+            transform:
+                translateY(0);
+
+            box-shadow: none;
+        }
+
+        #message {
+            min-height: 1.5rem;
+
+            margin: 0;
+        }
+
+        .test-warning {
+            margin: 0;
+
+            font-size: 0.95rem;
+        }
+
+        .pipeline {
+            width: 100%;
+
+            display: grid;
+
+            gap: 0.8rem;
+        }
+
+        .step {
+            padding:
+                1.2rem 1.4rem;
+
+            border:
+                3px solid
+                var(--black);
+
+            border-radius: 14px;
+
+            background-color:
+                var(--tan);
+        }
+
+        .step p {
+            margin:
+                0.5rem 0 1rem;
+        }
+
+        .value {
+            width: 100%;
+
+            padding:
+                0.7rem 0.9rem;
+
+            border:
+                2px solid
+                var(--black);
+
+            border-radius: 10px;
+
+            background-color:
+                var(--sfondo);
+
+            overflow-x: auto;
+
+            overflow-wrap: anywhere;
+
+            font-size: 0.95rem;
+        }
+
+        .arrow {
+            text-align: center;
+
+            font-size: 2rem;
+
+            line-height: 1;
+        }
+
+        .cards {
+            width: 100%;
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(
+                    2,
+                    minmax(0, 1fr)
+                );
+
+            gap: 1rem;
+        }
+
+        .card {
+            padding: 1.2rem;
+
+            border:
+                3px solid
+                var(--black);
+
+            border-radius: 14px;
+
+            background-color:
+                var(--tan);
+        }
+
+        .card p {
+            margin-bottom: 0;
+        }
+
+        .statistics {
+            display: grid;
+
+            gap: 1rem;
+        }
+
+        .stat-result {
+            padding: 1.2rem;
+
+            border:
+                3px solid
+                var(--black);
+
+            border-radius: 14px;
+
+            background-color:
+                var(--tan);
+
+            font-size: 1.2rem;
+        }
+
+        .timeline {
+            display: grid;
+
+            grid-template-columns:
+                repeat(
+                    4,
+                    minmax(0, 1fr)
+                );
+
+            gap: 1rem;
+        }
+
+        .year {
+            padding: 1rem;
+
+            border:
+                3px solid
+                var(--black);
+
+            border-radius: 14px;
+
+            background-color:
+                var(--tan);
+        }
+
+        .year strong {
+            display: block;
+
+            font-size: 1.5rem;
+
+            font-weight: normal;
+        }
+
+        @media (max-width: 700px) {
+
+            body {
+                padding: 1.5rem;
+            }
+
+            h1 {
+                font-size:
+                    clamp(
+                        2.5rem,
+                        13vw,
+                        4rem
+                    );
+            }
+
+            .cards,
+            .timeline {
+                grid-template-columns:
+                    1fr;
+            }
+
+            button {
+                width: 100%;
+            }
+
+        }
+
+    </style>
+</head>
+
+<body>
+
+<main>
+
+    <h1>
+        From Wallet Seed to Ethereum Address
+    </h1>
+
+    <p class="intro">
+        This page shows the main cryptographic steps used by an Ethereum
+        wallet, from a BIP-39 mnemonic phrase to an EIP-55 checksummed
+        address.
+    </p>
+
+
+    <section>
+
+        <h2>Wallet input</h2>
+
+        <div class="input-area">
+
+            <label>
+
+                BIP-39 mnemonic
+
+                <textarea id="mnemonic">abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about</textarea>
+
+            </label>
+
+
+            <label>
+
+                BIP-44 derivation path
+
+                <input
+                    id="path"
+                    type="text"
+                    value="m/44'/60'/0'/0/0"
+                >
+
+            </label>
+
+
+            <button id="derive">
+                Derive wallet
+            </button>
+
+
+            <p class="test-warning">
+                Use only public test mnemonics, never a mnemonic
+                controlling real cryptocurrency.
+            </p>
+
+
+            <p id="message"></p>
+
+        </div>
+
+    </section>
+
+
+
+    <section>
+
+        <h2>Ethereum wallet pipeline</h2>
+
+        <div class="pipeline">
+
+
+            <div class="step">
+
+                <h3>
+                    BIP-39 — Mnemonic → Seed
+                </h3>
+
+                <p>
+                    BIP-39 encodes entropy as human-readable words with a
+                    checksum. The mnemonic is converted into a 512-bit seed
+                    using PBKDF2-HMAC-SHA512 with 2048 iterations.
+                </p>
+
+                <div
+                    class="value"
+                    id="seed">
+                    –
+                </div>
+
+            </div>
+
+
+            <div class="arrow">
+                ↓
+            </div>
+
+
+            <div class="step">
+
+                <h3>
+                    BIP-32 / BIP-44 — Seed → Private Key
+                </h3>
+
+                <p>
+                    BIP-32 creates a deterministic hierarchy of keys from
+                    the seed. BIP-44 defines a standard path structure.
+                    Ethereum uses coin type 60.
+                </p>
+
+                <p>
+                    Path:
+                    <strong id="usedPath">
+                        –
+                    </strong>
+                </p>
+
+                <div
+                    class="value"
+                    id="privateKey">
+                    –
+                </div>
+
+            </div>
+
+
+            <div class="arrow">
+                ↓
+            </div>
+
+
+            <div class="step">
+
+                <h3>
+                    secp256k1 — Private Key → Public Key
+                </h3>
+
+                <p>
+                    Elliptic-curve scalar multiplication derives the public
+                    key from the private key. secp256k1 is also used for
+                    Ethereum digital signatures.
+                </p>
+
+                <div
+                    class="value"
+                    id="publicKey">
+                    –
+                </div>
+
+            </div>
+
+
+            <div class="arrow">
+                ↓
+            </div>
+
+
+            <div class="step">
+
+                <h3>
+                    Keccak-256 — Public Key → Hash
+                </h3>
+
+                <p>
+                    Ethereum removes the uncompressed public-key prefix and
+                    hashes the 64 bytes containing the x and y coordinates
+                    with Keccak-256.
+                </p>
+
+                <div
+                    class="value"
+                    id="hash">
+                    –
+                </div>
+
+            </div>
+
+
+            <div class="arrow">
+                ↓
+            </div>
+
+
+            <div class="step">
+
+                <h3>
+                    Ethereum Address
+                </h3>
+
+                <p>
+                    The final 20 bytes of the 32-byte Keccak-256 hash form
+                    the 160-bit Ethereum address.
+                </p>
+
+                <div
+                    class="value"
+                    id="rawAddress">
+                    –
+                </div>
+
+            </div>
+
+
+            <div class="arrow">
+                ↓
+            </div>
+
+
+            <div class="step">
+
+                <h3>
+                    EIP-55 — Checksummed Address
+                </h3>
+
+                <p>
+                    EIP-55 uses uppercase and lowercase hexadecimal letters
+                    to add an error-detection checksum to the address.
+                </p>
+
+                <div
+                    class="value"
+                    id="checksumAddress">
+                    –
+                </div>
+
+            </div>
+
+
+        </div>
+
+    </section>
+
+
+
+    <section>
+
+        <h2>
+            Different cryptographic roles
+        </h2>
+
+        <div class="cards">
+
+
+            <div class="card">
+
+                <h3>
+                    Key generation
+                </h3>
+
+                <p>
+                    Key generation creates new random secret material.
+                    For example, a wallet begins with random entropy from
+                    which a mnemonic can be generated.
+                </p>
+
+            </div>
+
+
+            <div class="card">
+
+                <h3>
+                    Key derivation
+                </h3>
+
+                <p>
+                    BIP-32 and BIP-44 deterministically derive keys from an
+                    existing seed. The same seed and path always produce the
+                    same private key.
+                </p>
+
+            </div>
+
+
+            <div class="card">
+
+                <h3>
+                    Public-key cryptography
+                </h3>
+
+                <p>
+                    secp256k1 defines the mathematical relationship between
+                    private and public keys and is used for digital
+                    signatures.
+                </p>
+
+            </div>
+
+
+            <div class="card">
+
+                <h3>
+                    Hashing
+                </h3>
+
+                <p>
+                    Keccak-256 maps input data to a fixed 256-bit value.
+                    Hashing is designed to be one-way and collision
+                    resistant.
+                </p>
+
+            </div>
+
+
+            <div class="card">
+
+                <h3>
+                    Checksum
+                </h3>
+
+                <p>
+                    EIP-55 uses capitalization to detect many accidental
+                    errors when copying or typing Ethereum addresses.
+                </p>
+
+            </div>
+
+
+            <div class="card">
+
+                <h3>
+                    Encoding
+                </h3>
+
+                <p>
+                    Encoding changes how information is represented.
+                    Examples include mnemonic words, hexadecimal keys and
+                    the mixed-case EIP-55 address format.
+                </p>
+
+            </div>
+
+
+        </div>
+
+    </section>
+
+
+
+    <section>
+
+        <h2>
+            Statistical properties
+        </h2>
+
+        <div class="statistics">
+
+            <p>
+                A 12-word BIP-39 mnemonic represents 128 bits of entropy
+                plus a 4-bit checksum. A 24-word mnemonic represents
+                256 bits of entropy plus an 8-bit checksum.
+            </p>
+
+            <p>
+                The BIP-39 seed contains 512 bits. secp256k1 private keys
+                are approximately 256-bit values and provide roughly
+                128 bits of classical security. Keccak-256 produces a
+                256-bit hash, while an Ethereum address contains 160 bits.
+                EIP-55 provides about 15 checksum bits on average.
+            </p>
+
+            <p>
+                A cryptographic hash should display the avalanche effect.
+                Changing a single input bit should cause approximately
+                half of the output bits to change.
+            </p>
+
+            <div
+                class="stat-result"
+                id="avalanche">
+                –
+            </div>
+
+        </div>
+
+    </section>
+
+
+
+    <section>
+
+        <h2>
+            Historical context
+        </h2>
+
+        <div class="timeline">
+
+            <div class="year">
+                <strong>1977</strong>
+                RSA
+            </div>
+
+            <div class="year">
+                <strong>2001</strong>
+                SHA-2 / SHA-512
+            </div>
+
+            <div class="year">
+                <strong>2012</strong>
+                BIP-32
+            </div>
+
+            <div class="year">
+                <strong>2013</strong>
+                BIP-39
+            </div>
+
+            <div class="year">
+                <strong>2014</strong>
+                BIP-44
+            </div>
+
+            <div class="year">
+                <strong>2015</strong>
+                SHA-3
+            </div>
+
+            <div class="year">
+                <strong>2016</strong>
+                EIP-55
+            </div>
+
+        </div>
+
+    </section>
+
+
+
+    <section>
+
+        <h2>
+            SHA-2, Keccak and SHA-3
+        </h2>
+
+        <p>
+            SHA-512 belongs to the SHA-2 family. BIP-39 uses SHA-512
+            inside HMAC and PBKDF2 when deriving the seed from the
+            mnemonic.
+        </p>
+
+        <p>
+            Keccak is a different cryptographic hash design and was
+            selected as the basis of the SHA-3 standard.
+        </p>
+
+        <p>
+            Ethereum uses Keccak-256 rather than the standardized
+            SHA3-256 function. They are closely related, but use different
+            padding and domain-separation conventions, so the same input
+            produces different results.
+        </p>
+
+    </section>
+
+
+
+    <section>
+
+        <h2>
+            Why are several techniques needed?
+        </h2>
+
+        <p>
+            The different technologies solve different problems.
+            BIP-39, BIP-32 and BIP-44 handle key representation and
+            deterministic key management. secp256k1 provides the
+            private/public key relationship and digital signatures.
+            Keccak-256 provides cryptographic hashing. EIP-55 provides
+            error detection for addresses. A single algorithm would not
+            perform all of these different roles.
+        </p>
+
+    </section>
+
+
+</main>
+
+
+<script
+    src="https://cdn.jsdelivr.net/npm/ethers@6.17.0/dist/ethers.umd.min.js">
+</script>
+
+
+<script>
+
+    const mnemonicInput =
+        document.getElementById(
+            "mnemonic"
+        );
+
+    const pathInput =
+        document.getElementById(
+            "path"
+        );
+
+    const message =
+        document.getElementById(
+            "message"
+        );
+
+    const seedOutput =
+        document.getElementById(
+            "seed"
+        );
+
+    const privateKeyOutput =
+        document.getElementById(
+            "privateKey"
+        );
+
+    const publicKeyOutput =
+        document.getElementById(
+            "publicKey"
+        );
+
+    const hashOutput =
+        document.getElementById(
+            "hash"
+        );
+
+    const rawAddressOutput =
+        document.getElementById(
+            "rawAddress"
+        );
+
+    const checksumAddressOutput =
+        document.getElementById(
+            "checksumAddress"
+        );
+
+    const usedPath =
+        document.getElementById(
+            "usedPath"
+        );
+
+    const avalancheOutput =
+        document.getElementById(
+            "avalanche"
+        );
+
+
+    function clearOutputs() {
+
+        seedOutput.textContent =
+            "–";
+
+        privateKeyOutput.textContent =
+            "–";
+
+        publicKeyOutput.textContent =
+            "–";
+
+        hashOutput.textContent =
+            "–";
+
+        rawAddressOutput.textContent =
+            "–";
+
+        checksumAddressOutput.textContent =
+            "–";
+
+        usedPath.textContent =
+            "–";
+
+        avalancheOutput.textContent =
+            "–";
+
+    }
+
+
+    function countDifferentBits(
+        first,
+        second
+    ) {
+
+        const firstBytes =
+            ethers.getBytes(
+                first
+            );
+
+        const secondBytes =
+            ethers.getBytes(
+                second
+            );
+
+        let different =
+            0;
+
+
+        for (
+            let i = 0;
+            i < firstBytes.length;
+            i++
+        ) {
+
+            let value =
+                firstBytes[i] ^
+                secondBytes[i];
+
+
+            while (
+                value > 0
+            ) {
+
+                different +=
+                    value & 1;
+
+                value >>=
+                    1;
+
+            }
+
+        }
+
+
+        return different;
+
+    }
+
+
+    function deriveWallet() {
+
+        message.textContent =
+            "";
+
+
+        try {
+
+            const phrase =
+                mnemonicInput.value
+                    .trim()
+                    .replace(
+                        /\s+/g,
+                        " "
+                    );
+
+
+            const path =
+                pathInput.value
+                    .trim();
+
+
+            if (
+                !ethers.Mnemonic
+                    .isValidMnemonic(
+                        phrase
+                    )
+            ) {
+
+                throw new Error(
+                    "Invalid BIP-39 mnemonic."
+                );
+
+            }
+
+
+            const mnemonic =
+                ethers.Mnemonic
+                    .fromPhrase(
+                        phrase,
+                        ""
+                    );
+
+
+            const seed =
+                mnemonic.computeSeed();
+
+
+            const root =
+                ethers.HDNodeWallet
+                    .fromSeed(
+                        seed
+                    );
+
+
+            const wallet =
+                root.derivePath(
+                    path
+                );
+
+
+            const publicKey =
+                ethers.SigningKey
+                    .computePublicKey(
+                        wallet.privateKey,
+                        false
+                    );
+
+
+            const publicKeyWithoutPrefix =
+                "0x" +
+                publicKey.slice(4);
+
+
+            const hash =
+                ethers.keccak256(
+                    publicKeyWithoutPrefix
+                );
+
+
+            const rawAddress =
+                "0x" +
+                hash.slice(-40);
+
+
+            const checksumAddress =
+                ethers.getAddress(
+                    rawAddress
+                        .toLowerCase()
+                );
+
+
+            if (
+                checksumAddress !==
+                wallet.address
+            ) {
+
+                throw new Error(
+                    "Address derivation mismatch."
+                );
+
+            }
+
+
+            seedOutput.textContent =
+                seed;
+
+
+            privateKeyOutput.textContent =
+                wallet.privateKey;
+
+
+            publicKeyOutput.textContent =
+                publicKey;
+
+
+            hashOutput.textContent =
+                hash;
+
+
+            rawAddressOutput.textContent =
+                rawAddress
+                    .toLowerCase();
+
+
+            checksumAddressOutput.textContent =
+                checksumAddress;
+
+
+            usedPath.textContent =
+                path;
+
+
+            const originalBytes =
+                ethers.getBytes(
+                    publicKeyWithoutPrefix
+                );
+
+
+            const modifiedBytes =
+                Uint8Array.from(
+                    originalBytes
+                );
+
+
+            modifiedBytes[
+                modifiedBytes.length - 1
+            ] ^= 1;
+
+
+            const modifiedHash =
+                ethers.keccak256(
+                    modifiedBytes
+                );
+
+
+            const changedBits =
+                countDifferentBits(
+                    hash,
+                    modifiedHash
+                );
+
+
+            const percentage =
+                (
+                    changedBits /
+                    256 *
+                    100
+                ).toFixed(1);
+
+
+            avalancheOutput.textContent =
+                `One bit of the hash input was changed. ` +
+                `${changedBits} of 256 output bits changed ` +
+                `(${percentage}%).`;
+
+
+            message.textContent =
+                "Derivation successful ✓";
+
+        }
+
+        catch (
+            error
+        ) {
+
+            clearOutputs();
+
+
+            message.textContent =
+                error.message;
+
+        }
+
+    }
+
+
+    document
+        .getElementById(
+            "derive"
+        )
+        .addEventListener(
+            "click",
+            deriveWallet
+        );
+
+
+    deriveWallet();
+
+</script>
+
+</body>
+
+</html>
