@@ -7,7 +7,6 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
     <link
         href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&display=swap"
         rel="stylesheet"
@@ -16,7 +15,6 @@
     <title>Homework 2</title>
 
     <style>
-
         :root {
             --sfondo: #FFF8DC;
             --tan: #D2B48C;
@@ -29,63 +27,43 @@
 
         body {
             margin: 0;
+            padding: clamp(1.5rem, 5vw, 4rem);
 
-            padding:
-                clamp(1.5rem, 5vw, 4rem);
+            background-color: var(--sfondo);
+            color: var(--black);
 
-            background-color:
-                var(--sfondo);
-
-            color:
-                var(--black);
-
-            font-family:
-                'DM Serif Display', serif;
-
+            font-family: 'DM Serif Display', serif;
             font-size: 1.1rem;
-
             line-height: 1.5;
         }
 
         main {
             width: 100%;
             max-width: 1000px;
-
             margin: 0 auto;
         }
 
         h1 {
             max-width: 900px;
+            margin: 0 auto;
 
-            margin:
-                0 auto;
-
-            font-size:
-                clamp(3rem, 7vw, 6rem);
-
+            font-size: clamp(3rem, 7vw, 6rem);
             font-weight: normal;
-
             line-height: 1.05;
         }
 
         h2 {
-            margin:
-                0 0 1.5rem;
+            margin: 0 0 1.5rem;
 
-            font-size:
-                clamp(1.8rem, 3vw, 2.6rem);
-
+            font-size: clamp(1.8rem, 3vw, 2.6rem);
             font-weight: normal;
-
             line-height: 1.1;
         }
 
         h3 {
-            margin:
-                0 0 0.5rem;
+            margin: 0 0 0.5rem;
 
             font-size: 1.4rem;
-
             font-weight: normal;
         }
 
@@ -95,10 +73,7 @@
 
         .intro {
             max-width: 900px;
-
-            margin:
-                2rem auto 0;
-
+            margin: 2rem auto 0;
             font-size: 1.3rem;
         }
 
@@ -106,23 +81,18 @@
             width: 100%;
             max-width: 900px;
 
-            margin:
-                clamp(4rem, 8vw, 6rem)
-                auto
-                0;
+            margin: clamp(4rem, 8vw, 6rem) auto 0;
         }
 
         .input-area {
             width: 100%;
 
             display: grid;
-
             gap: 1.5rem;
         }
 
         label {
             display: grid;
-
             gap: 0.5rem;
 
             font-size: 1.3rem;
@@ -132,20 +102,14 @@
         input {
             width: 100%;
 
-            padding:
-                0.8rem 1rem;
+            padding: 0.8rem 1rem;
 
-            border:
-                3px solid
-                var(--black);
-
+            border: 3px solid var(--black);
             border-radius: 14px;
 
-            background-color:
-                var(--tan);
+            background-color: var(--tan);
 
             font-family: inherit;
-
             font-size: 1rem;
 
             outline: none;
@@ -153,34 +117,25 @@
 
         textarea {
             min-height: 100px;
-
             resize: vertical;
         }
 
         textarea:focus,
         input:focus {
-            box-shadow:
-                4px 4px 0
-                var(--black);
+            box-shadow: 4px 4px 0 var(--black);
         }
 
         button {
             width: fit-content;
 
-            padding:
-                0.7rem 1.2rem;
+            padding: 0.7rem 1.2rem;
 
-            border:
-                3px solid
-                var(--black);
-
+            border: 3px solid var(--black);
             border-radius: 14px;
 
-            background-color:
-                var(--tan);
+            background-color: var(--tan);
 
             font-family: inherit;
-
             font-size: 1rem;
 
             cursor: pointer;
@@ -191,30 +146,22 @@
         }
 
         button:hover {
-            transform:
-                translateY(-2px);
-
-            box-shadow:
-                4px 4px 0
-                var(--black);
+            transform: translateY(-2px);
+            box-shadow: 4px 4px 0 var(--black);
         }
 
         button:active {
-            transform:
-                translateY(0);
-
+            transform: translateY(0);
             box-shadow: none;
         }
 
         #message {
             min-height: 1.5rem;
-
             margin: 0;
         }
 
         .test-warning {
             margin: 0;
-
             font-size: 0.95rem;
         }
 
@@ -222,46 +169,33 @@
             width: 100%;
 
             display: grid;
-
             gap: 0.8rem;
         }
 
         .step {
-            padding:
-                1.2rem 1.4rem;
+            padding: 1.2rem 1.4rem;
 
-            border:
-                3px solid
-                var(--black);
-
+            border: 3px solid var(--black);
             border-radius: 14px;
 
-            background-color:
-                var(--tan);
+            background-color: var(--tan);
         }
 
         .step p {
-            margin:
-                0.5rem 0 1rem;
+            margin: 0.5rem 0 1rem;
         }
 
         .value {
             width: 100%;
 
-            padding:
-                0.7rem 0.9rem;
+            padding: 0.7rem 0.9rem;
 
-            border:
-                2px solid
-                var(--black);
-
+            border: 2px solid var(--black);
             border-radius: 10px;
 
-            background-color:
-                var(--sfondo);
+            background-color: var(--sfondo);
 
             overflow-x: auto;
-
             overflow-wrap: anywhere;
 
             font-size: 0.95rem;
@@ -269,9 +203,7 @@
 
         .arrow {
             text-align: center;
-
             font-size: 2rem;
-
             line-height: 1;
         }
 
@@ -279,27 +211,17 @@
             width: 100%;
 
             display: grid;
-
-            grid-template-columns:
-                repeat(
-                    2,
-                    minmax(0, 1fr)
-                );
-
+            grid-template-columns: repeat(2, minmax(0, 1fr));
             gap: 1rem;
         }
 
         .card {
             padding: 1.2rem;
 
-            border:
-                3px solid
-                var(--black);
-
+            border: 3px solid var(--black);
             border-radius: 14px;
 
-            background-color:
-                var(--tan);
+            background-color: var(--tan);
         }
 
         .card p {
@@ -308,85 +230,60 @@
 
         .statistics {
             display: grid;
-
             gap: 1rem;
         }
 
         .stat-result {
             padding: 1.2rem;
 
-            border:
-                3px solid
-                var(--black);
-
+            border: 3px solid var(--black);
             border-radius: 14px;
 
-            background-color:
-                var(--tan);
+            background-color: var(--tan);
 
             font-size: 1.2rem;
         }
 
         .timeline {
             display: grid;
-
-            grid-template-columns:
-                repeat(
-                    4,
-                    minmax(0, 1fr)
-                );
-
+            grid-template-columns: repeat(4, minmax(0, 1fr));
             gap: 1rem;
         }
 
         .year {
             padding: 1rem;
 
-            border:
-                3px solid
-                var(--black);
-
+            border: 3px solid var(--black);
             border-radius: 14px;
 
-            background-color:
-                var(--tan);
+            background-color: var(--tan);
         }
 
         .year strong {
             display: block;
 
             font-size: 1.5rem;
-
             font-weight: normal;
         }
 
         @media (max-width: 700px) {
-
             body {
                 padding: 1.5rem;
             }
 
             h1 {
-                font-size:
-                    clamp(
-                        2.5rem,
-                        13vw,
-                        4rem
-                    );
+                font-size: clamp(2.5rem, 13vw, 4rem);
             }
 
             .cards,
             .timeline {
-                grid-template-columns:
-                    1fr;
+                grid-template-columns: 1fr;
             }
 
             button {
                 width: 100%;
             }
-
         }
-
     </style>
 </head>
 
@@ -404,7 +301,6 @@
         address.
     </p>
 
-
     <section>
 
         <h2>Wallet input</h2>
@@ -412,16 +308,12 @@
         <div class="input-area">
 
             <label>
-
                 BIP-39 mnemonic
 
                 <textarea id="mnemonic">abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about</textarea>
-
             </label>
 
-
             <label>
-
                 BIP-44 derivation path
 
                 <input
@@ -429,20 +321,16 @@
                     type="text"
                     value="m/44'/60'/0'/0/0"
                 >
-
             </label>
-
 
             <button id="derive">
                 Derive wallet
             </button>
 
-
             <p class="test-warning">
                 Use only public test mnemonics, never a mnemonic
                 controlling real cryptocurrency.
             </p>
-
 
             <p id="message"></p>
 
@@ -450,20 +338,14 @@
 
     </section>
 
-
-
     <section>
 
         <h2>Ethereum wallet pipeline</h2>
 
         <div class="pipeline">
 
-
             <div class="step">
-
-                <h3>
-                    BIP-39 — Mnemonic → Seed
-                </h3>
+                <h3>BIP-39 — Mnemonic → Seed</h3>
 
                 <p>
                     BIP-39 encodes entropy as human-readable words with a
@@ -471,25 +353,13 @@
                     using PBKDF2-HMAC-SHA512 with 2048 iterations.
                 </p>
 
-                <div
-                    class="value"
-                    id="seed">
-                    –
-                </div>
-
+                <div class="value" id="seed">–</div>
             </div>
 
-
-            <div class="arrow">
-                ↓
-            </div>
-
+            <div class="arrow">↓</div>
 
             <div class="step">
-
-                <h3>
-                    BIP-32 / BIP-44 — Seed → Private Key
-                </h3>
+                <h3>BIP-32 / BIP-44 — Seed → Private Key</h3>
 
                 <p>
                     BIP-32 creates a deterministic hierarchy of keys from
@@ -499,30 +369,16 @@
 
                 <p>
                     Path:
-                    <strong id="usedPath">
-                        –
-                    </strong>
+                    <strong id="usedPath">–</strong>
                 </p>
 
-                <div
-                    class="value"
-                    id="privateKey">
-                    –
-                </div>
-
+                <div class="value" id="privateKey">–</div>
             </div>
 
-
-            <div class="arrow">
-                ↓
-            </div>
-
+            <div class="arrow">↓</div>
 
             <div class="step">
-
-                <h3>
-                    secp256k1 — Private Key → Public Key
-                </h3>
+                <h3>secp256k1 — Private Key → Public Key</h3>
 
                 <p>
                     Elliptic-curve scalar multiplication derives the public
@@ -530,25 +386,13 @@
                     Ethereum digital signatures.
                 </p>
 
-                <div
-                    class="value"
-                    id="publicKey">
-                    –
-                </div>
-
+                <div class="value" id="publicKey">–</div>
             </div>
 
-
-            <div class="arrow">
-                ↓
-            </div>
-
+            <div class="arrow">↓</div>
 
             <div class="step">
-
-                <h3>
-                    Keccak-256 — Public Key → Hash
-                </h3>
+                <h3>Keccak-256 — Public Key → Hash</h3>
 
                 <p>
                     Ethereum removes the uncompressed public-key prefix and
@@ -556,180 +400,111 @@
                     with Keccak-256.
                 </p>
 
-                <div
-                    class="value"
-                    id="hash">
-                    –
-                </div>
-
+                <div class="value" id="hash">–</div>
             </div>
 
-
-            <div class="arrow">
-                ↓
-            </div>
-
+            <div class="arrow">↓</div>
 
             <div class="step">
-
-                <h3>
-                    Ethereum Address
-                </h3>
+                <h3>Ethereum Address</h3>
 
                 <p>
                     The final 20 bytes of the 32-byte Keccak-256 hash form
                     the 160-bit Ethereum address.
                 </p>
 
-                <div
-                    class="value"
-                    id="rawAddress">
-                    –
-                </div>
-
+                <div class="value" id="rawAddress">–</div>
             </div>
 
-
-            <div class="arrow">
-                ↓
-            </div>
-
+            <div class="arrow">↓</div>
 
             <div class="step">
-
-                <h3>
-                    EIP-55 — Checksummed Address
-                </h3>
+                <h3>EIP-55 — Checksummed Address</h3>
 
                 <p>
                     EIP-55 uses uppercase and lowercase hexadecimal letters
                     to add an error-detection checksum to the address.
                 </p>
 
-                <div
-                    class="value"
-                    id="checksumAddress">
-                    –
-                </div>
-
+                <div class="value" id="checksumAddress">–</div>
             </div>
-
 
         </div>
 
     </section>
 
-
-
     <section>
 
-        <h2>
-            Different cryptographic roles
-        </h2>
+        <h2>Different cryptographic roles</h2>
 
         <div class="cards">
 
-
             <div class="card">
-
-                <h3>
-                    Key generation
-                </h3>
+                <h3>Key generation</h3>
 
                 <p>
                     Key generation creates new random secret material.
                     For example, a wallet begins with random entropy from
                     which a mnemonic can be generated.
                 </p>
-
             </div>
 
-
             <div class="card">
-
-                <h3>
-                    Key derivation
-                </h3>
+                <h3>Key derivation</h3>
 
                 <p>
                     BIP-32 and BIP-44 deterministically derive keys from an
                     existing seed. The same seed and path always produce the
                     same private key.
                 </p>
-
             </div>
 
-
             <div class="card">
-
-                <h3>
-                    Public-key cryptography
-                </h3>
+                <h3>Public-key cryptography</h3>
 
                 <p>
                     secp256k1 defines the mathematical relationship between
                     private and public keys and is used for digital
                     signatures.
                 </p>
-
             </div>
 
-
             <div class="card">
-
-                <h3>
-                    Hashing
-                </h3>
+                <h3>Hashing</h3>
 
                 <p>
                     Keccak-256 maps input data to a fixed 256-bit value.
                     Hashing is designed to be one-way and collision
                     resistant.
                 </p>
-
             </div>
 
-
             <div class="card">
-
-                <h3>
-                    Checksum
-                </h3>
+                <h3>Checksum</h3>
 
                 <p>
                     EIP-55 uses capitalization to detect many accidental
                     errors when copying or typing Ethereum addresses.
                 </p>
-
             </div>
 
-
             <div class="card">
-
-                <h3>
-                    Encoding
-                </h3>
+                <h3>Encoding</h3>
 
                 <p>
                     Encoding changes how information is represented.
                     Examples include mnemonic words, hexadecimal keys and
                     the mixed-case EIP-55 address format.
                 </p>
-
             </div>
-
 
         </div>
 
     </section>
 
-
-
     <section>
 
-        <h2>
-            Statistical properties
-        </h2>
+        <h2>Statistical properties</h2>
 
         <div class="statistics">
 
@@ -753,23 +528,15 @@
                 half of the output bits to change.
             </p>
 
-            <div
-                class="stat-result"
-                id="avalanche">
-                –
-            </div>
+            <div class="stat-result" id="avalanche">–</div>
 
         </div>
 
     </section>
 
-
-
     <section>
 
-        <h2>
-            Historical context
-        </h2>
+        <h2>Historical context</h2>
 
         <div class="timeline">
 
@@ -812,13 +579,9 @@
 
     </section>
 
-
-
     <section>
 
-        <h2>
-            SHA-2, Keccak and SHA-3
-        </h2>
+        <h2>SHA-2, Keccak and SHA-3</h2>
 
         <p>
             SHA-512 belongs to the SHA-2 family. BIP-39 uses SHA-512
@@ -840,13 +603,9 @@
 
     </section>
 
-
-
     <section>
 
-        <h2>
-            Why are several techniques needed?
-        </h2>
+        <h2>Why are several techniques needed?</h2>
 
         <p>
             The different technologies solve different problems.
@@ -860,363 +619,151 @@
 
     </section>
 
-
 </main>
 
-
-<script
-    src="https://cdn.jsdelivr.net/npm/ethers@6.17.0/dist/ethers.umd.min.js">
-</script>
-
+<script src="https://cdn.jsdelivr.net/npm/ethers@6.17.0/dist/ethers.umd.min.js"></script>
 
 <script>
+    const mnemonicInput = document.getElementById("mnemonic");
+    const pathInput = document.getElementById("path");
+    const message = document.getElementById("message");
 
-    const mnemonicInput =
-        document.getElementById(
-            "mnemonic"
-        );
-
-    const pathInput =
-        document.getElementById(
-            "path"
-        );
-
-    const message =
-        document.getElementById(
-            "message"
-        );
-
-    const seedOutput =
-        document.getElementById(
-            "seed"
-        );
-
-    const privateKeyOutput =
-        document.getElementById(
-            "privateKey"
-        );
-
-    const publicKeyOutput =
-        document.getElementById(
-            "publicKey"
-        );
-
-    const hashOutput =
-        document.getElementById(
-            "hash"
-        );
-
-    const rawAddressOutput =
-        document.getElementById(
-            "rawAddress"
-        );
-
-    const checksumAddressOutput =
-        document.getElementById(
-            "checksumAddress"
-        );
-
-    const usedPath =
-        document.getElementById(
-            "usedPath"
-        );
-
-    const avalancheOutput =
-        document.getElementById(
-            "avalanche"
-        );
+    const seedOutput = document.getElementById("seed");
+    const privateKeyOutput = document.getElementById("privateKey");
+    const publicKeyOutput = document.getElementById("publicKey");
+    const hashOutput = document.getElementById("hash");
+    const rawAddressOutput = document.getElementById("rawAddress");
+    const checksumAddressOutput = document.getElementById("checksumAddress");
+    const usedPath = document.getElementById("usedPath");
+    const avalancheOutput = document.getElementById("avalanche");
 
 
     function clearOutputs() {
-
-        seedOutput.textContent =
-            "–";
-
-        privateKeyOutput.textContent =
-            "–";
-
-        publicKeyOutput.textContent =
-            "–";
-
-        hashOutput.textContent =
-            "–";
-
-        rawAddressOutput.textContent =
-            "–";
-
-        checksumAddressOutput.textContent =
-            "–";
-
-        usedPath.textContent =
-            "–";
-
-        avalancheOutput.textContent =
-            "–";
-
+        seedOutput.textContent = "–";
+        privateKeyOutput.textContent = "–";
+        publicKeyOutput.textContent = "–";
+        hashOutput.textContent = "–";
+        rawAddressOutput.textContent = "–";
+        checksumAddressOutput.textContent = "–";
+        usedPath.textContent = "–";
+        avalancheOutput.textContent = "–";
     }
 
 
-    function countDifferentBits(
-        first,
-        second
-    ) {
+    function countDifferentBits(first, second) {
+        const firstBytes = ethers.getBytes(first);
+        const secondBytes = ethers.getBytes(second);
 
-        const firstBytes =
-            ethers.getBytes(
-                first
-            );
+        let different = 0;
 
-        const secondBytes =
-            ethers.getBytes(
-                second
-            );
+        for (let i = 0; i < firstBytes.length; i++) {
+            let value = firstBytes[i] ^ secondBytes[i];
 
-        let different =
-            0;
-
-
-        for (
-            let i = 0;
-            i < firstBytes.length;
-            i++
-        ) {
-
-            let value =
-                firstBytes[i] ^
-                secondBytes[i];
-
-
-            while (
-                value > 0
-            ) {
-
-                different +=
-                    value & 1;
-
-                value >>=
-                    1;
-
+            while (value > 0) {
+                different += value & 1;
+                value >>= 1;
             }
-
         }
 
-
         return different;
-
     }
 
 
     function deriveWallet() {
-
-        message.textContent =
-            "";
-
+        message.textContent = "";
 
         try {
+            const phrase = mnemonicInput.value
+                .trim()
+                .replace(/\s+/g, " ");
 
-            const phrase =
-                mnemonicInput.value
-                    .trim()
-                    .replace(
-                        /\s+/g,
-                        " "
-                    );
+            const path = pathInput.value.trim();
 
-
-            const path =
-                pathInput.value
-                    .trim();
-
-
-            if (
-                !ethers.Mnemonic
-                    .isValidMnemonic(
-                        phrase
-                    )
-            ) {
-
-                throw new Error(
-                    "Invalid BIP-39 mnemonic."
-                );
-
+            if (!ethers.Mnemonic.isValidMnemonic(phrase)) {
+                throw new Error("Invalid BIP-39 mnemonic.");
             }
 
+            const mnemonic = ethers.Mnemonic.fromPhrase(phrase, "");
+            const seed = mnemonic.computeSeed();
 
-            const mnemonic =
-                ethers.Mnemonic
-                    .fromPhrase(
-                        phrase,
-                        ""
-                    );
+            const root = ethers.HDNodeWallet.fromSeed(seed);
+            const wallet = root.derivePath(path);
 
-
-            const seed =
-                mnemonic.computeSeed();
-
-
-            const root =
-                ethers.HDNodeWallet
-                    .fromSeed(
-                        seed
-                    );
-
-
-            const wallet =
-                root.derivePath(
-                    path
-                );
-
-
-            const publicKey =
-                ethers.SigningKey
-                    .computePublicKey(
-                        wallet.privateKey,
-                        false
-                    );
-
+            const publicKey = ethers.SigningKey.computePublicKey(
+                wallet.privateKey,
+                false
+            );
 
             const publicKeyWithoutPrefix =
-                "0x" +
-                publicKey.slice(4);
-
+                "0x" + publicKey.slice(4);
 
             const hash =
-                ethers.keccak256(
-                    publicKeyWithoutPrefix
-                );
-
+                ethers.keccak256(publicKeyWithoutPrefix);
 
             const rawAddress =
-                "0x" +
-                hash.slice(-40);
-
+                "0x" + hash.slice(-40);
 
             const checksumAddress =
-                ethers.getAddress(
-                    rawAddress
-                        .toLowerCase()
-                );
+                ethers.getAddress(rawAddress.toLowerCase());
 
-
-            if (
-                checksumAddress !==
-                wallet.address
-            ) {
-
-                throw new Error(
-                    "Address derivation mismatch."
-                );
-
+            if (checksumAddress !== wallet.address) {
+                throw new Error("Address derivation mismatch.");
             }
 
-
-            seedOutput.textContent =
-                seed;
-
-
-            privateKeyOutput.textContent =
-                wallet.privateKey;
-
-
-            publicKeyOutput.textContent =
-                publicKey;
-
-
-            hashOutput.textContent =
-                hash;
-
+            seedOutput.textContent = seed;
+            privateKeyOutput.textContent = wallet.privateKey;
+            publicKeyOutput.textContent = publicKey;
+            hashOutput.textContent = hash;
 
             rawAddressOutput.textContent =
-                rawAddress
-                    .toLowerCase();
-
+                rawAddress.toLowerCase();
 
             checksumAddressOutput.textContent =
                 checksumAddress;
 
-
-            usedPath.textContent =
-                path;
+            usedPath.textContent = path;
 
 
             const originalBytes =
-                ethers.getBytes(
-                    publicKeyWithoutPrefix
-                );
-
+                ethers.getBytes(publicKeyWithoutPrefix);
 
             const modifiedBytes =
-                Uint8Array.from(
-                    originalBytes
-                );
+                Uint8Array.from(originalBytes);
 
-
-            modifiedBytes[
-                modifiedBytes.length - 1
-            ] ^= 1;
-
+            modifiedBytes[modifiedBytes.length - 1] ^= 1;
 
             const modifiedHash =
-                ethers.keccak256(
-                    modifiedBytes
-                );
-
+                ethers.keccak256(modifiedBytes);
 
             const changedBits =
-                countDifferentBits(
-                    hash,
-                    modifiedHash
-                );
-
+                countDifferentBits(hash, modifiedHash);
 
             const percentage =
-                (
-                    changedBits /
-                    256 *
-                    100
-                ).toFixed(1);
-
+                (changedBits / 256 * 100).toFixed(1);
 
             avalancheOutput.textContent =
                 `One bit of the hash input was changed. ` +
                 `${changedBits} of 256 output bits changed ` +
                 `(${percentage}%).`;
 
-
             message.textContent =
                 "Derivation successful ✓";
-
         }
 
-        catch (
-            error
-        ) {
-
+        catch (error) {
             clearOutputs();
-
-
-            message.textContent =
-                error.message;
-
+            message.textContent = error.message;
         }
-
     }
 
 
     document
-        .getElementById(
-            "derive"
-        )
-        .addEventListener(
-            "click",
-            deriveWallet
-        );
+        .getElementById("derive")
+        .addEventListener("click", deriveWallet);
 
 
     deriveWallet();
-
 </script>
 
 </body>
-
 </html>
