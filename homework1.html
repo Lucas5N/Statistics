@@ -7,6 +7,7 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
     <link
         href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&display=swap"
         rel="stylesheet"
@@ -15,350 +16,500 @@
     <title>Homework-1</title>
 
     <style>
-        :root {
-            --background: #FFF8DC;
-            --tan: #D2B48C;
-            --black: #000;
-        }
 
-        * {
-            box-sizing: border-box;
-        }
+    :root {
+        --background: #FFF8DC;
+        --tan: #D2B48C;
+        --black: #000;
+    }
+
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        margin: 0;
+        padding: clamp(1.5rem, 5vw, 4rem);
+
+        background: var(--background);
+
+        font-family: 'DM Serif Display', serif;
+        font-size: 1.1rem;
+        line-height: 1.4;
+    }
+
+    main {
+        width: 100%;
+        max-width: 900px;
+
+        margin: 0 auto;
+    }
+
+
+    /* TITLE */
+
+    h1 {
+        width: 100%;
+        margin: 0;
+
+        font-size: clamp(3rem, 7vw, 6rem);
+        font-weight: normal;
+        line-height: 1.05;
+
+        text-align: left;
+    }
+
+    h2 {
+        margin: 0;
+
+        font-size: clamp(1.7rem, 3vw, 2.5rem);
+        font-weight: normal;
+        line-height: 1.1;
+    }
+
+
+    /* SECTIONS */
+
+    section {
+        width: 100%;
+
+        margin-top: clamp(4rem, 8vw, 6rem);
+    }
+
+
+    /* PARAMETERS */
+
+    .parameters {
+        width: 100%;
+        max-width: 700px;
+
+        display: grid;
+        gap: 1rem;
+    }
+
+    .parameter-row {
+        display: grid;
+
+        grid-template-columns:
+            minmax(0, 1fr)
+            9rem;
+
+        align-items: center;
+
+        gap: 1.5rem;
+    }
+
+    .parameter-row h2 {
+        text-align: left;
+    }
+
+
+    /* INPUTS */
+
+    #inputPunti,
+    #Calcola,
+    #Animate,
+    .custom-select-trigger {
+        width: 100%;
+
+        border: 3px solid var(--black);
+        border-radius: 14px;
+
+        background: var(--tan);
+
+        font-family: inherit;
+        font-size: 1rem;
+    }
+
+    #inputPunti {
+        padding: 0.6rem 0.8rem;
+
+        text-align: center;
+
+        outline: none;
+    }
+
+    #inputPunti:focus {
+        box-shadow: 4px 4px 0 var(--black);
+    }
+
+
+    /* BUTTONS */
+
+    button {
+        padding: 0.65rem 1rem;
+
+        cursor: pointer;
+
+        transition:
+            transform 0.15s,
+            box-shadow 0.15s;
+    }
+
+    button:hover {
+        transform: translateY(-2px);
+
+        box-shadow:
+            4px 4px 0
+            var(--black);
+    }
+
+    button:active {
+        transform: translateY(0);
+        box-shadow: none;
+    }
+
+    button:disabled {
+        opacity: 0.5;
+
+        cursor: default;
+
+        transform: none;
+        box-shadow: none;
+    }
+
+
+    /* CUSTOM SELECT */
+
+    .custom-select-wrapper {
+        position: relative;
+
+        width: 100%;
+    }
+
+    .custom-select-trigger {
+        padding: 0.6rem 0.8rem;
+
+        display: grid;
+
+        grid-template-columns:
+            1fr auto;
+
+        align-items: center;
+
+        cursor: pointer;
+    }
+
+    .custom-select-trigger::after {
+        content: "▼";
+
+        font-size: 0.65rem;
+    }
+
+    .custom-options {
+        position: absolute;
+
+        top: calc(100% + 8px);
+        left: 0;
+        right: 0;
+
+        max-height: 16rem;
+
+        overflow-y: auto;
+
+        padding: 0.4rem;
+
+        border: 3px solid var(--black);
+        border-radius: 14px;
+
+        background: var(--tan);
+
+        box-shadow:
+            4px 4px 0
+            var(--black);
+
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+
+        z-index: 10;
+    }
+
+    .custom-select-wrapper.open .custom-options {
+        opacity: 1;
+        visibility: visible;
+        pointer-events: auto;
+    }
+
+    .custom-option {
+        padding: 0.6rem;
+
+        border-radius: 9px;
+
+        text-align: center;
+
+        cursor: pointer;
+    }
+
+    .custom-option:hover,
+    .custom-option.selected {
+        background: var(--background);
+    }
+
+
+    /* NOTES */
+
+    .note {
+        max-width: 750px;
+
+        margin: 1rem 0 0;
+
+        text-align: left;
+    }
+
+
+    /* RESULTS */
+
+    #results > h2 {
+        margin-bottom: 1.5rem;
+
+        text-align: left;
+    }
+
+    pre {
+        width: fit-content;
+
+        min-width: 13rem;
+        max-width: 100%;
+        max-height: 20rem;
+
+        margin: 0 0 1.5rem;
+
+        padding: 1rem 1.25rem;
+
+        overflow: auto;
+
+        border: 3px solid var(--black);
+        border-radius: 14px;
+
+        background: var(--tan);
+
+        font-family: inherit;
+        font-size: 1.05rem;
+        line-height: 1.5;
+
+        text-align: left;
+    }
+
+    .public-key {
+        margin: 2rem 0 0;
+
+        font-size:
+            clamp(1.4rem, 3vw, 2rem);
+
+        text-align: left;
+    }
+
+    .public-key strong {
+        display: inline-block;
+
+        margin-left: 0.4rem;
+
+        padding: 0.2rem 0.8rem;
+
+        border: 3px solid var(--black);
+        border-radius: 14px;
+
+        background: var(--tan);
+
+        font-weight: normal;
+    }
+
+
+    /* VISUALIZER */
+
+    .visualizer {
+        width: 100%;
+        max-width: 500px;
+
+        margin-top: 4rem;
+
+        display: grid;
+        gap: 1rem;
+    }
+
+    .visualizer h2 {
+        text-align: left;
+    }
+
+    #curvePlot {
+        width: 100%;
+
+        aspect-ratio: 1;
+
+        border: 3px solid var(--black);
+        border-radius: 14px;
+
+        background: var(--tan);
+    }
+
+    .curve-point {
+        fill: var(--background);
+
+        stroke: var(--black);
+        stroke-width: 2;
+    }
+
+    #activePoint {
+        fill: var(--black);
+
+        stroke: var(--background);
+        stroke-width: 3;
+
+        opacity: 0;
+
+        transition:
+            opacity 0.15s;
+    }
+
+    #animationText {
+        min-height: 2rem;
+
+        margin: 0;
+
+        font-size: 1.3rem;
+
+        text-align: left;
+    }
+
+    #Animate {
+        width: fit-content;
+    }
+
+
+    /* STATISTICAL EXPLORATION */
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 1rem;
+        margin-top: 1.5rem;
+    }
+
+    .stat-card {
+        padding: 1.2rem;
+        border: 3px solid var(--black);
+        border-radius: 14px;
+        background: var(--tan);
+    }
+
+    .stat-card h3 {
+        margin: 0 0 0.7rem;
+        font-size: 1.35rem;
+        font-weight: normal;
+    }
+
+    .stat-card p {
+        margin: 0;
+        white-space: pre-line;
+        overflow-wrap: anywhere;
+    }
+
+    .crypto-note {
+        max-width: 800px;
+        margin-top: 1.5rem;
+    }
+
+
+    /* MOBILE */
+
+    @media (max-width: 650px) {
 
         body {
-            margin: 0;
-            padding: clamp(1.5rem, 5vw, 4rem);
-            background: var(--background);
-
-            font-family: 'DM Serif Display', serif;
-            font-size: 1.1rem;
-            line-height: 1.4;
-        }
-
-        main {
-            width: 100%;
-            max-width: 900px;
-            margin: 0 auto;
+            padding: 1.5rem;
         }
 
         h1 {
-            width: 100%;
-            margin: 0;
-
-            font-size: clamp(3rem, 7vw, 6rem);
-            font-weight: normal;
-            line-height: 1.05;
-            text-align: left;
-        }
-
-        h2 {
-            margin: 0;
-
-            font-size: clamp(1.7rem, 3vw, 2.5rem);
-            font-weight: normal;
-            line-height: 1.1;
-        }
-
-        section {
-            width: 100%;
-            margin-top: clamp(4rem, 8vw, 6rem);
-        }
-
-        .parameters {
-            width: 100%;
-            max-width: 700px;
-
-            display: grid;
-            gap: 1rem;
+            font-size:
+                clamp(
+                    2.5rem,
+                    13vw,
+                    4rem
+                );
         }
 
         .parameter-row {
-            display: grid;
-            grid-template-columns: minmax(0, 1fr) 9rem;
-            align-items: center;
-            gap: 1.5rem;
-        }
+            grid-template-columns: 1fr;
 
-        .parameter-row h2 {
-            text-align: left;
+            gap: 0.6rem;
         }
 
         #inputPunti,
         #Calcola,
         #Animate,
-        .custom-select-trigger {
-            width: 100%;
-
-            border: 3px solid var(--black);
-            border-radius: 14px;
-            background: var(--tan);
-
-            font-family: inherit;
-            font-size: 1rem;
-        }
-
-        #inputPunti {
-            padding: 0.6rem 0.8rem;
-            text-align: center;
-            outline: none;
-        }
-
-        #inputPunti:focus {
-            box-shadow: 4px 4px 0 var(--black);
-        }
-
-        button {
-            padding: 0.65rem 1rem;
-            cursor: pointer;
-
-            transition:
-                transform 0.15s,
-                box-shadow 0.15s;
-        }
-
-        button:hover {
-            transform: translateY(-2px);
-            box-shadow: 4px 4px 0 var(--black);
-        }
-
-        button:active {
-            transform: translateY(0);
-            box-shadow: none;
-        }
-
-        button:disabled {
-            opacity: 0.5;
-            cursor: default;
-            transform: none;
-            box-shadow: none;
-        }
-
         .custom-select-wrapper {
-            position: relative;
             width: 100%;
         }
 
-        .custom-select-trigger {
-            padding: 0.6rem 0.8rem;
-
-            display: grid;
-            grid-template-columns: 1fr auto;
-            align-items: center;
-
-            cursor: pointer;
-        }
-
-        .custom-select-trigger::after {
-            content: "▼";
-            font-size: 0.65rem;
-        }
-
-        .custom-options {
-            position: absolute;
-
-            top: calc(100% + 8px);
-            left: 0;
-            right: 0;
-
-            max-height: 16rem;
-            overflow-y: auto;
-
-            padding: 0.4rem;
-
-            border: 3px solid var(--black);
-            border-radius: 14px;
-            background: var(--tan);
-
-            box-shadow: 4px 4px 0 var(--black);
-
-            opacity: 0;
-            visibility: hidden;
-            pointer-events: none;
-
-            z-index: 10;
-        }
-
-        .custom-select-wrapper.open .custom-options {
-            opacity: 1;
-            visibility: visible;
-            pointer-events: auto;
-        }
-
-        .custom-option {
-            padding: 0.6rem;
-
-            border-radius: 9px;
-            text-align: center;
-
-            cursor: pointer;
-        }
-
-        .custom-option:hover,
-        .custom-option.selected {
-            background: var(--background);
-        }
-
-        .note {
-            max-width: 750px;
-            margin: 1rem 0 0;
-            text-align: left;
-        }
-
-        #results > h2 {
-            margin-bottom: 1.5rem;
-            text-align: left;
+        .stats-grid {
+            grid-template-columns: 1fr;
         }
 
         pre {
-            width: fit-content;
-
-            min-width: 13rem;
-            max-width: 100%;
-            max-height: 20rem;
-
-            margin: 0 0 1.5rem;
-            padding: 1rem 1.25rem;
-
-            overflow: auto;
-
-            border: 3px solid var(--black);
-            border-radius: 14px;
-            background: var(--tan);
-
-            font-family: inherit;
-            font-size: 1.05rem;
-            line-height: 1.5;
-            text-align: left;
-        }
-
-        .public-key {
-            margin: 2rem 0 0;
-
-            font-size: clamp(1.4rem, 3vw, 2rem);
-            text-align: left;
+            width: 100%;
         }
 
         .public-key strong {
-            display: inline-block;
+            display: block;
 
-            margin-left: 0.4rem;
-            padding: 0.2rem 0.8rem;
-
-            border: 3px solid var(--black);
-            border-radius: 14px;
-            background: var(--tan);
-
-            font-weight: normal;
-        }
-
-        .visualizer {
-            width: 100%;
-            max-width: 500px;
-            margin-top: 4rem;
-
-            display: grid;
-            gap: 1rem;
-        }
-
-        .visualizer h2 {
-            text-align: left;
-        }
-
-        #curvePlot {
-            width: 100%;
-            aspect-ratio: 1;
-
-            border: 3px solid var(--black);
-            border-radius: 14px;
-            background: var(--tan);
-        }
-
-        .curve-point {
-            fill: var(--background);
-            stroke: var(--black);
-            stroke-width: 2;
-        }
-
-        #activePoint {
-            fill: var(--black);
-            stroke: var(--background);
-            stroke-width: 3;
-
-            opacity: 0;
-            transition: opacity 0.15s;
-        }
-
-        #animationText {
-            min-height: 2rem;
-            margin: 0;
-
-            font-size: 1.3rem;
-            text-align: left;
-        }
-
-        #Animate {
             width: fit-content;
+
+            margin:
+                0.5rem 0 0;
         }
+    }
 
-        @media (max-width: 650px) {
-            body {
-                padding: 1.5rem;
-            }
-
-            h1 {
-                font-size: clamp(2.5rem, 13vw, 4rem);
-            }
-
-            .parameter-row {
-                grid-template-columns: 1fr;
-                gap: 0.6rem;
-            }
-
-            #inputPunti,
-            #Calcola,
-            #Animate,
-            .custom-select-wrapper {
-                width: 100%;
-            }
-
-            pre {
-                width: 100%;
-            }
-
-            .public-key strong {
-                display: block;
-                width: fit-content;
-                margin: 0.5rem 0 0;
-            }
-        }
-    </style>
+</style>
 </head>
+
 
 <body>
 
 <main>
+
 
     <h1>
         Public key generation via elliptic curve
         scalar multiplication using a secret key.
     </h1>
 
+
     <section>
 
         <div class="parameters">
 
+
             <div class="parameter-row">
-                <h2>Base point <i>G</i>:</h2>
+
+                <h2>
+                    Base point <i>G</i>:
+                </h2>
+
 
                 <div class="custom-select-wrapper">
-                    <div class="custom-select-trigger">(1,5)</div>
-                    <div class="custom-options"></div>
-                    <select id="Gchoice" hidden></select>
+
+                    <div class="custom-select-trigger">
+                        (1,5)
+                    </div>
+
+                    <div class="custom-options">
+                    </div>
+
+                    <select
+                        id="Gchoice"
+                        hidden>
+                    </select>
+
                 </div>
+
             </div>
 
+
             <div class="parameter-row">
-                <h2>Private key:</h2>
+
+                <h2>
+                    Private key:
+                </h2>
 
                 <input
                     id="inputPunti"
@@ -367,150 +518,366 @@
                     max="1000"
                     value="5"
                 >
+
             </div>
 
+
             <div class="parameter-row">
-                <h2>Generate public key:</h2>
+
+                <h2>
+                    Generate public key:
+                </h2>
 
                 <button id="Calcola">
                     Calculate
                 </button>
+
             </div>
+
 
         </div>
 
-        <p id="messaggio" class="note"></p>
-        <p id="verifyCurve" class="note"></p>
+
+        <p
+            id="messaggio"
+            class="note">
+        </p>
+
+
+        <p
+            id="verifyCurve"
+            class="note">
+        </p>
 
     </section>
 
+
+
     <section id="results">
 
-        <h2>Results: G, ..., kG</h2>
+
+        <h2>
+            Results: G, ..., kG
+        </h2>
+
 
         <pre id="elencoPunti"></pre>
 
-        <p id="controllo-veloce" class="note"></p>
+
+        <p
+            id="controllo-veloce"
+            class="note">
+        </p>
+
 
         <p class="public-key">
+
             TOY PUBLIC KEY =
-            <strong id="chiave-pubblica">–</strong>
+
+            <strong id="chiave-pubblica">
+                –
+            </strong>
+
         </p>
+
+
 
         <div class="visualizer">
 
-            <h2>Visualization</h2>
+
+            <h2>
+                Visualization
+            </h2>
+
 
             <svg
                 id="curvePlot"
                 viewBox="0 0 400 400">
             </svg>
 
+
             <p id="animationText">
                 Press the button to visualize scalar multiplication.
             </p>
+
 
             <button id="Animate">
                 ▶ Visualize
             </button>
 
+
         </div>
+
 
     </section>
 
+
+    <section id="statistical-exploration">
+        <h2>Statistical exploration</h2>
+
+        <p class="note">
+            For the selected base point, this section calculates kG for k = 1, ..., 40.
+            Change G above to repeat the same experiment with another valid base point.
+        </p>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h3>x and y coordinates</h3>
+                <p id="coordinateStats">–</p>
+            </div>
+
+            <div class="stat-card">
+                <h3>Frequency of points</h3>
+                <p id="pointFrequency">–</p>
+            </div>
+
+            <div class="stat-card">
+                <h3>Bit distribution</h3>
+                <p id="bitStats">–</p>
+            </div>
+
+            <div class="stat-card">
+                <h3>Apparent uniformity</h3>
+                <p id="uniformityStats">–</p>
+            </div>
+
+            <div class="stat-card">
+                <h3>Input/output correlation</h3>
+                <p id="correlationStats">–</p>
+            </div>
+
+            <div class="stat-card">
+                <h3>Avalanche-like check</h3>
+                <p id="avalancheStats">–</p>
+            </div>
+        </div>
+
+        <p class="note crypto-note">
+            For elliptic-curve scalar multiplication, the important one-way property is that
+            computing kG is easy while recovering k from G and kG should be hard. A roughly
+            balanced set of coordinates can be a useful sanity check, but it is not a proof of
+            security. Strong avalanche behaviour and a uniform fixed-length output are properties
+            normally associated with cryptographic hash functions. Scalar multiplication is not a
+            hash function, so it should not be expected to satisfy the same avalanche criterion.
+        </p>
+    </section>
+
+
 </main>
 
+
+
 <script>
+
     const P = 17;
     const A = 0;
     const B = 7;
 
     const INF = null;
+
     const K_MAX = 40;
-    const INITIAL_G = [1, 5];
+
+    const INITIAL_G =
+        [1, 5];
 
 
     function mod(n) {
-        return (n % P + P) % P;
+
+        return (
+            (n % P + P) % P
+        );
     }
 
 
     function inverse(n) {
+
         n = mod(n);
 
-        for (let i = 1; i < P; i++) {
-            if (mod(n * i) === 1) {
+
+        for (
+            let i = 1;
+            i < P;
+            i++
+        ) {
+
+            if (
+                mod(n * i) === 1
+            ) {
+
                 return i;
             }
         }
 
-        throw new Error("No inverse exists.");
+
+        throw new Error(
+            "No inverse exists."
+        );
     }
 
 
     function onCurve(point) {
-        if (point === INF) {
+
+        if (
+            point === INF
+        ) {
+
             return true;
         }
 
-        const [x, y] = point;
 
-        return mod(y * y) === mod(x ** 3 + A * x + B);
+        const [x, y] =
+            point;
+
+
+        return (
+            mod(y * y) ===
+            mod(
+                x ** 3 +
+                A * x +
+                B
+            )
+        );
     }
 
 
-    function addPoint(p1, p2) {
-        if (p1 === INF) return p2;
-        if (p2 === INF) return p1;
+    function addPoint(
+        p1,
+        p2
+    ) {
 
-        const [x1, y1] = p1;
-        const [x2, y2] = p2;
+        if (
+            p1 === INF
+        ) {
 
-        if (x1 === x2 && mod(y1 + y2) === 0) {
+            return p2;
+        }
+
+
+        if (
+            p2 === INF
+        ) {
+
+            return p1;
+        }
+
+
+        const [x1, y1] =
+            p1;
+
+        const [x2, y2] =
+            p2;
+
+
+        if (
+            x1 === x2 &&
+            mod(y1 + y2) === 0
+        ) {
+
             return INF;
         }
 
+
         let slope;
 
-        if (x1 === x2 && y1 === y2) {
-            slope = mod(
-                (3 * x1 * x1 + A) *
-                inverse(2 * y1)
-            );
-        } else {
-            slope = mod(
-                (y2 - y1) *
-                inverse(x2 - x1)
-            );
+
+        if (
+            x1 === x2 &&
+            y1 === y2
+        ) {
+
+            slope =
+                mod(
+                    (
+                        3 *
+                        x1 *
+                        x1 +
+                        A
+                    ) *
+                    inverse(
+                        2 * y1
+                    )
+                );
+
         }
 
-        const x3 = mod(
-            slope * slope - x1 - x2
-        );
+        else {
 
-        const y3 = mod(
-            slope * (x1 - x3) - y1
-        );
+            slope =
+                mod(
+                    (
+                        y2 - y1
+                    ) *
+                    inverse(
+                        x2 - x1
+                    )
+                );
+        }
 
-        return [x3, y3];
+
+        const x3 =
+            mod(
+                slope * slope -
+                x1 -
+                x2
+            );
+
+
+        const y3 =
+            mod(
+                slope *
+                (x1 - x3) -
+                y1
+            );
+
+
+        return [
+            x3,
+            y3
+        ];
     }
 
 
-    function pointText(point) {
-        if (point === INF) {
+    function pointText(
+        point
+    ) {
+
+        if (
+            point === INF
+        ) {
+
             return "INFINITY";
         }
 
-        return `(${point[0]},${point[1]})`;
+
+        return (
+            `(${point[0]},${point[1]})`
+        );
     }
 
 
-    function makeSteps(point, k) {
-        const steps = [];
-        let current = INF;
+    function makeSteps(
+        point,
+        k
+    ) {
 
-        for (let i = 1; i <= k; i++) {
-            current = addPoint(current, point);
+        const steps = [];
+
+        let current =
+            INF;
+
+
+        for (
+            let i = 1;
+            i <= k;
+            i++
+        ) {
+
+            current =
+                addPoint(
+                    current,
+                    point
+                );
+
 
             steps.push({
                 n: i,
@@ -518,220 +885,680 @@
             });
         }
 
+
         return steps;
     }
 
 
-    function fastMul(point, k) {
-        let result = INF;
-        let current = point;
+    function fastMul(
+        point,
+        k
+    ) {
 
-        while (k > 0) {
-            if (k % 2 === 1) {
-                result = addPoint(result, current);
+        let result =
+            INF;
+
+        let current =
+            point;
+
+
+        while (
+            k > 0
+        ) {
+
+            if (
+                k % 2 === 1
+            ) {
+
+                result =
+                    addPoint(
+                        result,
+                        current
+                    );
             }
 
-            current = addPoint(current, current);
-            k = Math.floor(k / 2);
+
+            current =
+                addPoint(
+                    current,
+                    current
+                );
+
+
+            k =
+                Math.floor(
+                    k / 2
+                );
         }
+
 
         return result;
     }
 
 
     function findPoints() {
-        const points = [];
 
-        for (let x = 0; x < P; x++) {
-            for (let y = 0; y < P; y++) {
-                if (onCurve([x, y])) {
-                    points.push([x, y]);
+        const points =
+            [];
+
+
+        for (
+            let x = 0;
+            x < P;
+            x++
+        ) {
+
+            for (
+                let y = 0;
+                y < P;
+                y++
+            ) {
+
+                if (
+                    onCurve(
+                        [x, y]
+                    )
+                ) {
+
+                    points.push(
+                        [x, y]
+                    );
                 }
             }
         }
+
 
         return points;
     }
 
 
     const el = {
-        Gchoice: document.getElementById("Gchoice"),
-        input: document.getElementById("inputPunti"),
-        calculate: document.getElementById("Calcola"),
-        message: document.getElementById("messaggio"),
-        verify: document.getElementById("verifyCurve"),
-        results: document.getElementById("elencoPunti"),
-        check: document.getElementById("controllo-veloce"),
-        publicKey: document.getElementById("chiave-pubblica"),
-        animate: document.getElementById("Animate"),
-        animationText: document.getElementById("animationText")
+
+        Gchoice:
+            document.getElementById(
+                "Gchoice"
+            ),
+
+        input:
+            document.getElementById(
+                "inputPunti"
+            ),
+
+        calculate:
+            document.getElementById(
+                "Calcola"
+            ),
+
+        message:
+            document.getElementById(
+                "messaggio"
+            ),
+
+        verify:
+            document.getElementById(
+                "verifyCurve"
+            ),
+
+        results:
+            document.getElementById(
+                "elencoPunti"
+            ),
+
+        check:
+            document.getElementById(
+                "controllo-veloce"
+            ),
+
+        publicKey:
+            document.getElementById(
+                "chiave-pubblica"
+            ),
+
+        animate:
+            document.getElementById(
+                "Animate"
+            ),
+
+        animationText:
+            document.getElementById(
+                "animationText"
+            )
+    };
+
+
+    const statEl = {
+        coordinates: document.getElementById("coordinateStats"),
+        points: document.getElementById("pointFrequency"),
+        bits: document.getElementById("bitStats"),
+        uniformity: document.getElementById("uniformityStats"),
+        correlation: document.getElementById("correlationStats"),
+        avalanche: document.getElementById("avalancheStats")
     };
 
 
     function fillGChoice() {
-        const menu = document.querySelector(".custom-options");
-        const trigger = document.querySelector(".custom-select-trigger");
 
-        for (const point of findPoints()) {
-            const value = point.join(",");
+        const menu =
+            document.querySelector(
+                ".custom-options"
+            );
+
+
+        const trigger =
+            document.querySelector(
+                ".custom-select-trigger"
+            );
+
+
+        for (
+            const point
+            of findPoints()
+        ) {
+
+            const value =
+                point.join(",");
+
 
             const selected =
-                point[0] === INITIAL_G[0] &&
-                point[1] === INITIAL_G[1];
+                point[0] ===
+                    INITIAL_G[0] &&
+                point[1] ===
+                    INITIAL_G[1];
 
-            const option = document.createElement("option");
 
-            option.value = value;
-            option.textContent = pointText(point);
-            option.selected = selected;
+            const option =
+                document.createElement(
+                    "option"
+                );
 
-            el.Gchoice.appendChild(option);
 
-            const item = document.createElement("div");
+            option.value =
+                value;
+
+
+            option.textContent =
+                pointText(point);
+
+
+            option.selected =
+                selected;
+
+
+            el.Gchoice.appendChild(
+                option
+            );
+
+
+            const item =
+                document.createElement(
+                    "div"
+                );
+
 
             item.className =
                 "custom-option" +
-                (selected ? " selected" : "");
+                (
+                    selected
+                        ? " selected"
+                        : ""
+                );
 
-            item.dataset.value = value;
-            item.textContent = pointText(point);
 
-            menu.appendChild(item);
+            item.dataset.value =
+                value;
 
-            if (selected) {
-                trigger.textContent = pointText(point);
+
+            item.textContent =
+                pointText(point);
+
+
+            menu.appendChild(
+                item
+            );
+
+
+            if (
+                selected
+            ) {
+
+                trigger.textContent =
+                    pointText(point);
             }
         }
     }
 
 
     function calculate() {
-        const k = Number(el.input.value);
 
-        if (!Number.isInteger(k) || k < 1 || k > 1000) {
+        const k =
+            Number(
+                el.input.value
+            );
+
+
+        if (
+            !Number.isInteger(k) ||
+            k < 1 ||
+            k > 1000
+        ) {
+
             el.message.textContent =
                 "Enter an integer between 1 and 1000.";
 
             return;
         }
 
-        el.message.textContent = "";
 
-        const G = el.Gchoice.value
-            .split(",")
-            .map(Number);
+        el.message.textContent =
+            "";
 
-        const [x, y] = G;
+
+        const G =
+            el.Gchoice.value
+                .split(",")
+                .map(Number);
+
+
+        const [x, y] =
+            G;
+
 
         el.verify.textContent =
             `G = ${pointText(G)} is on the curve: ` +
             `y² mod ${P} = ${mod(y * y)}, ` +
-            `x³ + Ax + B mod ${P} = ${mod(x ** 3 + A * x + B)}.`;
+            `x³ + Ax + B mod ${P} = ` +
+            `${mod(x ** 3 + A * x + B)}.`;
 
-        const publicKey = fastMul(G, k);
+
+        const publicKey =
+            fastMul(
+                G,
+                k
+            );
+
 
         el.publicKey.textContent =
-            pointText(publicKey);
+            pointText(
+                publicKey
+            );
 
-        if (k <= K_MAX) {
-            const steps = makeSteps(G, k);
+
+        if (
+            k <= K_MAX
+        ) {
+
+            const steps =
+                makeSteps(
+                    G,
+                    k
+                );
+
 
             el.results.textContent =
                 steps
                     .map(
                         step =>
-                            `${step.n}G = ${pointText(step.result)}`
+                            `${step.n}G = ` +
+                            `${pointText(step.result)}`
                     )
                     .join("\n");
 
+
             const slowResult =
-                steps[steps.length - 1].result;
+                steps[
+                    steps.length - 1
+                ].result;
+
 
             const same =
-                pointText(slowResult) ===
-                pointText(publicKey);
+                pointText(
+                    slowResult
+                ) ===
+                pointText(
+                    publicKey
+                );
+
 
             el.check.textContent =
                 same
                     ? "Repeated addition and fast multiplication give the same result ✓"
                     : "The two methods do not match ✗";
-        } else {
+        }
+
+        else {
+
             el.results.textContent =
                 `k = ${k} is large. Only the fast method is shown.`;
 
-            el.check.textContent = "";
+
+            el.check.textContent =
+                "";
         }
 
-        document.getElementById("activePoint").style.opacity = "0";
+
+        document
+            .getElementById(
+                "activePoint"
+            )
+            .style.opacity =
+                "0";
+
 
         el.animationText.textContent =
             "Press the button to visualize scalar multiplication.";
+
+        runStatistics();
+    }
+
+
+    function countValues(values) {
+        const counts = new Map();
+
+        for (const value of values) {
+            counts.set(value, (counts.get(value) || 0) + 1);
+        }
+
+        return counts;
+    }
+
+
+    function formatCounts(counts) {
+        return [...counts.entries()]
+            .sort((a, b) => Number(a[0]) - Number(b[0]))
+            .map(([value, count]) => `${value}: ${count}`)
+            .join(", ");
+    }
+
+
+    function pearson(xs, ys) {
+        if (xs.length < 2 || xs.length !== ys.length) {
+            return 0;
+        }
+
+        const meanX = xs.reduce((sum, value) => sum + value, 0) / xs.length;
+        const meanY = ys.reduce((sum, value) => sum + value, 0) / ys.length;
+
+        let numerator = 0;
+        let squareX = 0;
+        let squareY = 0;
+
+        for (let i = 0; i < xs.length; i++) {
+            const dx = xs[i] - meanX;
+            const dy = ys[i] - meanY;
+            numerator += dx * dy;
+            squareX += dx * dx;
+            squareY += dy * dy;
+        }
+
+        const denominator = Math.sqrt(squareX * squareY);
+        return denominator === 0 ? 0 : numerator / denominator;
+    }
+
+
+    function subgroupOrder(point) {
+        let current = INF;
+
+        for (let n = 1; n <= 100; n++) {
+            current = addPoint(current, point);
+
+            if (current === INF) {
+                return n;
+            }
+        }
+
+        return null;
+    }
+
+
+    function pointBits(point) {
+        if (point === INF) {
+            return null;
+        }
+
+        const xBits = point[0].toString(2).padStart(5, "0");
+        const yBits = point[1].toString(2).padStart(5, "0");
+        return xBits + yBits;
+    }
+
+
+    function hammingDistance(first, second) {
+        let different = 0;
+
+        for (let i = 0; i < first.length; i++) {
+            if (first[i] !== second[i]) {
+                different++;
+            }
+        }
+
+        return different;
+    }
+
+
+    function runStatistics() {
+        const sampleCount = 40;
+        const G = el.Gchoice.value.split(",").map(Number);
+        const samples = [];
+
+        for (let k = 1; k <= sampleCount; k++) {
+            samples.push({ k, point: fastMul(G, k) });
+        }
+
+        const finite = samples.filter(sample => sample.point !== INF);
+        const xs = finite.map(sample => sample.point[0]);
+        const ys = finite.map(sample => sample.point[1]);
+        const ks = finite.map(sample => sample.k);
+
+        const xCounts = countValues(xs);
+        const yCounts = countValues(ys);
+        statEl.coordinates.textContent =
+            `x frequencies -> ${formatCounts(xCounts)}\n` +
+            `y frequencies -> ${formatCounts(yCounts)}\n` +
+            `Infinity occurred ${sampleCount - finite.length} time(s).`;
+
+        const pointCounts = countValues(samples.map(sample => pointText(sample.point)));
+        const pointFrequencyText = [...pointCounts.entries()]
+            .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
+            .map(([point, count]) => `${point}: ${count}`)
+            .join(", ");
+        statEl.points.textContent = pointFrequencyText;
+
+        const bitStrings = finite.map(sample => pointBits(sample.point));
+        const joinedBits = bitStrings.join("");
+        const ones = [...joinedBits].filter(bit => bit === "1").length;
+        const zeros = joinedBits.length - ones;
+        const onePercent = joinedBits.length === 0 ? 0 : ones / joinedBits.length * 100;
+        statEl.bits.textContent =
+            `Using 5 bits for x and 5 bits for y:\n` +
+            `0 bits: ${zeros}\n` +
+            `1 bits: ${ones} (${onePercent.toFixed(1)}% ones)`;
+
+        const order = subgroupOrder(G);
+        const frequencies = [...pointCounts.values()];
+        const minFrequency = Math.min(...frequencies);
+        const maxFrequency = Math.max(...frequencies);
+        statEl.uniformity.textContent =
+            `Order of the subgroup generated by G: ${order}\n` +
+            `Different outputs seen: ${pointCounts.size} of ${sampleCount}\n` +
+            `Output frequency range: ${minFrequency} to ${maxFrequency}\n` +
+            `The repetition comes from the small cyclic group, not from random sampling.`;
+
+        const correlationX = pearson(ks, xs);
+        const correlationY = pearson(ks, ys);
+        statEl.correlation.textContent =
+            `Pearson r(k, x): ${correlationX.toFixed(3)}\n` +
+            `Pearson r(k, y): ${correlationY.toFixed(3)}\n` +
+            `A value near 0 only means little linear correlation in this sample.`;
+
+        const distances = [];
+
+        for (let k = 2; k < sampleCount; k += 2) {
+            const firstBits = pointBits(fastMul(G, k));
+            const secondBits = pointBits(fastMul(G, k ^ 1));
+
+            if (firstBits !== null && secondBits !== null) {
+                distances.push(hammingDistance(firstBits, secondBits));
+            }
+        }
+
+        if (distances.length === 0) {
+            statEl.avalanche.textContent =
+                `No finite output pairs were available for this base point.\n` +
+                `This already shows why a hash-style avalanche test is not a natural test for this small elliptic-curve group.`;
+        } else {
+            const averageDistance =
+                distances.reduce((sum, value) => sum + value, 0) / distances.length;
+
+            statEl.avalanche.textContent =
+                `Flipping the lowest bit of k changes ${averageDistance.toFixed(2)} of 10 coordinate bits on average ` +
+                `(${(averageDistance / 10 * 100).toFixed(1)}%).\n` +
+                `This is only an avalanche-like observation; elliptic-curve multiplication is not a cryptographic hash.`;
+        }
     }
 
 
     function setupDropdown() {
+
         const wrapper =
-            document.querySelector(".custom-select-wrapper");
+            document.querySelector(
+                ".custom-select-wrapper"
+            );
+
 
         const trigger =
-            document.querySelector(".custom-select-trigger");
+            document.querySelector(
+                ".custom-select-trigger"
+            );
+
 
         const options =
-            document.querySelectorAll(".custom-option");
+            document.querySelectorAll(
+                ".custom-option"
+            );
 
 
-        trigger.onclick = () => {
-            wrapper.classList.toggle("open");
-        };
+        trigger.onclick =
+            () => {
 
-
-        options.forEach(option => {
-            option.onclick = () => {
-                trigger.textContent =
-                    option.textContent;
-
-                el.Gchoice.value =
-                    option.dataset.value;
-
-                options.forEach(item => {
-                    item.classList.remove("selected");
-                });
-
-                option.classList.add("selected");
-                wrapper.classList.remove("open");
-
-                calculate();
+                wrapper
+                    .classList
+                    .toggle(
+                        "open"
+                    );
             };
-        });
 
 
-        window.onclick = event => {
-            if (!wrapper.contains(event.target)) {
-                wrapper.classList.remove("open");
+        options.forEach(
+            option => {
+
+                option.onclick =
+                    () => {
+
+
+                        trigger.textContent =
+                            option.textContent;
+
+
+                        el.Gchoice.value =
+                            option.dataset.value;
+
+
+                        options.forEach(
+                            item => {
+
+                                item
+                                    .classList
+                                    .remove(
+                                        "selected"
+                                    );
+                            }
+                        );
+
+
+                        option
+                            .classList
+                            .add(
+                                "selected"
+                            );
+
+
+                        wrapper
+                            .classList
+                            .remove(
+                                "open"
+                            );
+
+
+                        calculate();
+                    };
             }
-        };
+        );
+
+
+        window.onclick =
+            event => {
+
+                if (
+                    !wrapper.contains(
+                        event.target
+                    )
+                ) {
+
+                    wrapper
+                        .classList
+                        .remove(
+                            "open"
+                        );
+                }
+            };
     }
 
 
-    const svg =
-        document.getElementById("curvePlot");
 
-    const SIZE = 400;
-    const MARGIN = 30;
+    const svg =
+        document.getElementById(
+            "curvePlot"
+        );
+
+
+    const SIZE =
+        400;
+
+
+    const MARGIN =
+        30;
+
 
     const STEP =
-        (SIZE - 2 * MARGIN) / (P - 1);
+        (
+            SIZE -
+            2 * MARGIN
+        ) /
+        (
+            P - 1
+        );
 
 
     function drawCurve() {
-        let drawing = "";
 
-        for (const [x, y] of findPoints()) {
+        let drawing =
+            "";
+
+
+        for (
+            const [x, y]
+            of findPoints()
+        ) {
+
             const svgX =
-                MARGIN + x * STEP;
+                MARGIN +
+                x * STEP;
+
 
             const svgY =
-                SIZE - MARGIN - y * STEP;
+                SIZE -
+                MARGIN -
+                y * STEP;
+
 
             drawing += `
                 <circle
@@ -743,6 +1570,7 @@
             `;
         }
 
+
         drawing += `
             <circle
                 id="activePoint"
@@ -750,84 +1578,160 @@
             </circle>
         `;
 
-        svg.innerHTML = drawing;
+
+        svg.innerHTML =
+            drawing;
     }
 
 
-    async function animateAlgorithm() {
-        const k =
-            Number(el.input.value);
 
-        if (!Number.isInteger(k) || k < 1 || k > K_MAX) {
+    async function animateAlgorithm() {
+
+        const k =
+            Number(
+                el.input.value
+            );
+
+
+        if (
+            !Number.isInteger(k) ||
+            k < 1 ||
+            k > K_MAX
+        ) {
+
             el.animationText.textContent =
                 `Choose k between 1 and ${K_MAX}.`;
 
             return;
         }
 
+
         const G =
             el.Gchoice.value
                 .split(",")
                 .map(Number);
 
+
         const steps =
-            makeSteps(G, k);
-
-        const active =
-            document.getElementById("activePoint");
-
-        el.animate.disabled = true;
-
-
-        for (const step of steps) {
-            active.style.opacity = "0";
-
-            await new Promise(resolve =>
-                setTimeout(resolve, 180)
+            makeSteps(
+                G,
+                k
             );
 
-            if (step.result !== INF) {
+
+        const active =
+            document.getElementById(
+                "activePoint"
+            );
+
+
+        el.animate.disabled =
+            true;
+
+
+        for (
+            const step
+            of steps
+        ) {
+
+
+            active.style.opacity =
+                "0";
+
+
+            await new Promise(
+                resolve =>
+                    setTimeout(
+                        resolve,
+                        180
+                    )
+            );
+
+
+            if (
+                step.result !== INF
+            ) {
+
                 const [x, y] =
                     step.result;
 
+
                 const svgX =
-                    MARGIN + x * STEP;
+                    MARGIN +
+                    x * STEP;
+
 
                 const svgY =
-                    SIZE - MARGIN - y * STEP;
+                    SIZE -
+                    MARGIN -
+                    y * STEP;
 
-                active.setAttribute("cx", svgX);
-                active.setAttribute("cy", svgY);
 
-                active.style.opacity = "1";
+                active.setAttribute(
+                    "cx",
+                    svgX
+                );
+
+
+                active.setAttribute(
+                    "cy",
+                    svgY
+                );
+
+
+                active.style.opacity =
+                    "1";
             }
 
-            el.animationText.textContent =
-                `${step.n}G = ${pointText(step.result)}`;
 
-            await new Promise(resolve =>
-                setTimeout(resolve, 700)
+            el.animationText.textContent =
+                `${step.n}G = ` +
+                `${pointText(step.result)}`;
+
+
+            await new Promise(
+                resolve =>
+                    setTimeout(
+                        resolve,
+                        700
+                    )
             );
         }
 
 
         el.animationText.textContent =
             `Public key: ${k}G = ` +
-            `${pointText(steps[steps.length - 1].result)}`;
+            `${pointText(
+                steps[
+                    steps.length - 1
+                ].result
+            )}`;
 
-        el.animate.disabled = false;
+
+        el.animate.disabled =
+            false;
     }
 
 
-    el.calculate.onclick = calculate;
-    el.animate.onclick = animateAlgorithm;
+
+    el.calculate.onclick =
+        calculate;
+
+
+    el.animate.onclick =
+        animateAlgorithm;
+
 
     fillGChoice();
+
     setupDropdown();
+
     drawCurve();
+
     calculate();
 
 </script>
 
 </body>
+
 </html>
