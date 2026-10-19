@@ -1,0 +1,2778 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <link
+        rel="preconnect"
+        href="https://fonts.googleapis.com"
+    >
+
+    <link
+        rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossorigin
+    >
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&display=swap"
+        rel="stylesheet"
+    >
+
+    <title>Homework-2</title>
+
+
+    <style>
+
+        :root {
+            --background: #FFF8DC;
+            --tan: #D2B48C;
+            --black: #000;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+
+            padding:
+                clamp(
+                    1.5rem,
+                    5vw,
+                    4rem
+                );
+
+            background:
+                var(--background);
+
+            font-family:
+                'DM Serif Display',
+                serif;
+
+            font-size: 1.1rem;
+
+            line-height: 1.4;
+        }
+
+        main {
+            width: 100%;
+            max-width: 900px;
+
+            margin: 0 auto;
+        }
+
+
+        /* TITLE */
+
+        h1 {
+            width: 100%;
+
+            margin: 0;
+
+            font-size:
+                clamp(
+                    3rem,
+                    7vw,
+                    6rem
+                );
+
+            font-weight: normal;
+
+            line-height: 1.05;
+
+            text-align: left;
+        }
+
+        h2 {
+            margin: 0;
+
+            font-size:
+                clamp(
+                    1.7rem,
+                    3vw,
+                    2.5rem
+                );
+
+            font-weight: normal;
+
+            line-height: 1.1;
+        }
+
+        h3 {
+            margin: 0 0 0.7rem;
+
+            font-size: 1.35rem;
+
+            font-weight: normal;
+        }
+
+
+        /* SECTIONS */
+
+        section {
+            width: 100%;
+
+            margin-top:
+                clamp(
+                    4rem,
+                    8vw,
+                    6rem
+                );
+        }
+
+
+        /* PARAMETERS */
+
+        .parameters {
+            width: 100%;
+            max-width: 780px;
+
+            display: grid;
+
+            gap: 1rem;
+
+            margin-top: 1.5rem;
+        }
+
+        .parameter-row {
+            display: grid;
+
+            grid-template-columns:
+                minmax(0, 1fr)
+                15rem;
+
+            align-items: center;
+
+            gap: 1.5rem;
+        }
+
+
+        /* INPUTS */
+
+        input,
+        textarea,
+        button {
+            width: 100%;
+
+            border:
+                3px solid
+                var(--black);
+
+            border-radius: 14px;
+
+            background:
+                var(--tan);
+
+            font-family: inherit;
+
+            font-size: 1rem;
+        }
+
+        input,
+        textarea {
+            padding: 0.65rem 0.8rem;
+
+            outline: none;
+        }
+
+        input {
+            text-align: center;
+        }
+
+        textarea {
+            min-height: 8rem;
+
+            resize: vertical;
+
+            line-height: 1.4;
+        }
+
+        input:focus,
+        textarea:focus {
+            box-shadow:
+                4px 4px 0
+                var(--black);
+        }
+
+
+        /* BUTTONS */
+
+        button {
+            padding: 0.65rem 1rem;
+
+            cursor: pointer;
+
+            transition:
+                transform 0.15s,
+                box-shadow 0.15s;
+        }
+
+        button:hover {
+            transform:
+                translateY(-2px);
+
+            box-shadow:
+                4px 4px 0
+                var(--black);
+        }
+
+        button:active {
+            transform:
+                translateY(0);
+
+            box-shadow: none;
+        }
+
+        button:disabled {
+            opacity: 0.5;
+
+            cursor: default;
+
+            transform: none;
+
+            box-shadow: none;
+        }
+
+        .button-row {
+            display: flex;
+
+            flex-wrap: wrap;
+
+            gap: 1rem;
+
+            margin-top: 1.5rem;
+        }
+
+        .button-row button {
+            width: fit-content;
+        }
+
+
+        /* NOTES */
+
+        .note {
+            max-width: 800px;
+
+            margin: 1rem 0 0;
+
+            text-align: left;
+        }
+
+        .status {
+            min-height: 1.5rem;
+
+            margin: 1rem 0 0;
+        }
+
+
+        /* RESULT CARDS */
+
+        .result-grid,
+        .comparison-grid {
+            display: grid;
+
+            grid-template-columns:
+                repeat(
+                    2,
+                    minmax(0, 1fr)
+                );
+
+            gap: 1rem;
+
+            margin-top: 1.5rem;
+        }
+
+        .result-card,
+        .comparison-card {
+            min-width: 0;
+
+            padding: 1.2rem;
+
+            border:
+                3px solid
+                var(--black);
+
+            border-radius: 14px;
+
+            background:
+                var(--tan);
+        }
+
+        .result-card p,
+        .comparison-card p {
+            margin: 0;
+
+            white-space: pre-line;
+
+            overflow-wrap: anywhere;
+        }
+
+        .wide-card {
+            grid-column:
+                1 / -1;
+        }
+
+        .mono-output {
+            font-family:
+                ui-monospace,
+                SFMono-Regular,
+                Menlo,
+                Monaco,
+                Consolas,
+                monospace;
+
+            font-size: 0.85rem;
+
+            line-height: 1.45;
+        }
+
+        pre {
+            width: 100%;
+
+            max-height: 22rem;
+
+            margin: 0;
+
+            padding: 1rem;
+
+            overflow: auto;
+
+            border:
+                3px solid
+                var(--black);
+
+            border-radius: 14px;
+
+            background:
+                var(--background);
+
+            font-family:
+                ui-monospace,
+                monospace;
+
+            font-size: 0.85rem;
+
+            white-space: pre-wrap;
+        }
+
+
+        /* TABLE */
+
+        table {
+            width: 100%;
+
+            margin-top: 1.5rem;
+
+            border-collapse: separate;
+
+            border-spacing: 0;
+
+            border:
+                3px solid
+                var(--black);
+
+            border-radius: 14px;
+
+            overflow: hidden;
+
+            background:
+                var(--tan);
+        }
+
+        th,
+        td {
+            padding: 0.8rem;
+
+            border-right:
+                2px solid
+                var(--black);
+
+            border-bottom:
+                2px solid
+                var(--black);
+
+            text-align: left;
+
+            vertical-align: top;
+        }
+
+        th:last-child,
+        td:last-child {
+            border-right: 0;
+        }
+
+        tr:last-child td {
+            border-bottom: 0;
+        }
+
+        th {
+            background:
+                var(--background);
+
+            font-weight: normal;
+        }
+
+
+        /* MOBILE */
+
+        @media (
+            max-width: 650px
+        ) {
+
+            body {
+                padding: 1.5rem;
+            }
+
+            h1 {
+                font-size:
+                    clamp(
+                        2.5rem,
+                        13vw,
+                        4rem
+                    );
+            }
+
+            .parameter-row,
+            .result-grid,
+            .comparison-grid {
+                grid-template-columns:
+                    1fr;
+            }
+
+            .parameter-row {
+                gap: 0.6rem;
+            }
+
+            .wide-card {
+                grid-column: auto;
+            }
+
+            .button-row button {
+                width: 100%;
+            }
+
+            table {
+                font-size: 0.9rem;
+            }
+        }
+
+    </style>
+
+</head>
+
+
+
+<body>
+
+<main>
+
+
+    <h1>
+        ECC and Caesar cipher:
+        encryption, decryption
+        and cryptanalysis.
+    </h1>
+
+
+
+    <!-- ECC -->
+
+
+    <section id="ecc">
+
+        <h2>
+            1. Toy elliptic-curve encryption
+        </h2>
+
+
+        <p class="note">
+            This experiment uses the secp256k1 elliptic curve.
+            To make an attack computationally feasible, the private
+            key is intentionally restricted to the range 1–5000.
+            This is a toy ECIES-like construction and not a complete
+            real-world encryption protocol.
+        </p>
+
+
+        <div class="parameters">
+
+
+            <div class="parameter-row">
+
+                <h3>
+                    Message:
+                </h3>
+
+                <textarea id="message">Cryptography is easier to understand when we can experiment with it. This example compares elliptic curve encryption with the classical Caesar cipher and shows why small key spaces are dangerous.</textarea>
+
+            </div>
+
+
+            <div class="parameter-row">
+
+                <h3>
+                    Private key d:
+                </h3>
+
+                <input
+                    id="eccPrivateKey"
+                    type="number"
+                    min="1"
+                    max="5000"
+                    value="1337"
+                >
+
+            </div>
+
+
+        </div>
+
+
+        <div class="button-row">
+
+            <button id="eccEncrypt">
+                Encrypt + decrypt
+            </button>
+
+            <button id="eccAttack">
+                Attack private key
+            </button>
+
+        </div>
+
+
+        <p
+            id="eccStatus"
+            class="status">
+        </p>
+
+
+        <div class="result-grid">
+
+
+            <div class="result-card">
+
+                <h3>
+                    Public key Q = dG
+                </h3>
+
+                <p
+                    id="eccPublic"
+                    class="mono-output">
+                    –
+                </p>
+
+            </div>
+
+
+            <div class="result-card">
+
+                <h3>
+                    Ephemeral point R = rG
+                </h3>
+
+                <p
+                    id="eccEphemeral"
+                    class="mono-output">
+                    –
+                </p>
+
+            </div>
+
+
+            <div class="result-card wide-card">
+
+                <h3>
+                    Ciphertext
+                </h3>
+
+                <p
+                    id="eccCipher"
+                    class="mono-output">
+                    –
+                </p>
+
+            </div>
+
+
+            <div class="result-card">
+
+                <h3>
+                    Decrypted message
+                </h3>
+
+                <p id="eccPlain">
+                    –
+                </p>
+
+            </div>
+
+
+            <div class="result-card">
+
+                <h3>
+                    Restricted-key attack
+                </h3>
+
+                <p id="eccAttackResult">
+                    –
+                </p>
+
+            </div>
+
+
+        </div>
+
+
+        <div class="comparison-grid">
+
+
+            <div class="comparison-card">
+
+                <h3>
+                    Main steps
+                </h3>
+
+                <p>
+                    1. The receiver chooses private key d.
+
+                    2. The public key is Q = dG.
+
+                    3. The sender chooses a random temporary scalar r.
+
+                    4. The sender calculates R = rG and the shared point S = rQ.
+
+                    5. S is converted into a keystream using SHA-256.
+
+                    6. The message is XORed with the keystream.
+
+                    7. The receiver calculates the same S = dR and decrypts the ciphertext.
+                </p>
+
+            </div>
+
+
+            <div class="comparison-card">
+
+                <h3>
+                    Role of the keys
+                </h3>
+
+                <p>
+                    d is the receiver's private key and must remain secret.
+
+                    Q = dG is the public key and can be published.
+
+                    r is a temporary random value generated by the sender.
+
+                    R = rG can be sent publicly.
+
+                    Both sides independently obtain the same shared secret S without transmitting S itself.
+                </p>
+
+            </div>
+
+
+        </div>
+
+    </section>
+
+
+
+    <!-- CAESAR -->
+
+
+    <section id="caesar">
+
+        <h2>
+            2. Caesar cipher
+        </h2>
+
+
+        <p class="note">
+            The Caesar cipher encrypts the same message by shifting
+            every alphabetic character by a fixed number of positions.
+            Decryption applies the opposite shift.
+        </p>
+
+
+        <div class="parameters">
+
+
+            <div class="parameter-row">
+
+                <h3>
+                    Caesar key:
+                </h3>
+
+                <input
+                    id="caesarKey"
+                    type="number"
+                    min="0"
+                    max="25"
+                    value="7"
+                >
+
+            </div>
+
+
+        </div>
+
+
+        <div class="button-row">
+
+            <button id="caesarRun">
+                Encrypt + decrypt
+            </button>
+
+            <button id="caesarRecover">
+                Frequency attack
+            </button>
+
+            <button id="caesarExhaustive">
+                Exhaustive search
+            </button>
+
+        </div>
+
+
+        <div class="result-grid">
+
+
+            <div class="result-card wide-card">
+
+                <h3>
+                    Caesar ciphertext
+                </h3>
+
+                <p id="caesarCipher">
+                    –
+                </p>
+
+            </div>
+
+
+            <div class="result-card">
+
+                <h3>
+                    Decrypted message
+                </h3>
+
+                <p id="caesarPlain">
+                    –
+                </p>
+
+            </div>
+
+
+            <div class="result-card">
+
+                <h3>
+                    Frequency attack
+                </h3>
+
+                <p id="caesarAttackResult">
+                    –
+                </p>
+
+            </div>
+
+
+            <div class="result-card wide-card">
+
+                <h3>
+                    Exhaustive key search
+                </h3>
+
+                <pre id="exhaustiveOutput">Press "Exhaustive search" to try all 26 keys.</pre>
+
+            </div>
+
+
+        </div>
+
+    </section>
+
+
+
+    <!-- STATISTICAL ANALYSIS -->
+
+
+    <section id="statistical">
+
+        <h2>
+            3. Statistical cryptanalysis
+        </h2>
+
+
+        <p class="note">
+            English letters do not occur with equal probability.
+            The attack tries all 26 Caesar shifts and compares the
+            resulting letter frequencies with standard English
+            frequencies using a chi-squared score. The candidate with
+            the lowest score is selected as the most likely key.
+        </p>
+
+
+        <div class="button-row">
+
+            <button id="runLengthTests">
+                Test ciphertext lengths
+            </button>
+
+        </div>
+
+
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>
+                        Length
+                    </th>
+
+                    <th>
+                        Actual key
+                    </th>
+
+                    <th>
+                        Recovered key
+                    </th>
+
+                    <th>
+                        Result
+                    </th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody id="lengthTestBody">
+
+                <tr>
+
+                    <td colspan="4">
+                        Press the button to run the experiment.
+                    </td>
+
+                </tr>
+
+            </tbody>
+
+        </table>
+
+
+        <div class="comparison-grid">
+
+
+            <div class="comparison-card">
+
+                <h3>
+                    Effectiveness
+                </h3>
+
+                <p>
+                    The attack normally becomes more reliable as the ciphertext gets longer because the observed frequencies become closer to the expected frequencies of English.
+
+                    With enough text, the correct shift usually receives the best statistical score.
+                </p>
+
+            </div>
+
+
+            <div class="comparison-card">
+
+                <h3>
+                    Limitations
+                </h3>
+
+                <p>
+                    Very short ciphertexts can give misleading results.
+
+                    Unusual vocabulary, names and non-English text can also reduce accuracy.
+
+                    The attack assumes that the language and its approximate frequency distribution are known.
+                </p>
+
+            </div>
+
+
+            <div class="comparison-card">
+
+                <h3>
+                    Exhaustive search
+                </h3>
+
+                <p>
+                    Caesar has only 26 possible keys, so trying every key is extremely easy.
+
+                    Exhaustive search guarantees that the correct plaintext is among the candidates, although a human or another scoring method may still be needed to identify it.
+                </p>
+
+            </div>
+
+
+            <div class="comparison-card">
+
+                <h3>
+                    Frequency vs n-grams
+                </h3>
+
+                <p>
+                    Single-letter frequency analysis is simple and fast but can struggle with short messages.
+
+                    An n-gram method scores common groups such as TH, HE or ING. It can often recognize natural language more accurately, but requires a larger language model.
+                </p>
+
+            </div>
+
+
+        </div>
+
+    </section>
+
+
+
+    <!-- ECC ATTACK -->
+
+
+    <section id="ecc-attack-discussion">
+
+        <h2>
+            4. Attack on the restricted ECC key
+        </h2>
+
+
+        <p class="note">
+            Because this experiment restricts d to only 5000 possible
+            values, an attacker can calculate G, 2G, 3G, ... and compare
+            each result with the public key Q. When a match is found,
+            the corresponding value is the private key.
+        </p>
+
+
+        <div class="comparison-grid">
+
+
+            <div class="comparison-card">
+
+                <h3>
+                    ECC brute-force attack
+                </h3>
+
+                <p>
+                    The ECC attack does not depend on the language or statistical properties of the plaintext.
+
+                    It exploits the artificially small private-key space.
+
+                    The attacker searches possible values of d until dG equals the public key Q.
+                </p>
+
+            </div>
+
+
+            <div class="comparison-card">
+
+                <h3>
+                    Caesar statistical attack
+                </h3>
+
+                <p>
+                    The Caesar attack exploits information leaked by the ciphertext.
+
+                    A Caesar shift preserves the shape of the plaintext letter-frequency distribution, only moving the letters to different positions.
+
+                    The attack therefore uses properties of the language itself.
+                </p>
+
+            </div>
+
+
+            <div class="comparison-card">
+
+                <h3>
+                    Proper secp256k1
+                </h3>
+
+                <p>
+                    Real secp256k1 private keys are selected from an enormous range close to 2²⁵⁶ possibilities.
+
+                    Searching a range of 5000 values is trivial, but performing the same exhaustive search over the normal key space is computationally infeasible.
+
+                    Generic elliptic-curve discrete-logarithm attacks are also vastly more expensive than the attack used in this experiment.
+                </p>
+
+            </div>
+
+
+            <div class="comparison-card">
+
+                <h3>
+                    Other possible weaknesses
+                </h3>
+
+                <p>
+                    The small private-key range is an artificial weakness introduced for the homework.
+
+                    Other weaknesses could instead come from the design or implementation, for example predictable random values, reused temporary keys, side-channel leakage or incorrect point validation.
+
+                    This toy encryption also provides no authentication, so it should not be treated as a secure real-world protocol.
+                </p>
+
+            </div>
+
+
+        </div>
+
+    </section>
+
+
+
+    <!-- GENERAL COMPARISON -->
+
+
+    <section id="comparison">
+
+        <h2>
+            5. ECC vs Caesar cipher
+        </h2>
+
+
+        <div class="comparison-grid">
+
+
+            <div class="comparison-card">
+
+                <h3>
+                    Encryption and decryption
+                </h3>
+
+                <p>
+                    Caesar uses one shift value. Encryption adds the shift and decryption subtracts it.
+
+                    The ECC experiment uses a private/public key pair and a temporary sender value to create a shared secret used for encryption.
+                </p>
+
+            </div>
+
+
+            <div class="comparison-card">
+
+                <h3>
+                    Key spaces
+                </h3>
+
+                <p>
+                    Caesar has only 26 possible keys.
+
+                    The toy ECC experiment has 5000 possible private keys because the range was deliberately restricted.
+
+                    Proper secp256k1 has an enormously larger private-key space.
+                </p>
+
+            </div>
+
+
+            <div class="comparison-card">
+
+                <h3>
+                    Statistical properties
+                </h3>
+
+                <p>
+                    Caesar preserves plaintext statistics. A frequent plaintext letter remains frequent in the ciphertext, although it appears as another letter.
+
+                    The ECC-based construction creates a pseudorandom-looking byte stream from the shared secret, so the original letter frequencies are not directly preserved in the ciphertext.
+                </p>
+
+            </div>
+
+
+            <div class="comparison-card">
+
+                <h3>
+                    Main similarity
+                </h3>
+
+                <p>
+                    Both systems require key material and both transform plaintext into ciphertext that can later be reversed by an authorized receiver.
+
+                    Their security assumptions, however, are completely different.
+                </p>
+
+            </div>
+
+
+        </div>
+
+    </section>
+
+
+</main>
+
+
+
+<script>
+
+
+    /* ==============================
+       SECP256K1 PARAMETERS
+       ============================== */
+
+
+    const ECC_KEY_MAX =
+        5000;
+
+
+    const SECP_P =
+        BigInt(
+            "0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEFFFFFC2F"
+        );
+
+
+    const SECP_N =
+        BigInt(
+            "0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEBAAEDCE6AF48A03BBFD25E8CD0364141"
+        );
+
+
+    const G = {
+
+        x:
+            BigInt(
+                "0x79BE667EF9DCBBAC55A06295CE870B07029BFCDB2DCE28D959F2815B16F81798"
+            ),
+
+        y:
+            BigInt(
+                "0x483ADA7726A3C4655DA4FBFC0E1108A8FD17B448A68554199C47D08FFB10D4B8"
+            )
+
+    };
+
+
+    const INF =
+        null;
+
+
+    let lastECC =
+        null;
+
+
+    let lastCaesarCipher =
+        "";
+
+
+
+    /* ==============================
+       HTML ELEMENTS
+       ============================== */
+
+
+    const el = {
+
+        message:
+            document.getElementById(
+                "message"
+            ),
+
+        eccPrivateKey:
+            document.getElementById(
+                "eccPrivateKey"
+            ),
+
+        eccEncrypt:
+            document.getElementById(
+                "eccEncrypt"
+            ),
+
+        eccAttack:
+            document.getElementById(
+                "eccAttack"
+            ),
+
+        eccStatus:
+            document.getElementById(
+                "eccStatus"
+            ),
+
+        eccPublic:
+            document.getElementById(
+                "eccPublic"
+            ),
+
+        eccEphemeral:
+            document.getElementById(
+                "eccEphemeral"
+            ),
+
+        eccCipher:
+            document.getElementById(
+                "eccCipher"
+            ),
+
+        eccPlain:
+            document.getElementById(
+                "eccPlain"
+            ),
+
+        eccAttackResult:
+            document.getElementById(
+                "eccAttackResult"
+            ),
+
+        caesarKey:
+            document.getElementById(
+                "caesarKey"
+            ),
+
+        caesarRun:
+            document.getElementById(
+                "caesarRun"
+            ),
+
+        caesarRecover:
+            document.getElementById(
+                "caesarRecover"
+            ),
+
+        caesarExhaustive:
+            document.getElementById(
+                "caesarExhaustive"
+            ),
+
+        caesarCipher:
+            document.getElementById(
+                "caesarCipher"
+            ),
+
+        caesarPlain:
+            document.getElementById(
+                "caesarPlain"
+            ),
+
+        caesarAttackResult:
+            document.getElementById(
+                "caesarAttackResult"
+            ),
+
+        exhaustiveOutput:
+            document.getElementById(
+                "exhaustiveOutput"
+            ),
+
+        runLengthTests:
+            document.getElementById(
+                "runLengthTests"
+            ),
+
+        lengthTestBody:
+            document.getElementById(
+                "lengthTestBody"
+            )
+
+    };
+
+
+
+    /* ==============================
+       ELLIPTIC CURVE ARITHMETIC
+       ============================== */
+
+
+    function mod(
+        number,
+        modulus = SECP_P
+    ) {
+
+        return (
+            (
+                number %
+                modulus
+            ) +
+            modulus
+        ) %
+        modulus;
+    }
+
+
+    function inverse(
+        number,
+        modulus = SECP_P
+    ) {
+
+        let oldR =
+            mod(
+                number,
+                modulus
+            );
+
+
+        let r =
+            modulus;
+
+
+        let oldS =
+            1n;
+
+
+        let s =
+            0n;
+
+
+        while (
+            r !== 0n
+        ) {
+
+            const quotient =
+                oldR /
+                r;
+
+
+            [
+                oldR,
+                r
+            ] = [
+                r,
+                oldR -
+                quotient *
+                r
+            ];
+
+
+            [
+                oldS,
+                s
+            ] = [
+                s,
+                oldS -
+                quotient *
+                s
+            ];
+        }
+
+
+        if (
+            oldR !== 1n
+        ) {
+
+            throw new Error(
+                "No inverse exists."
+            );
+        }
+
+
+        return mod(
+            oldS,
+            modulus
+        );
+    }
+
+
+    function pointEqual(
+        first,
+        second
+    ) {
+
+        if (
+            first === INF ||
+            second === INF
+        ) {
+
+            return (
+                first ===
+                second
+            );
+        }
+
+
+        return (
+            first.x ===
+                second.x &&
+            first.y ===
+                second.y
+        );
+    }
+
+
+    function addPoint(
+        first,
+        second
+    ) {
+
+        if (
+            first === INF
+        ) {
+
+            return second;
+        }
+
+
+        if (
+            second === INF
+        ) {
+
+            return first;
+        }
+
+
+        if (
+            first.x ===
+                second.x &&
+            mod(
+                first.y +
+                second.y
+            ) === 0n
+        ) {
+
+            return INF;
+        }
+
+
+        let slope;
+
+
+        if (
+            pointEqual(
+                first,
+                second
+            )
+        ) {
+
+            slope =
+                mod(
+                    (
+                        3n *
+                        first.x *
+                        first.x
+                    ) *
+                    inverse(
+                        2n *
+                        first.y
+                    )
+                );
+
+        }
+
+        else {
+
+            slope =
+                mod(
+                    (
+                        second.y -
+                        first.y
+                    ) *
+                    inverse(
+                        second.x -
+                        first.x
+                    )
+                );
+        }
+
+
+        const x3 =
+            mod(
+                slope *
+                slope -
+                first.x -
+                second.x
+            );
+
+
+        const y3 =
+            mod(
+                slope *
+                (
+                    first.x -
+                    x3
+                ) -
+                first.y
+            );
+
+
+        return {
+            x: x3,
+            y: y3
+        };
+    }
+
+
+    function pointMul(
+        point,
+        scalar
+    ) {
+
+        let k =
+            BigInt(
+                scalar
+            );
+
+
+        let result =
+            INF;
+
+
+        let current =
+            point;
+
+
+        while (
+            k > 0n
+        ) {
+
+            if (
+                k & 1n
+            ) {
+
+                result =
+                    addPoint(
+                        result,
+                        current
+                    );
+            }
+
+
+            current =
+                addPoint(
+                    current,
+                    current
+                );
+
+
+            k >>=
+                1n;
+        }
+
+
+        return result;
+    }
+
+
+    function pointText(
+        point
+    ) {
+
+        if (
+            point === INF
+        ) {
+
+            return "INFINITY";
+        }
+
+
+        return (
+            "x = " +
+            point.x
+                .toString(16)
+                .padStart(
+                    64,
+                    "0"
+                ) +
+            "\n" +
+            "y = " +
+            point.y
+                .toString(16)
+                .padStart(
+                    64,
+                    "0"
+                )
+        );
+    }
+
+
+
+    /* ==============================
+       RANDOM SCALAR
+       ============================== */
+
+
+    function bytesToHex(
+        bytes
+    ) {
+
+        return [...bytes]
+
+            .map(
+                byte =>
+                    byte
+                        .toString(16)
+                        .padStart(
+                            2,
+                            "0"
+                        )
+            )
+
+            .join("");
+    }
+
+
+    function randomScalar() {
+
+        while (
+            true
+        ) {
+
+            const bytes =
+                new Uint8Array(
+                    32
+                );
+
+
+            crypto.getRandomValues(
+                bytes
+            );
+
+
+            const value =
+                BigInt(
+                    "0x" +
+                    bytesToHex(
+                        bytes
+                    )
+                );
+
+
+            if (
+                value > 0n &&
+                value < SECP_N
+            ) {
+
+                return value;
+            }
+        }
+    }
+
+
+
+    /* ==============================
+       SHARED SECRET / KEYSTREAM
+       ============================== */
+
+
+    function bigintToBytes(
+        value
+    ) {
+
+        const hex =
+            value
+                .toString(16)
+                .padStart(
+                    64,
+                    "0"
+                );
+
+
+        const bytes =
+            new Uint8Array(
+                32
+            );
+
+
+        for (
+            let i = 0;
+            i < 32;
+            i++
+        ) {
+
+            bytes[i] =
+                parseInt(
+                    hex.slice(
+                        i * 2,
+                        i * 2 + 2
+                    ),
+                    16
+                );
+        }
+
+
+        return bytes;
+    }
+
+
+    async function makeKeystream(
+        sharedPoint,
+        length
+    ) {
+
+        const output =
+            new Uint8Array(
+                length
+            );
+
+
+        const xBytes =
+            bigintToBytes(
+                sharedPoint.x
+            );
+
+
+        const yBytes =
+            bigintToBytes(
+                sharedPoint.y
+            );
+
+
+        let offset =
+            0;
+
+
+        let counter =
+            0;
+
+
+        while (
+            offset <
+            length
+        ) {
+
+            const material =
+                new Uint8Array(
+                    68
+                );
+
+
+            material.set(
+                xBytes,
+                0
+            );
+
+
+            material.set(
+                yBytes,
+                32
+            );
+
+
+            const view =
+                new DataView(
+                    material.buffer
+                );
+
+
+            view.setUint32(
+                64,
+                counter,
+                false
+            );
+
+
+            const digest =
+                new Uint8Array(
+
+                    await crypto.subtle.digest(
+                        "SHA-256",
+                        material
+                    )
+
+                );
+
+
+            const amount =
+                Math.min(
+                    digest.length,
+                    length -
+                    offset
+                );
+
+
+            output.set(
+                digest.slice(
+                    0,
+                    amount
+                ),
+                offset
+            );
+
+
+            offset +=
+                amount;
+
+
+            counter++;
+        }
+
+
+        return output;
+    }
+
+
+    async function xorWithSharedSecret(
+        bytes,
+        sharedPoint
+    ) {
+
+        const stream =
+            await makeKeystream(
+                sharedPoint,
+                bytes.length
+            );
+
+
+        const output =
+            new Uint8Array(
+                bytes.length
+            );
+
+
+        for (
+            let i = 0;
+            i < bytes.length;
+            i++
+        ) {
+
+            output[i] =
+                bytes[i] ^
+                stream[i];
+        }
+
+
+        return output;
+    }
+
+
+
+    /* ==============================
+       ECC ENCRYPTION / DECRYPTION
+       ============================== */
+
+
+    async function runECC() {
+
+        const privateKeyNumber =
+            Number(
+                el.eccPrivateKey.value
+            );
+
+
+        if (
+            !Number.isInteger(
+                privateKeyNumber
+            ) ||
+            privateKeyNumber < 1 ||
+            privateKeyNumber >
+                ECC_KEY_MAX
+        ) {
+
+            el.eccStatus.textContent =
+                `Choose a private key between 1 and ${ECC_KEY_MAX}.`;
+
+            return;
+        }
+
+
+        const privateKey =
+            BigInt(
+                privateKeyNumber
+            );
+
+
+        const message =
+            el.message.value;
+
+
+        /*
+            Public key:
+            Q = dG
+        */
+
+        const publicKey =
+            pointMul(
+                G,
+                privateKey
+            );
+
+
+        /*
+            IMPORTANT:
+            r is NOT restricted to 1–5000.
+
+            Only the private key d is deliberately
+            restricted for the homework attack.
+        */
+
+        const r =
+            randomScalar();
+
+
+        /*
+            R = rG
+        */
+
+        const R =
+            pointMul(
+                G,
+                r
+            );
+
+
+        /*
+            Sender computes:
+            S = rQ
+        */
+
+        const senderShared =
+            pointMul(
+                publicKey,
+                r
+            );
+
+
+        const plainBytes =
+            new TextEncoder()
+                .encode(
+                    message
+                );
+
+
+        const cipherBytes =
+            await xorWithSharedSecret(
+                plainBytes,
+                senderShared
+            );
+
+
+        /*
+            Receiver computes:
+            S = dR
+        */
+
+        const receiverShared =
+            pointMul(
+                R,
+                privateKey
+            );
+
+
+        const recoveredBytes =
+            await xorWithSharedSecret(
+                cipherBytes,
+                receiverShared
+            );
+
+
+        const recoveredText =
+            new TextDecoder()
+                .decode(
+                    recoveredBytes
+                );
+
+
+        lastECC = {
+
+            publicKey:
+                publicKey,
+
+            R:
+                R,
+
+            cipherBytes:
+                cipherBytes
+
+        };
+
+
+        el.eccPublic.textContent =
+            pointText(
+                publicKey
+            );
+
+
+        el.eccEphemeral.textContent =
+            pointText(
+                R
+            );
+
+
+        el.eccCipher.textContent =
+            bytesToHex(
+                cipherBytes
+            );
+
+
+        el.eccPlain.textContent =
+            recoveredText;
+
+
+        el.eccAttackResult.textContent =
+            "–";
+
+
+        el.eccStatus.textContent =
+            "Encryption successful. The receiver calculated the same shared elliptic-curve point and recovered the original message.";
+    }
+
+
+
+    /* ==============================
+       ATTACK SMALL ECC KEY SPACE
+       ============================== */
+
+
+    async function attackECC() {
+
+        if (
+            !lastECC
+        ) {
+
+            await runECC();
+        }
+
+
+        if (
+            !lastECC
+        ) {
+
+            return;
+        }
+
+
+        el.eccAttack.disabled =
+            true;
+
+
+        el.eccAttackResult.textContent =
+            "Searching d = 1, 2, 3, ...";
+
+
+        /*
+            Allow the browser to display
+            the status before computation.
+        */
+
+        await new Promise(
+            resolve =>
+                setTimeout(
+                    resolve,
+                    20
+                )
+        );
+
+
+        let current =
+            INF;
+
+
+        let recoveredKey =
+            null;
+
+
+        /*
+            Instead of calculating dG
+            from scratch each time,
+            repeatedly add G.
+
+            G
+            2G
+            3G
+            ...
+        */
+
+        for (
+            let d = 1;
+            d <= ECC_KEY_MAX;
+            d++
+        ) {
+
+            current =
+                addPoint(
+                    current,
+                    G
+                );
+
+
+            if (
+                pointEqual(
+                    current,
+                    lastECC.publicKey
+                )
+            ) {
+
+                recoveredKey =
+                    d;
+
+                break;
+            }
+        }
+
+
+        if (
+            recoveredKey === null
+        ) {
+
+            el.eccAttackResult.textContent =
+                "No private key was found in the restricted range.";
+
+
+            el.eccAttack.disabled =
+                false;
+
+
+            return;
+        }
+
+
+        /*
+            Having recovered d,
+            attacker calculates:
+
+            S = dR
+        */
+
+        const sharedPoint =
+            pointMul(
+                lastECC.R,
+                BigInt(
+                    recoveredKey
+                )
+            );
+
+
+        const recoveredBytes =
+            await xorWithSharedSecret(
+                lastECC.cipherBytes,
+                sharedPoint
+            );
+
+
+        const recoveredMessage =
+            new TextDecoder()
+                .decode(
+                    recoveredBytes
+                );
+
+
+        el.eccAttackResult.textContent =
+            `Recovered private key: d = ${recoveredKey}\n\n` +
+            `Recovered message:\n${recoveredMessage}`;
+
+
+        el.eccAttack.disabled =
+            false;
+    }
+
+
+
+    /* ==============================
+       CAESAR CIPHER
+       ============================== */
+
+
+    function modNumber(
+        number,
+        modulus
+    ) {
+
+        return (
+            (
+                number %
+                modulus
+            ) +
+            modulus
+        ) %
+        modulus;
+    }
+
+
+    function caesarTransform(
+        text,
+        key
+    ) {
+
+        const shift =
+            modNumber(
+                key,
+                26
+            );
+
+
+        return [...text]
+
+            .map(
+                character => {
+
+                    const code =
+                        character
+                            .charCodeAt(
+                                0
+                            );
+
+
+                    /*
+                        UPPERCASE
+                    */
+
+                    if (
+                        code >= 65 &&
+                        code <= 90
+                    ) {
+
+                        return String.fromCharCode(
+
+                            65 +
+
+                            modNumber(
+                                code -
+                                65 +
+                                shift,
+                                26
+                            )
+
+                        );
+                    }
+
+
+                    /*
+                        LOWERCASE
+                    */
+
+                    if (
+                        code >= 97 &&
+                        code <= 122
+                    ) {
+
+                        return String.fromCharCode(
+
+                            97 +
+
+                            modNumber(
+                                code -
+                                97 +
+                                shift,
+                                26
+                            )
+
+                        );
+                    }
+
+
+                    return character;
+                }
+            )
+
+            .join("");
+    }
+
+
+    function runCaesar() {
+
+        const key =
+            Number(
+                el.caesarKey.value
+            );
+
+
+        if (
+            !Number.isInteger(
+                key
+            ) ||
+            key < 0 ||
+            key > 25
+        ) {
+
+            el.caesarAttackResult.textContent =
+                "Choose a Caesar key from 0 to 25.";
+
+            return;
+        }
+
+
+        /*
+            Uses the SAME message
+            as the ECC experiment.
+        */
+
+        lastCaesarCipher =
+            caesarTransform(
+                el.message.value,
+                key
+            );
+
+
+        const decrypted =
+            caesarTransform(
+                lastCaesarCipher,
+                -key
+            );
+
+
+        el.caesarCipher.textContent =
+            lastCaesarCipher;
+
+
+        el.caesarPlain.textContent =
+            decrypted;
+
+
+        el.caesarAttackResult.textContent =
+            "–";
+
+
+        el.exhaustiveOutput.textContent =
+            'Press "Exhaustive search" to try all 26 keys.';
+    }
+
+
+
+    /* ==============================
+       ENGLISH FREQUENCIES
+       ============================== */
+
+
+    const ENGLISH_FREQ = [
+
+        8.167,
+        1.492,
+        2.782,
+        4.253,
+        12.702,
+        2.228,
+        2.015,
+        6.094,
+        6.966,
+        0.153,
+        0.772,
+        4.025,
+        2.406,
+        6.749,
+        7.507,
+        1.929,
+        0.095,
+        5.987,
+        6.327,
+        9.056,
+        2.758,
+        0.978,
+        2.360,
+        0.150,
+        1.974,
+        0.074
+
+    ];
+
+
+
+    /* ==============================
+       CHI-SQUARED SCORE
+       ============================== */
+
+
+    function chiSquaredForEnglish(
+        text
+    ) {
+
+        const counts =
+            Array(26)
+                .fill(0);
+
+
+        let total =
+            0;
+
+
+        for (
+            const character
+            of text.toUpperCase()
+        ) {
+
+            const code =
+                character
+                    .charCodeAt(
+                        0
+                    );
+
+
+            if (
+                code >= 65 &&
+                code <= 90
+            ) {
+
+                counts[
+                    code - 65
+                ]++;
+
+
+                total++;
+            }
+        }
+
+
+        if (
+            total === 0
+        ) {
+
+            return Infinity;
+        }
+
+
+        let score =
+            0;
+
+
+        for (
+            let i = 0;
+            i < 26;
+            i++
+        ) {
+
+            const expected =
+                total *
+                ENGLISH_FREQ[i] /
+                100;
+
+
+            const difference =
+                counts[i] -
+                expected;
+
+
+            score +=
+                (
+                    difference *
+                    difference
+                ) /
+                expected;
+        }
+
+
+        return score;
+    }
+
+
+
+    /* ==============================
+       RECOVER CAESAR KEY
+       ============================== */
+
+
+    function recoverCaesarKey(
+        ciphertext
+    ) {
+
+        let bestKey =
+            0;
+
+
+        let bestScore =
+            Infinity;
+
+
+        let bestPlaintext =
+            ciphertext;
+
+
+        /*
+            Try all possible Caesar keys.
+
+            Statistical analysis determines
+            which candidate looks most like
+            English.
+        */
+
+        for (
+            let key = 0;
+            key < 26;
+            key++
+        ) {
+
+            const candidate =
+                caesarTransform(
+                    ciphertext,
+                    -key
+                );
+
+
+            const score =
+                chiSquaredForEnglish(
+                    candidate
+                );
+
+
+            if (
+                score <
+                bestScore
+            ) {
+
+                bestScore =
+                    score;
+
+
+                bestKey =
+                    key;
+
+
+                bestPlaintext =
+                    candidate;
+            }
+        }
+
+
+        return {
+
+            key:
+                bestKey,
+
+            score:
+                bestScore,
+
+            plaintext:
+                bestPlaintext
+
+        };
+    }
+
+
+    function attackCaesar() {
+
+        if (
+            !lastCaesarCipher
+        ) {
+
+            runCaesar();
+        }
+
+
+        const result =
+            recoverCaesarKey(
+                lastCaesarCipher
+            );
+
+
+        el.caesarAttackResult.textContent =
+            `Most likely key: ${result.key}\n` +
+            `Chi-squared score: ${result.score.toFixed(2)}\n\n` +
+            `Recovered message:\n${result.plaintext}`;
+    }
+
+
+
+    /* ==============================
+       EXHAUSTIVE CAESAR SEARCH
+       ============================== */
+
+
+    function exhaustiveCaesarSearch() {
+
+        if (
+            !lastCaesarCipher
+        ) {
+
+            runCaesar();
+        }
+
+
+        const candidates =
+            [];
+
+
+        for (
+            let key = 0;
+            key < 26;
+            key++
+        ) {
+
+            const candidate =
+                caesarTransform(
+                    lastCaesarCipher,
+                    -key
+                );
+
+
+            candidates.push(
+                `KEY ${key}\n${candidate}\n`
+            );
+        }
+
+
+        el.exhaustiveOutput.textContent =
+            candidates.join(
+                "\n"
+            );
+    }
+
+
+
+    /* ==============================
+       DIFFERENT CIPHERTEXT LENGTHS
+       ============================== */
+
+
+    const TEST_CORPUS = `
+
+        Cryptography is the study of techniques used to protect
+        information while it is stored or transmitted. Classical
+        encryption systems such as the Caesar cipher are useful for
+        demonstrating basic ideas, but they are not secure by modern
+        standards. English text contains recognizable statistical
+        patterns because some letters appear much more frequently than
+        others. An attacker can exploit these patterns when enough
+        ciphertext is available. Modern cryptographic systems instead
+        attempt to hide recognizable relationships between plaintext
+        and ciphertext and rely on key spaces that are too large to
+        search directly. Experiments with messages of different lengths
+        demonstrate that statistical analysis is generally less reliable
+        with very short samples and more reliable when more text is
+        available.
+
+    `
+        .replace(
+            /\s+/g,
+            " "
+        )
+        .trim();
+
+
+    function runLengthTests() {
+
+        const key =
+            Number(
+                el.caesarKey.value
+            );
+
+
+        if (
+            !Number.isInteger(
+                key
+            ) ||
+            key < 0 ||
+            key > 25
+        ) {
+
+            return;
+        }
+
+
+        const lengths = [
+
+            20,
+            40,
+            80,
+            160,
+            320,
+            TEST_CORPUS.length
+
+        ];
+
+
+        const rows =
+            [];
+
+
+        for (
+            const length
+            of lengths
+        ) {
+
+            const plaintext =
+                TEST_CORPUS.slice(
+                    0,
+                    length
+                );
+
+
+            const ciphertext =
+                caesarTransform(
+                    plaintext,
+                    key
+                );
+
+
+            const attack =
+                recoverCaesarKey(
+                    ciphertext
+                );
+
+
+            rows.push(`
+
+                <tr>
+
+                    <td>
+                        ${length}
+                    </td>
+
+                    <td>
+                        ${key}
+                    </td>
+
+                    <td>
+                        ${attack.key}
+                    </td>
+
+                    <td>
+                        ${
+                            attack.key === key
+                                ? "correct ✓"
+                                : "wrong ✗"
+                        }
+                    </td>
+
+                </tr>
+
+            `);
+        }
+
+
+        el.lengthTestBody.innerHTML =
+            rows.join("");
+    }
+
+
+
+    /* ==============================
+       BUTTON EVENTS
+       ============================== */
+
+
+    el.eccEncrypt.onclick =
+        runECC;
+
+
+    el.eccAttack.onclick =
+        attackECC;
+
+
+    el.caesarRun.onclick =
+        runCaesar;
+
+
+    el.caesarRecover.onclick =
+        attackCaesar;
+
+
+    el.caesarExhaustive.onclick =
+        exhaustiveCaesarSearch;
+
+
+    el.runLengthTests.onclick =
+        runLengthTests;
+
+
+
+    /* ==============================
+       INITIAL DEMONSTRATION
+       ============================== */
+
+
+    runECC();
+
+    runCaesar();
+
+
+</script>
+
+
+</body>
+
+</html>
