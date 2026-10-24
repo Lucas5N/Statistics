@@ -1,15 +1,146 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Statistics Homeworks</title>
+
+    <style>
+        :root {
+            --sfondo: #FFF8DC;
+            --tan: #D2B48C;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--sfondo);
+            background-image: radial-gradient(rgba(0, 0, 0, 0.13) 1.5px, transparent 1.5px);
+            background-size: 26px 26px;
+            font-family: 'DM Serif Display', serif;
+            padding: 50px;
+            margin: 0;
+            min-height: 100vh;
+        }
+
+        h1 {
+            font-size: 5em;
+            line-height: 1.3;
+            margin: 0 0 6rem;
+            max-width: 14ch;
+        }
+
+        /* highlighter band behind the whole title */
+        h1 span {
+            background: linear-gradient(transparent 58%, var(--tan) 58%);
+            box-decoration-break: clone;
+            -webkit-box-decoration-break: clone;
+            padding: 0 .15em;
+        }
+
+        ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(19rem, 1fr));
+            gap: 2.5rem;
+        }
+
+        li {
+            animation: pop 0.5s ease-out both;
+        }
+        li:nth-child(2) { animation-delay: 0.1s; }
+        li:nth-child(3) { animation-delay: 0.2s; }
+
+        @keyframes pop {
+            from { opacity: 0; transform: translateY(24px); }
+            to   { opacity: 1; transform: none; }
+        }
+
+        a {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 4rem;
+            min-height: 15rem;
+            padding: 22px 26px 26px;
+            color: #000;
+            text-decoration: none;
+            border: 4px solid #000;
+            border-radius: 20px;
+            background-color: var(--tan);
+            box-shadow: 6px 6px 0 #000;
+            rotate: -1deg;
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out, rotate 0.2s ease-in-out;
+        }
+
+        li:nth-child(even) a { rotate: 1deg; }
+
+        a:hover {
+            rotate: 0deg;
+            transform: scale(1.04) translateY(-4px);
+            box-shadow: 10px 10px 0 #000;
+        }
+
+        a:active {
+            transform: translate(3px, 3px);
+            box-shadow: 2px 2px 0 #000;
+        }
+
+        a:focus-visible {
+            outline: 4px solid #000;
+            outline-offset: 5px;
+        }
+
+        /* the file name, as a small tab */
+        .file {
+            font-size: 1rem;
+            padding: 3px 14px;
+            border: 3px solid #000;
+            border-radius: 20px;
+            background-color: var(--sfondo);
+            transition: background-color 0.2s, color 0.2s;
+        }
+
+        a:hover .file {
+            background-color: #000;
+            color: var(--sfondo);
+        }
+
+        .nome {
+            font-size: 2.6rem;
+            line-height: 1.1;
+        }
+
+        @media (max-width: 600px) {
+            body { padding: 30px 20px; }
+            h1 { font-size: 3em; margin-bottom: 3rem; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            li { animation: none; }
+            a  { transition: none; }
+        }
+    </style>
 </head>
 <body>
-    <h1>Statistics Homeworks</h1>
+    <main>
+        <h1><span>Statistics Homeworks</span></h1>
 
-    <ul>
-        <li><a href="homework1.html">Homework 1</a></li>
-        <li><a href="homework2.html">Homework 2</a></li>
-        <li><a href="homework2(true%202).html">Homework 2 (true 2)</a></li>  
-    </ul>
+        <ul>
+            <li><a href="homework1.html"><span class="file" aria-hidden="true">homework1.html</span><span class="nome">Homework 1</span></a></li>
+            <li><a href="homework2.html"><span class="file" aria-hidden="true">homework2.html</span><span class="nome">Homework 2</span></a></li>
+            <li><a href="homework2(true%202).html"><span class="file" aria-hidden="true">homework2(true 2).html</span><span class="nome">Homework 2 (true 2)</span></a></li>
+            <li><a href="homework3.html"><span class="file" aria-hidden="true">homework3.html</span><span class="nome">Homework 3</span></a></li>
+        </ul>
+    </main>
 </body>
 </html>
