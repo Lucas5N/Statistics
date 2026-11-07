@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Riemann and Lebesgue integration, and the normal CDF</title>
+<style>
+  :root { --sfondo: #FFF8DC; --tan: #D2B48C; }
+  * { box-sizing: border-box; }
+  body { background-color: var(--sfondo); font-family: 'DM Serif Display', serif; font-size: 1.3rem; line-height: 1.45; padding: 50px; margin: 0; }
+  h1 { font-size: 4em; line-height: 1.2; margin: 0 0 4rem; max-width: 22ch; }
+  h2 { font-size: 2.6em; line-height: 1.2; margin: 0 0 1rem; }
+  h3 { font-size: 1.6rem; margin: 2rem 0 .5rem; font-weight: normal; }
+  section + section { margin-top: 5rem; }
+  p { margin: .8rem 0; max-width: 78ch; }
+  a { color: inherit; }
+  .eq { padding-left: 1rem; border-left: 5px solid #000; }
+  .controls { display: flex; flex-wrap: wrap; gap: 1.5rem; align-items: flex-end; }
+  label { display: flex; flex-direction: column; gap: .3rem; }
+  select { font-family: inherit; font-size: 1.3rem; text-align: center; padding: 5px 10px; width: 16rem; outline: none; border: 4px solid #000; border-radius: 20px; background-color: var(--tan); }
+  button { font-family: inherit; font-size: 1.2rem; padding: 10px 16px; cursor: pointer; border: 4px solid #000; border-radius: 20px; background-color: var(--tan); transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out; }
+  button:hover { transform: scale(1.05) translateY(-2px); box-shadow: 5px 5px 1px #000; }
+  pre { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 1rem; line-height: 1.5; width: fit-content; max-width: 100%; overflow: auto; margin: 1.2rem 0; padding: 15px 20px; border: 4px solid #000; border-radius: 20px; background-color: var(--tan); }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1rem; }
+  @media (max-width: 800px) { .grid { grid-template-columns: 1fr; } }
+  canvas { width: 100%; height: auto; background: #FFFBEA; border: 4px solid #000; border-radius: 20px; }
+  .tabella { overflow-x: auto; margin-top: 1.5rem; }
+  table { border: 4px solid #000; border-radius: 20px; border-collapse: separate; border-spacing: 0; background: var(--tan); }
+  th, td { padding: 8px 14px; text-align: right; font-weight: normal; }
+  th { border-bottom: 2px solid #000; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Riemann and Lebesgue integration, and the normal CDF</h1>
+
+  <section>
+    <h2>Ex. 1: Riemann and Lebesgue integration</h2>
+    <h3>The two approximations</h3>
+    <p class="eq">
+      <b>Riemann.</b> Split [a, b] into n cells of width h = (b − a)/n and sum h·f(t<sub>k</sub>) with t<sub>k</sub> the left end, the midpoint or the right end of the cell.<br>
+      <b>Lebesgue.</b> Split the <i>range</i> with levels y<sub>0</sub> &lt; … &lt; y<sub>N</sub> and let E<sub>k</sub> = f<sup>−1</sup>([y<sub>k</sub>, y<sub>k+1</sub>)). The simple function s = Σ y<sub>k</sub>·1<sub>E<sub>k</sub></sub> (with y<sub>N</sub> on {f ≥ y<sub>N</sub>}) satisfies s ≤ f and ∫s = Σ y<sub>k</sub>·μ(E<sub>k</sub>).
+      With D(t) = μ{f ≥ t} we have μ(E<sub>k</sub>) = D(y<sub>k</sub>) − D(y<sub>k+1</sub>). For nested partitions ∫s increases to ∫f (monotone convergence).
+    </p>
+    <p>
+      D is computed in closed form for sin x, x², |x − ½|, the two steps and 1/√x, and by bisection on the decreasing branch for sin x / x.
+      Levels are uniform on [min f, max f], and geometric on [1, N] for the unbounded 1/√x. Computing D is what makes this a genuine Lebesgue sum: if f were a black box,
+      the measures would have to be estimated by counting grid points, which is again a Riemann sum.
+    </p>
+    <h3>Code</h3>
+<pre>function riemann(F, n, off) {            // off = 0 left, 0.5 midpoint, 1 right
+  const h = (F.b - F.a) / n; let s = 0;
+  for (let k = 0; k &lt; n; k++) s += F.f(F.a + h * (k + off));
+  return h * s;
+}
+function lebesgue(F, N) {                // lower Lebesgue sum with N+1 levels
+  const y = F.rng ? Array.from({length: N + 1}, (_, k) =&gt; F.rng[0] + (F.rng[1] - F.rng[0]) * k / N)
+                  : Array.from({length: N + 1}, (_, k) =&gt; Math.pow(N, k / N));   // geometric on [1, N]
+  const d = y.map(F.D); let s = y[N] * d[N];
+  for (let k = 0; k &lt; N; k++) s += y[k] * (d[k] - d[k + 1]);   // y_k * mu(E_k)
+  return s;
+}</pre>
+    <h3>Results</h3>
+    <div class="controls">
+      <label>Function
+        <select id="fn"></select>
+      </label>
+      <button id="run1">Compute</button>
+    </div>
+    <div class="tabella"><table id="t1"></table></div>
+    <p>
+      Errors against the exact value. n is the number of cells for Riemann and the number of levels for Lebesgue.
+      "inf" means that f(0) = ∞ and the left sum is undefined.
+    </p>
+    <canvas id="cv1" width="760" height="380" style="max-width: 760px"></canvas>
+    <p id="slopes"></p>
+    <p>
+      Error against n on log-log axes, for n = 2<sup>3</sup>, …, 2<sup>14</sup>. Dots: midpoint Riemann sum. Squares: Lebesgue sum.
+      An error of exactly 0 is drawn at the bottom of the plot.
+    </p>
+    <div class="tabella"><table id="t2"></table></div>
+    <p>
+      All functions at once: errors at an even and an odd n, and the time of one sum at n = 10<sup>5</sup>.
+    </p>
+
+    <h3>Pathological functions</h3>
+    <p class="eq">
+      <b>Dirichlet</b> 1<sub>ℚ∩[0,1]</sub>. Every cell contains rationals and irrationals, so every lower Darboux sum is 0 and every upper sum is 1: it is not Riemann integrable.
+      Riemann sums depend on the tags: tags k/n give 1, tags k/n + (√2)/(10n) give 0. In floating point every number is rational, so the function cannot be run on doubles at all.<br>
+      Lebesgue: ℚ∩[0,1] is countable, so it has measure 0, and ∫f = 1·0 + 0·1 = 0. <span id="cover"></span>
+    </p>
+    <p class="eq">
+      <b>Thomae</b> f(p/q) = 1/q, f = 0 on the irrationals. It is continuous at every irrational and discontinuous exactly on the rationals, a null set, so by Lebesgue's criterion it is Riemann integrable, with integral 0.
+      With tags k/n, f(k/n) = gcd(k, n)/n, so the Riemann sum is Σ gcd(k, n)/n². The upper Darboux sum uses the smallest denominator in each cell.
+      Lebesgue: for t &gt; 0 the set {f ≥ t} is finite (denominators ≤ 1/t), so D(t) = 0 and ∫f = 0 for any levels.
+    </p>
+    <div class="tabella"><table id="t3"></table></div>
+    <p>Both sums go to 0, but slowly and irregularly: for prime n the Riemann sum is about 2/n, for highly composite n it is larger.</p>
+
+    <h3>Conclusions</h3>
+    <p>
+      Where f is Riemann integrable the two approaches converge to the same value, as they must. For smooth f the midpoint sum is O(n<sup>−2</sup>), while the lower Lebesgue sum is O(N<sup>−1</sup>):
+      0 ≤ ∫f − ∫s ≤ h·μ(domain), because s rounds f down by h/2 on average. Using the middle of each level instead of its bottom would give second order.
+      With a jump at ½ the Riemann error is O(1/n) when ½ is not a node and 0 when it is, whereas the Lebesgue sum is exact for both steps already with N = 1 (levels on the two values).
+      For |x − ½| the Riemann sum is more accurate at equal n.
+    </p>
+    <p>
+      For 1/√x the midpoint sum converges only like n<sup>−1/2</sup>, while geometric levels give about (log N)/N: partitioning the range resolves the singularity. The Riemann integral
+      exists here only as an improper integral, the Lebesgue integral exists directly.
+    </p>
+    <p>
+      The Lebesgue sum needs D, which means knowing the preimages. With a closed form it costs from about the same to about 30 times more than the Riemann sum in the time table (the browser timings are noisy), and for sin x / x every level needs a root-finding,
+      which makes it roughly 70 times slower. The Dirichlet function is the case where only the Lebesgue integral exists, and Thomae's function shows that the two can agree
+      even when f is discontinuous on a dense set.
+    </p>
+  </section>
+
+  <section>
+    <h2>Ex. 2: Numerical computation of the normal CDF</h2>
+    <h3>Why there is no elementary formula</h3>
+    <p>
+      Φ(x) = ∫<sub>−∞</sub><sup>x</sup> φ(t) dt with φ(t) = e<sup>−t²/2</sup>/√(2π). The integral over ℝ equals 1, but the antiderivative is not elementary.
+      Liouville's theorem, in the form of Rosenlicht (1972): if f and g are rational, with g not constant, then ∫f·e<sup>g</sup> dx is elementary if and only if f = R′ + R·g′ for some rational R.
+    </p>
+    <p class="eq">
+      Here f = 1 and g = −x²/2, so we would need 1 = R′ − xR.<br>
+      R = 0 gives 0 ≠ 1. If R had a pole of order k ≥ 1 at a finite point, R′ would have order k + 1 there and xR at most k, so R′ − xR would have a pole, not be 1.
+      So R is a polynomial of degree d ≥ 0, and R′ − xR has degree d + 1 ≥ 1, not constant. No such R exists.
+    </p>
+    <h3>The error function</h3>
+    <p class="eq">
+      erf(z) = (2/√π) ∫<sub>0</sub><sup>z</sup> e<sup>−t²</sup> dt, &nbsp; erfc = 1 − erf.<br>
+      <b>Φ(x) = ½·(1 + erf(x/√2)) = ½·erfc(−x/√2)</b>
+    </p>
+    <p>
+      This is exact, but it only gives the integral a name. erf is defined by erf′(z) = (2/√π)·e<sup>−z²</sup> and erf(0) = 0, and its values still have to be computed with a series,
+      a continued fraction, a rational approximation or a quadrature rule. Each works in one range of x and fails in another.
+    </p>
+    <h3>Methods</h3>
+    <p class="eq">
+      <b>Hybrid.</b> For |x| ≤ 3: Φ(x) = ½ + φ(x)·Σ<sub>n≥0</sub> x<sup>2n+1</sup>/(2n+1)!!, a series of positive terms for x &gt; 0, so there is no cancellation.
+      For |x| &gt; 3 the tail Q(x) = 1 − Φ(x) = φ(x)/(x + 1/(x + 2/(x + 3/(x + …)))) is computed with the modified Lentz algorithm, and Φ(−x) = Q(x) directly.<br>
+      <b>Quadrature.</b> Φ(x) = ½ ± ∫<sub>0</sub><sup>|x|</sup> φ by composite trapezoid (O(h²)), composite Simpson (O(h⁴)) and Gauss–Legendre.<br>
+      <b>Maclaurin.</b> The alternating series Φ(x) = ½ + (1/√(2π))·Σ (−1)<sup>k</sup> x<sup>2k+1</sup>/(2<sup>k</sup>(2k+1)k!), as in the notes of the assignment.<br>
+      <b>A&amp;S 26.2.17.</b> A classical approximation with absolute error below 7.5·10<sup>−8</sup>.
+    </p>
+<pre>function series(x) {                     // 1/2 + phi(x) * sum x^(2n+1) / (2n+1)!!
+  let t = x, s = x;
+  for (let n = 1; Math.abs(t) &gt; 1e-17 * Math.abs(s) &amp;&amp; n &lt; 500; n++) { t *= x * x / (2 * n + 1); s += t; }
+  return 0.5 + phi(x) * s;
+}
+function Qcf(x) {                        // tail, x &gt; 0: phi(x) / (x + 1/(x + 2/(x + ...)))
+  let f = x, C = x, D = 0;
+  for (let k = 1; k &lt; 2000; k++) {
+    D = 1 / (x + k * D); C = x + k / C; f *= C * D;
+    if (Math.abs(C * D - 1) &lt; 1e-16) break;
+  }
+  return phi(x) / f;
+}
+const Phi = x =&gt; Math.abs(x) &lt;= 3 ? series(x) : (x &gt; 0 ? 1 - Qcf(x) : Qcf(-x));</pre>
+    <h3>Comparison with a reference</h3>
+    <p>
+      Web reference: the CDFLIB documentation (<a href="https://docs.rs/cdflib">docs.rs/cdflib</a>, a port of the Brown–Lovato Fortran library) gives Φ(1.96) = 0.9750021048517796 and 1 − Φ(5) ≈ 2.866516·10<sup>−7</sup>.
+      A second check is mpmath at 50 digits, used as the ground truth in the table (values stored in the page).
+    </p>
+    <div class="tabella"><table id="tw"></table></div>
+    <div class="tabella"><table id="t4"></table></div>
+    <p>
+      Relative error |Φ̂(x) − Φ(x)|/Φ(x). The Simpson and trapezoid rules use n = 200 panels and Gauss–Legendre 20 nodes.
+      For x &lt; 0 the integration rules compute ½ − ∫, and the rounding error of about 10<sup>−16</sup> in this subtraction is a large relative error when Φ(x) is tiny.
+    </p>
+    <div class="controls">
+      <button id="run2">Measure time</button>
+    </div>
+    <div class="tabella"><table id="t5"></table></div>
+    <p>Time of one evaluation in µs (Gauss–Legendre nodes are computed once and cached).</p>
+    <canvas id="cv2" width="760" height="380" style="max-width: 760px"></canvas>
+    <p>
+      Error at x = 2 against the number of panels (trapezoid: tan dots, Simpson: black squares) or nodes (Gauss–Legendre: light squares), log-log.
+    </p>
+
+    <h3>Conclusions</h3>
+    <p>
+      The hybrid method has a relative error of about 10<sup>−16</sup> at every point tested, including x = −8 where Φ ≈ 6·10<sup>−16</sup>, because the small tail is computed directly
+      and never as 1 − Φ. It needs about 34 terms of the series at |x| = 3 and about 50 steps of the continued fraction, fewer for larger |x|.
+    </p>
+    <p>
+      The alternating Maclaurin series is correct near 0 and useless for large |x|: its terms grow up to about e<sup>x²/2</sup> (10<sup>14</sup> at |x| = 8) while the result is of order 1,
+      so the rounding error is about 10<sup>−16</sup>·e<sup>x²/2</sup>. Trapezoid and Simpson converge as h² and h⁴ and Gauss–Legendre reaches machine precision with about 10 nodes,
+      but all three are limited in the tails by the subtraction ½ − ∫. A&amp;S 26.2.17 is the cheapest, and its error is small in absolute terms but not in relative terms far in the tail.
+    </p>
+    <p>
+      So erf gives an exact representation, but the evaluation still needs a method chosen for the range: a positive series near the origin and a continued fraction or a rational approximation in the tails.
+      Production libraries use the second option (Cody's rational Chebyshev approximations). In the time table the cheapest are A&amp;S and the Maclaurin series, the hybrid method costs a few µs, and Simpson with 200 panels is several times more expensive.
+    </p>
+  </section>
+</main>
+
+<script>
+const PI = Math.PI, $ = id => document.getElementById(id);
+const ef = v => !isFinite(v) ? 'inf' : v === 0 ? '0' : v.toExponential(1);
+const f4 = v => String(+v.toPrecision(4));
+
+// ---------- Ex. 1 ----------
+const sinc = x => x === 0 ? 1 : Math.sin(x) / x;
+const bis = t => { let lo = 0, hi = PI; for (let i = 0; i < 60; i++) { const m = (lo + hi) / 2; if (sinc(m) >= t) lo = m; else hi = m; } return (lo + hi) / 2; };
+const FN = {
+  sin:  { name: 'sin x on [0, π]',   f: Math.sin, a: 0, b: PI, ex: 2,       rng: [0, 1],  D: t => t <= 0 ? PI : t > 1 ? 0 : PI - 2 * Math.asin(t) },
+  sq:   { name: 'x² on [0, 1]',      f: x => x * x, a: 0, b: 1, ex: 1 / 3,   rng: [0, 1],  D: t => t <= 0 ? 1 : t > 1 ? 0 : 1 - Math.sqrt(t) },
+  st13: { name: 'step 1 / 3 on [0, 1]', f: x => x < .5 ? 1 : 3, a: 0, b: 1, ex: 2, rng: [1, 3], D: t => t <= 1 ? 1 : t <= 3 ? .5 : 0 },
+  abs:  { name: '|x − 0.5| on [0, 1]', f: x => Math.abs(x - .5), a: 0, b: 1, ex: .25, rng: [0, .5], D: t => t <= 0 ? 1 : t > .5 ? 0 : 1 - 2 * t },
+  isq:  { name: '1/√x on (0, 1]',    f: x => 1 / Math.sqrt(x), a: 0, b: 1, ex: 2, rng: null, D: t => t <= 1 ? 1 : 1 / (t * t) },
+  st10: { name: 'step 1 / 0 on [0, 1]', f: x => x < .5 ? 1 : 0, a: 0, b: 1, ex: .5, rng: [0, 1], D: t => t <= 0 ? 1 : t <= 1 ? .5 : 0 },
+  sinc: { name: 'sin x / x on [0, π]', f: sinc, a: 0, b: PI, ex: 1.8519370519824662, rng: [0, 1], D: t => t <= 0 ? PI : t > 1 ? 0 : bis(t) },
+};
+for (const k in FN) $('fn').add(new Option(FN[k].name, k));
+
+function riemann(F, n, off) {
+  const h = (F.b - F.a) / n; let s = 0;
+  for (let k = 0; k < n; k++) s += F.f(F.a + h * (k + off));
+  return h * s;
+}
+function lebesgue(F, N) {
+  const y = F.rng ? Array.from({ length: N + 1 }, (_, k) => F.rng[0] + (F.rng[1] - F.rng[0]) * k / N)
+                  : Array.from({ length: N + 1 }, (_, k) => Math.pow(N, k / N));
+  const d = y.map(F.D); let s = y[N] * d[N];
+  for (let k = 0; k < N; k++) s += y[k] * (d[k] - d[k + 1]);
+  return s;
+}
+const errL = (F, n) => Math.abs(riemann(F, n, 0) - F.ex), errM = (F, n) => Math.abs(riemann(F, n, .5) - F.ex), errB = (F, n) => Math.abs(lebesgue(F, n) - F.ex);
+const best = fn => { fn(); let t = Infinity; for (let i = 0; i < 5; i++) { const a = performance.now(); fn(); t = Math.min(t, performance.now() - a); } return t; };
+
+// log-log plot: series = [{x:[], y:[], fill, sq}]
+function plot(cv, series, xlo, xhi) {
+  const c = cv.getContext('2d'), W = cv.width, H = cv.height, L = 70, R = 18, T = 14, B = 34, FLOOR = 1e-16;
+  c.clearRect(0, 0, W, H);
+  c.font = '15px "DM Serif Display", serif'; c.fillStyle = '#000'; c.strokeStyle = '#000'; c.lineWidth = 2;
+  const all = series.flatMap(s => s.y).filter(v => isFinite(v)).map(v => Math.log10(Math.max(v, FLOOR)));
+  const lo = Math.floor(Math.min(...all, -15)), hi = Math.ceil(Math.max(...all, -14));
+  const X = n => L + (Math.log10(n) - xlo) / (xhi - xlo) * (W - L - R);
+  const Y = v => H - B - (Math.log10(Math.max(v, FLOOR)) - lo) / (hi - lo) * (H - B - T);
+  c.textAlign = 'center';
+  for (let e = Math.ceil(xlo); e <= xhi; e++) c.fillText('10^' + e, X(Math.pow(10, e)), H - 10);
+  c.textAlign = 'right'; c.fillText('1e' + hi, L - 8, T + 10); c.fillText('1e' + lo, L - 8, H - B);
+  series.forEach(s => {
+    const pts = s.x.map((x, i) => [X(x), isFinite(s.y[i]) ? Y(s.y[i]) : T]);
+    c.beginPath(); pts.forEach((p, i) => i ? c.lineTo(p[0], p[1]) : c.moveTo(p[0], p[1])); c.stroke();
+    c.fillStyle = s.fill;
+    pts.forEach(p => { c.beginPath(); if (s.sq) c.rect(p[0] - 6, p[1] - 6, 12, 12); else c.arc(p[0], p[1], 7, 0, 2 * PI); c.fill(); c.stroke(); });
+  });
+}
+const slope = (xs, ys) => { const lx = xs.map(Math.log), ly = ys.map(v => Math.log(Math.max(v, 1e-16))), mx = lx.reduce((a, b) => a + b) / lx.length, my = ly.reduce((a, b) => a + b) / ly.length;
+  return lx.reduce((a, x, i) => a + (x - mx) * (ly[i] - my), 0) / lx.reduce((a, x) => a + (x - mx) ** 2, 0); };
+
+function run1() {
+  const F = FN[$('fn').value];
+  let h = '<tr><th>n</th><th>left Riemann</th><th>midpoint Riemann</th><th>Lebesgue</th></tr>';
+  [10, 11, 100, 101, 1000, 1001, 10000].forEach(n => { h += `<tr><td>${n}</td><td>${ef(errL(F, n))}</td><td>${ef(errM(F, n))}</td><td>${ef(errB(F, n))}</td></tr>`; });
+  $('t1').innerHTML = h;
+  const ns = Array.from({ length: 12 }, (_, i) => 2 ** (i + 3)), eM = ns.map(n => errM(F, n)), eB = ns.map(n => errB(F, n));
+  plot($('cv1'), [{ x: ns, y: eM, fill: '#D2B48C' }, { x: ns, y: eB, fill: '#FFFBEA', sq: true }], Math.log10(8), Math.log10(16384));
+  $('slopes').textContent = `Fitted slope of log|error| against log n: midpoint Riemann ${slope(ns, eM).toFixed(2)}, Lebesgue ${slope(ns, eB).toFixed(2)}.` +
+    (eM.every(v => v < 1e-12) ? ' The midpoint error is 0 for every n = 2^k because the jump or kink at ½ is a node.' : '');
+}
+function run1b() {
+  let h = '<tr><th>f</th><th>Riemann n = 1000</th><th>Riemann n = 1001</th><th>Lebesgue N = 1000</th><th>Lebesgue N = 1001</th><th>time Riemann (ms)</th><th>time Lebesgue (ms)</th></tr>';
+  for (const k in FN) { const F = FN[k];
+    h += `<tr><td>${F.name}</td><td>${ef(errM(F, 1000))}</td><td>${ef(errM(F, 1001))}</td><td>${ef(errB(F, 1000))}</td><td>${ef(errB(F, 1001))}</td>` +
+         `<td>${best(() => riemann(F, 1e5, .5)).toFixed(2)}</td><td>${best(() => lebesgue(F, 1e5)).toFixed(2)}</td></tr>`; }
+  $('t2').innerHTML = h;
+}
+(function () {
+  const gcd = (a, b) => b ? gcd(b, a % b) : a;
+  const upper = n => { let s = 0; for (let k = 0; k < n; k++) { let q = 1; while (Math.floor((q * k + n - 1) / n) > Math.floor(q * (k + 1) / n)) q++; s += 1 / q; } return s / n; };
+  let h = '<tr><th>n</th><th>Riemann sum, tags k/n</th><th>upper Darboux sum</th><th>lower Darboux sum</th></tr>';
+  [10, 11, 100, 101, 1000, 1009].forEach(n => { let g = 0; for (let k = 1; k <= n; k++) g += gcd(k, n); h += `<tr><td>${n}</td><td>${f4(g / n ** 2)}</td><td>${f4(upper(n))}</td><td>0</td></tr>`; });
+  $('t3').innerHTML = h;
+  const Q = 60; let cnt = 0; for (let q = 1; q <= Q; q++) for (let p = 0; p <= q; p++) if (gcd(p, q) === 1) cnt++;
+  const eps = 1e-3; $('cover').textContent = `Numerically: the ${cnt} rationals p/q in [0,1] with q ≤ ${Q}, the i-th covered by an interval of length ε·2^(−i), are covered by a total length below ε = ${eps}, and the same works for any enumeration.`;
+})();
+
+// ---------- Ex. 2 ----------
+const SQ2PI = Math.sqrt(2 * PI), phi = x => Math.exp(-x * x / 2) / SQ2PI;
+function series(x) { let t = x, s = x; for (let n = 1; Math.abs(t) > 1e-17 * Math.abs(s) && n < 500; n++) { t *= x * x / (2 * n + 1); s += t; } return 0.5 + phi(x) * s; }
+function Qcf(x) { let f = x, C = x, D = 0; for (let k = 1; k < 2000; k++) { D = 1 / (x + k * D); C = x + k / C; f *= C * D; if (Math.abs(C * D - 1) < 1e-16) break; } return phi(x) / f; }
+const Phi = x => Math.abs(x) <= 3 ? series(x) : (x > 0 ? 1 - Qcf(x) : Qcf(-x));
+const viaInt = (x, I) => x >= 0 ? 0.5 + I : 0.5 - I;
+function trap(x, n) { const a = Math.abs(x), h = a / n; let s = (phi(0) + phi(a)) / 2; for (let i = 1; i < n; i++) s += phi(i * h); return viaInt(x, h * s); }
+function simpson(x, n) { const a = Math.abs(x), h = a / n; let s = phi(0) + phi(a); for (let i = 1; i < n; i++) s += (i % 2 ? 4 : 2) * phi(i * h); return viaInt(x, h / 3 * s); }
+const GL = {};
+function nodes(n) {
+  if (GL[n]) return GL[n]; const z = [], w = [];
+  for (let i = 1; i <= n; i++) {
+    let x = Math.cos(PI * (i - .25) / (n + .5)), pp;
+    for (let it = 0; it < 100; it++) {
+      let p1 = 1, p2 = 0; for (let j = 1; j <= n; j++) { const p3 = p2; p2 = p1; p1 = ((2 * j - 1) * x * p2 - (j - 1) * p3) / j; }
+      pp = n * (x * p1 - p2) / (x * x - 1); const dx = p1 / pp; x -= dx; if (Math.abs(dx) < 1e-15) break;
+    }
+    z.push(x); w.push(2 / ((1 - x * x) * pp * pp));
+  }
+  return GL[n] = { z, w };
+}
+function gauss(x, n) { const { z, w } = nodes(n), a = Math.abs(x) / 2; let s = 0; for (let i = 0; i < n; i++) s += w[i] * phi(a * (z[i] + 1)); return viaInt(x, a * s); }
+function taylor(x) { let t = x, s = 0; for (let k = 0; k < 400; k++) { s += t / (2 * k + 1); t *= -x * x / (2 * (k + 1)); } return 0.5 + s / SQ2PI; }
+function as26217(x) {
+  const z = Math.abs(x), t = 1 / (1 + .2316419 * z), b = [.319381530, -.356563782, 1.781477937, -1.821255978, 1.330274429];
+  const q = phi(z) * b.reduce((s, bi, i) => s + bi * t ** (i + 1), 0); return x >= 0 ? 1 - q : q;
+}
+const METH = { 'hybrid': Phi, 'Simpson 200': x => simpson(x, 200), 'trapezoid 200': x => trap(x, 200), 'Gauss–Legendre 20': x => gauss(x, 20), 'Maclaurin': taylor, 'A&S 26.2.17': as26217 };
+const REF = [["-8", "6.220960574271784123515995e-16"], ["-6", "9.865876450376981407008641e-10"], ["-3", "0.001349898031630094526651815"], ["-1", "0.1586552539314570514147675"], ["0", "0.5"], ["0.5", "0.6914624612740131036377046"], ["1", "0.8413447460685429485852325"], ["1.96", "0.9750021048517795658634157"], ["2", "0.9772498680518207927997174"], ["3", "0.9986501019683699054733482"], ["5", "0.9999997133484281208060883"], ["8", "0.9999999999999993779039426"]];   // [x, Phi(x)] from mpmath, 50 digits
+const REFQ5 = '0.0000002866515718791939116737523';
+const refOf = x => +REF.find(p => p[0] === String(x))[1];
+
+(function () {
+  let h = '<tr><th>quantity</th><th>web (CDFLIB)</th><th>this page</th><th>mpmath</th></tr>';
+  h += `<tr><td>Φ(1.96)</td><td>0.9750021048517796</td><td>${Phi(1.96).toPrecision(16)}</td><td>${refOf(1.96).toPrecision(16)}</td></tr>`;
+  h += `<tr><td>1 − Φ(5)</td><td>2.866516e-7</td><td>${Qcf(5).toPrecision(7)}</td><td>${(+REFQ5).toPrecision(7)}</td></tr>`;
+  $('tw').innerHTML = h;
+  h = '<tr><th>x</th><th>Φ(x), mpmath</th>' + Object.keys(METH).map(k => `<th>${k}</th>`).join('') + '</tr>';
+  for (const [x, rs] of REF) { const r = +rs; h += `<tr><td>${x}</td><td>${r.toPrecision(10)}</td>` + Object.values(METH).map(m => `<td>${ef(Math.abs(m(+x) - r) / r)}</td>`).join('') + '</tr>'; }
+  $('t4').innerHTML = h;
+  const ns = [2, 4, 8, 16, 32, 64, 128, 256, 512], gs = [2, 4, 6, 8, 10, 12, 14, 16], r = refOf(2);
+  plot($('cv2'), [{ x: ns, y: ns.map(n => Math.abs(trap(2, n) - r)), fill: '#D2B48C' }, { x: ns, y: ns.map(n => Math.abs(simpson(2, n) - r)), fill: '#000', sq: true },
+                  { x: gs, y: gs.map(n => Math.abs(gauss(2, n) - r)), fill: '#FFFBEA', sq: true }], Math.log10(2), Math.log10(512));
+})();
+function run2() {
+  const REP = 20000; let h = '<tr><th>method</th><th>x = 1.3</th><th>x = 4</th></tr>';
+  for (const k in METH) { const m = METH[k], t = x => { const a = performance.now(); let s = 0; for (let i = 0; i < REP; i++) s += m(x + i * 1e-12); return (performance.now() - a) / REP * 1000; };
+    h += `<tr><td>${k}</td><td>${t(1.3).toFixed(2)}</td><td>${t(4).toFixed(2)}</td></tr>`; }
+  $('t5').innerHTML = h;
+}
+$('run1').addEventListener('click', run1); $('fn').addEventListener('change', run1); $('run2').addEventListener('click', run2);
+run1(); run1b(); run2();
+</script>
+</body>
+</html>
