@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Statistical independence</title>
+<style>
+  :root { --sfondo: #FFF8DC; --tan: #D2B48C; }
+  * { box-sizing: border-box; }
+  body { background-color: var(--sfondo); font-family: 'DM Serif Display', serif; font-size: 1.3rem; line-height: 1.45; padding: 50px; margin: 0; }
+  h1 { font-size: 4em; line-height: 1.2; margin: 0 0 4rem; max-width: 22ch; }
+  h2 { font-size: 2.6em; line-height: 1.2; margin: 0 0 1rem; }
+  h3 { font-size: 1.6rem; margin: 2rem 0 .5rem; font-weight: normal; }
+  section + section { margin-top: 5rem; }
+  p { margin: .8rem 0; max-width: 78ch; }
+  .eq { padding-left: 1rem; border-left: 5px solid #000; }
+  .controls { display: flex; flex-wrap: wrap; gap: 1.5rem; align-items: flex-end; }
+  label { display: flex; flex-direction: column; gap: .3rem; }
+  select, textarea { font-family: inherit; font-size: 1.3rem; padding: 5px 10px; outline: none; border: 4px solid #000; border-radius: 20px; background-color: var(--tan); }
+  select { width: 22rem; text-align: center; }
+  textarea { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 1rem; width: 16rem; height: 8rem; text-align: left; }
+  button { font-family: inherit; font-size: 1.2rem; padding: 10px 16px; cursor: pointer; border: 4px solid #000; border-radius: 20px; background-color: var(--tan); transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out; }
+  button:hover { transform: scale(1.05) translateY(-2px); box-shadow: 5px 5px 1px #000; }
+  pre { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 1rem; line-height: 1.5; width: fit-content; max-width: 100%; overflow: auto; margin: 1.2rem 0; padding: 15px 20px; border: 4px solid #000; border-radius: 20px; background-color: var(--tan); }
+  canvas { width: 100%; height: auto; background: #FFFBEA; border: 4px solid #000; border-radius: 20px; }
+  .tabella { overflow-x: auto; margin-top: 1.5rem; }
+  table { border: 4px solid #000; border-radius: 20px; border-collapse: separate; border-spacing: 0; background: var(--tan); }
+  th, td { padding: 8px 14px; text-align: right; font-weight: normal; }
+  th { border-bottom: 2px solid #000; }
+  td:first-child, th:first-child { text-align: left; }
+  tr.tot td { border-top: 2px solid #000; }
+  td.hot { font-weight: bold; text-decoration: underline; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Statistical independence</h1>
+
+  <section>
+    <h2>Theory</h2>
+    <h3>Probability</h3>
+    <p class="eq">
+      Events A, B are independent iff P(A ∩ B) = P(A)·P(B), equivalently P(A | B) = P(A) when P(B) &gt; 0.<br>
+      Discrete random variables X, F are independent iff p<sub>ij</sub> = P(X = x<sub>i</sub>, F = f<sub>j</sub>) = p<sub>i·</sub>·p<sub>·j</sub> for every pair (i, j).
+      Equivalently, every conditional distribution P(F | X = x<sub>i</sub>) equals the marginal P(F), and the same holds with X and F swapped.
+    </p>
+    <h3>Statistics</h3>
+    <p class="eq">
+      From n observations, n<sub>ij</sub> is the count of pairs (x<sub>i</sub>, f<sub>j</sub>), n<sub>i·</sub> and n<sub>·j</sub> are the row and column totals, and n<sub>ij</sub>/n estimates p<sub>ij</sub>.
+      Under H<sub>0</sub> (independence) the expected counts are e<sub>ij</sub> = n<sub>i·</sub>·n<sub>·j</sub>/n, and<br>
+      <b>χ² = Σ<sub>ij</sub> (n<sub>ij</sub> − e<sub>ij</sub>)² / e<sub>ij</sub></b>, approximately χ² with (R − 1)(C − 1) degrees of freedom for large n (rule of thumb: all e<sub>ij</sub> ≥ 5).<br>
+      p-value = P(χ²<sub>df</sub> ≥ observed) = Q(df/2, χ²/2), with Q the regularised upper incomplete gamma function.
+      The strength of the association is measured by Cramér's V = √(χ² / (n·min(R − 1, C − 1))).
+    </p>
+    <p>
+      A finite sample is never exactly independent. The test asks whether the deviations from the expected counts are larger than what chance alone produces under H<sub>0</sub>.
+    </p>
+    <h3>Code</h3>
+<pre>function analyse(pairs) {                       // pairs = [[x, f], ...]
+  const rows = [...new Set(pairs.map(p =&gt; p[0]))].sort(), cols = [...new Set(pairs.map(p =&gt; p[1]))].sort();
+  const O = rows.map(() =&gt; cols.map(() =&gt; 0));  // contingency table, built from the raw pairs
+  for (const [x, f] of pairs) O[rows.indexOf(x)][cols.indexOf(f)]++;
+  const n = pairs.length, r = O.map(a =&gt; a.reduce((s, v) =&gt; s + v)), c = cols.map((_, j) =&gt; O.reduce((s, a) =&gt; s + a[j], 0));
+  const E = O.map((a, i) =&gt; a.map((_, j) =&gt; r[i] * c[j] / n));          // expected under independence
+  let chi2 = 0; O.forEach((a, i) =&gt; a.forEach((o, j) =&gt; chi2 += (o - E[i][j]) ** 2 / E[i][j]));
+  const df = (rows.length - 1) * (cols.length - 1), p = Qgamma(df / 2, chi2 / 2);
+  return { rows, cols, O, E, r, c, n, chi2, df, p, V: Math.sqrt(chi2 / (n * Math.min(rows.length - 1, cols.length - 1))) };
+}</pre>
+  </section>
+
+  <section>
+    <h2>Analysis</h2>
+    <div class="controls">
+      <label>Dataset
+        <select id="ds">
+          <option value="titanic">Titanic: sex × survival</option>
+          <option value="hair">Hair colour × eye colour</option>
+          <option value="dice">Die × coin (simulated)</option>
+          <option value="custom">Custom data</option>
+        </select>
+      </label>
+      <label id="cl" style="display:none">One "x,f" pair per line
+        <textarea id="txt">low,fail
+low,fail
+low,pass
+low,fail
+mid,pass
+mid,fail
+mid,pass
+mid,pass
+high,pass
+high,pass
+high,pass
+high,fail</textarea>
+      </label>
+      <button id="run">Compute</button>
+    </div>
+    <p id="msg" role="alert"></p>
+    <p id="src"></p>
+
+    <h3>Contingency table and marginal frequencies</h3>
+    <div class="tabella"><table id="t_obs"></table></div>
+    <h3>Conditional frequencies</h3>
+    <div class="tabella"><table id="t_row"></table></div>
+    <p>Each row is the distribution of the column variable given the row value, P(F | X = x). The last row is the marginal P(F).</p>
+    <div class="tabella"><table id="t_col"></table></div>
+    <p>Each column is the distribution of the row variable given the column value, P(X | F = f). The last column is the marginal P(X).</p>
+    <h3>Expected frequencies under independence</h3>
+    <div class="tabella"><table id="t_exp"></table></div>
+    <h3>Contributions (n − e)² / e</h3>
+    <div class="tabella"><table id="t_con"></table></div>
+    <p>The largest contribution is underlined.</p>
+    <h3>Chi-square test</h3>
+    <div class="tabella"><table id="t_res"></table></div>
+    <p id="verdict"></p>
+    <canvas id="cv" width="760" height="400" style="max-width: 760px"></canvas>
+    <p>
+      Distribution of the column variable inside each row, as 100% stacked bars; the last bar is the marginal distribution.
+      Under independence all the bars would be identical.
+    </p>
+  </section>
+
+  <section>
+    <h2>Conclusions</h2>
+    <p>
+      The test compares the observed table with the table that independence would produce. A small p-value says that the observed association is unlikely under independence; it does not say how strong the association is
+      (Cramér's V does), and with large n even a tiny deviation gives a small p-value. The opposite also holds: a large p-value means that the data are compatible with independence, not that independence is proved,
+      especially for small n. For the simulated die and coin, independent by construction, about 5% of the runs reject H<sub>0</sub> at α = 0.05 by chance alone: press Compute a few times.
+    </p>
+    <p>
+      Dependence is not causation. χ² is symmetric in the two variables, so it gives no direction, and it ignores other variables. In the Titanic table sex and survival are strongly dependent,
+      but the table does not say that sex alone caused survival: class, age and access to lifeboats are related to both and are not in the table.
+      The same holds for hair and eye colour: they are clearly associated, and the data say nothing about one determining the other; a common underlying factor is a more plausible explanation than a causal link between them.
+      Establishing causality needs a designed experiment (randomisation) or a causal model, not a test of independence.
+    </p>
+  </section>
+</main>
+
+<script>
+const $ = id => document.getElementById(id);
+const f4 = v => String(+v.toPrecision(4)), f3 = v => v.toFixed(3);
+const fp = p => p < 1e-3 ? p.toExponential(2) : p.toFixed(4);
+
+// ---- regularised upper incomplete gamma Q(a, x) (series / Lentz continued fraction) ----
+function lgam(x) {
+  const c = [76.18009172947146, -86.50532032941677, 24.01409824083091, -1.231739572450155, 0.1208650973866179e-2, -0.5395239384953e-5];
+  let y = x, t = x + 5.5; t -= (x + .5) * Math.log(t); let s = 1.000000000190015;
+  for (const ci of c) s += ci / ++y;
+  return -t + Math.log(2.5066282746310005 * s / x);
+}
+function Qgamma(a, x) {
+  if (x <= 0) return 1;
+  const pre = Math.exp(-x + a * Math.log(x) - lgam(a));
+  if (x < a + 1) { let ap = a, del = 1 / a, sum = del; for (let i = 0; i < 1000; i++) { ap++; del *= x / ap; sum += del; if (Math.abs(del) < Math.abs(sum) * 1e-15) break; } return 1 - sum * pre; }
+  const tiny = 1e-300; let b = x + 1 - a, c = 1 / tiny, d = 1 / b, h = d;
+  for (let i = 1; i < 1000; i++) { const an = -i * (i - a); b += 2; d = an * d + b; if (Math.abs(d) < tiny) d = tiny; c = b + an / c; if (Math.abs(c) < tiny) c = tiny; d = 1 / d; const del = d * c; h *= del; if (Math.abs(del - 1) < 1e-15) break; }
+  return pre * h;
+}
+
+function analyse(pairs) {
+  const rows = [...new Set(pairs.map(p => p[0]))].sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
+  const cols = [...new Set(pairs.map(p => p[1]))].sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
+  const O = rows.map(() => cols.map(() => 0));
+  for (const [x, f] of pairs) O[rows.indexOf(x)][cols.indexOf(f)]++;
+  const n = pairs.length, r = O.map(a => a.reduce((s, v) => s + v)), c = cols.map((_, j) => O.reduce((s, a) => s + a[j], 0));
+  const E = O.map((a, i) => a.map((_, j) => r[i] * c[j] / n));
+  let chi2 = 0; O.forEach((a, i) => a.forEach((o, j) => chi2 += (o - E[i][j]) ** 2 / E[i][j]));
+  const df = (rows.length - 1) * (cols.length - 1), p = Qgamma(df / 2, chi2 / 2);
+  return { rows, cols, O, E, r, c, n, chi2, df, p, V: Math.sqrt(chi2 / (n * Math.min(rows.length - 1, cols.length - 1))) };
+}
+
+// ---- datasets: counts are expanded into raw (x, f) pairs, then the table is rebuilt from the pairs ----
+const COUNTS = {
+  titanic: { src: 'Titanic (2201 people on board, passengers and crew), as in R\'s Titanic dataset.', rows: ['Male', 'Female'], cols: ['Died', 'Survived'], n: [[1364, 367], [126, 344]] },
+  hair: { src: 'Hair and eye colour of 592 statistics students (Snee, 1974), summed over sex, as in R\'s HairEyeColor dataset.', rows: ['Black', 'Brown', 'Red', 'Blond'], cols: ['Brown', 'Blue', 'Hazel', 'Green'], n: [[68, 20, 15, 5], [119, 84, 54, 29], [26, 17, 14, 14], [7, 94, 10, 16]] },
+};
+function pairsOf(k) {
+  if (k === 'dice') return { src: '600 simulated rolls of a die and tosses of a coin, generated independently with Math.random().', pairs: Array.from({ length: 600 }, () => [String(1 + Math.floor(Math.random() * 6)), Math.random() < .5 ? 'Heads' : 'Tails']) };
+  if (k === 'custom') return { src: 'Custom data.', pairs: $('txt').value.split('\n').map(l => l.split(',').map(s => s.trim())).filter(a => a.length === 2 && a[0] && a[1]) };
+  const d = COUNTS[k], pairs = []; d.n.forEach((row, i) => row.forEach((m, j) => { for (let t = 0; t < m; t++) pairs.push([d.rows[i], d.cols[j]]); }));
+  return { src: d.src, pairs };
+}
+
+const tab = (head, rows, cls = []) => '<tr>' + head.map(h => `<th>${h}</th>`).join('') + '</tr>' + rows.map((r, i) => `<tr class="${cls[i] || ''}">` + r.map(c => `<td${c.hot ? ' class="hot"' : ''}>${c.v ?? c}</td>`).join('') + '</tr>').join('');
+const COL = ['#D2B48C', '#FFFBEA', '#8B6B3E', '#F2D9A6', '#A67B5B', '#E8CDA0'];
+
+function chart(a) {
+  const cv = $('cv'), c = cv.getContext('2d'), W = cv.width, H = cv.height, L = 60, R = 14, T = 44, B = 34;
+  c.clearRect(0, 0, W, H); c.font = '15px "DM Serif Display", serif'; c.strokeStyle = '#000'; c.lineWidth = 2;
+  const bars = a.rows.map((r, i) => ({ lab: r, p: a.O[i].map(o => o / a.r[i]) })).concat([{ lab: 'all', p: a.c.map(v => v / a.n) }]);
+  const slot = (W - L - R) / bars.length, bw = slot * .7;
+  c.textAlign = 'left'; let lx = L;
+  a.cols.forEach((col, j) => { c.fillStyle = COL[j % COL.length]; c.fillRect(lx, 12, 16, 16); c.strokeRect(lx, 12, 16, 16); c.fillStyle = '#000'; c.fillText(col, lx + 22, 26); lx += 40 + c.measureText(col).width; });
+  c.textAlign = 'right'; c.fillStyle = '#000'; c.fillText('100%', L - 8, T + 6); c.fillText('0', L - 8, H - B);
+  bars.forEach((b, i) => {
+    const x0 = L + i * slot + (slot - bw) / 2; let y = H - B;
+    b.p.forEach((p, j) => {
+      const h = p * (H - B - T); c.fillStyle = COL[j % COL.length]; c.fillRect(x0, y - h, bw, h); c.strokeRect(x0, y - h, bw, h);
+      if (h > 18) { c.fillStyle = j === 2 ? '#fff' : '#000'; c.textAlign = 'center'; c.fillText(Math.round(p * 100) + '%', x0 + bw / 2, y - h / 2 + 5); }
+      y -= h;
+    });
+    c.fillStyle = '#000'; c.textAlign = 'center'; c.fillText(b.lab, x0 + bw / 2, H - 10);
+  });
+}
+
+function run() {
+  const k = $('ds').value; $('cl').style.display = k === 'custom' ? '' : 'none';
+  const { src, pairs } = pairsOf(k); $('src').textContent = src;
+  const a = pairs.length ? analyse(pairs) : null;
+  if (!a || a.rows.length < 2 || a.cols.length < 2) { $('msg').textContent = 'At least two distinct values for each variable are needed.'; return; }
+  $('msg').textContent = '';
+  const { rows, cols, O, E, r, c, n } = a;
+  $('t_obs').innerHTML = tab(['X \\ F', ...cols, 'total', 'marginal P(X)'], [...rows.map((x, i) => [x, ...O[i], r[i], f3(r[i] / n)]), ['total', ...c, n, '1'], ['marginal P(F)', ...c.map(v => f3(v / n)), '1', '']], [...rows.map(() => ''), 'tot', '']);
+  $('t_row').innerHTML = tab(['X \\ F', ...cols, 'sum'], [...rows.map((x, i) => [x, ...O[i].map(o => f3(o / r[i])), '1']), ['marginal P(F)', ...c.map(v => f3(v / n)), '1']], [...rows.map(() => ''), 'tot']);
+  $('t_col').innerHTML = tab(['X \\ F', ...cols, 'marginal P(X)'], [...rows.map((x, i) => [x, ...O[i].map((o, j) => f3(o / c[j])), f3(r[i] / n)]), ['sum', ...cols.map(() => '1'), '1']], [...rows.map(() => ''), 'tot']);
+  $('t_exp').innerHTML = tab(['X \\ F', ...cols], rows.map((x, i) => [x, ...E[i].map(e => (+e.toFixed(2)))]));
+  const con = O.map((row, i) => row.map((o, j) => (o - E[i][j]) ** 2 / E[i][j])), mx = Math.max(...con.flat());
+  $('t_con').innerHTML = tab(['X \\ F', ...cols], rows.map((x, i) => [x, ...con[i].map(v => ({ v: f3(v), hot: v === mx }))]));
+  const minE = Math.min(...E.flat());
+  $('t_res').innerHTML = tab(['n', 'χ²', 'df', 'p-value', "Cramér's V", 'min e'], [[n, f4(a.chi2), a.df, fp(a.p), f3(a.V), f3(minE)]]);
+  $('verdict').textContent = (a.p < 0.05
+    ? `p = ${fp(a.p)} < 0.05: H₀ (independence) is rejected, the two variables are statistically dependent. Cramér's V = ${f3(a.V)} measures how strong the association is (0 = none, 1 = perfect).`
+    : `p = ${fp(a.p)} ≥ 0.05: H₀ (independence) is not rejected, the data are compatible with independence (this does not prove it).`) +
+    (minE < 5 ? ' Warning: some expected frequencies are below 5, so the χ² approximation is unreliable.' : '');
+  chart(a);
+}
+$('run').addEventListener('click', run); $('ds').addEventListener('change', run);
+run();
+</script>
+</body>
+</html>
