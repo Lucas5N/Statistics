@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Modes of Convergence &amp; Bayesian Inference</title>
+<style>
+  :root { --sfondo: #FFF8DC; --tan: #D2B48C; }
+  * { box-sizing: border-box; }
+  body { background-color: var(--sfondo); font-family: 'DM Serif Display', serif; font-size: 1.3rem; line-height: 1.45; padding: 50px; margin: 0; color: #000; }
+  main { max-width: 960px; }
+  h1 { font-size: 3.8em; line-height: 1.18; margin: 0 0 1.5rem; max-width: 24ch; }
+  h2 { font-size: 2.5em; line-height: 1.2; margin: 0 0 1rem; }
+  h3 { font-size: 1.6rem; margin: 2rem 0 .5rem; font-weight: normal; }
+  section + section { margin-top: 5.5rem; }
+  p { margin: .8rem 0; max-width: 78ch; }
+  a { color: #000; text-underline-offset: 4px; }
+  .toc { margin: 0 0 3.5rem; }
+  .eq { padding-left: 1rem; border-left: 5px solid #000; }
+  .controls { display: flex; flex-wrap: wrap; gap: 1.5rem; align-items: flex-end; margin-top: 1.2rem; }
+  label { display: flex; flex-direction: column; gap: .3rem; }
+  select, textarea, input[type="number"] { font-family: inherit; font-size: 1.25rem; padding: 5px 10px; outline: none; border: 4px solid #000; border-radius: 20px; background-color: var(--tan); color: #000; }
+  select { width: 22rem; text-align: center; }
+  input[type="number"] { width: 7.5rem; text-align: center; }
+  textarea { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 1rem; width: 16rem; height: 8rem; text-align: left; }
+  button { font-family: inherit; font-size: 1.2rem; padding: 10px 16px; cursor: pointer; border: 4px solid #000; border-radius: 20px; background-color: var(--tan); color: #000; transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out; }
+  button:hover { transform: scale(1.05) translateY(-2px); box-shadow: 5px 5px 1px #000; }
+  pre { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 0.96rem; line-height: 1.5; width: fit-content; max-width: 100%; overflow: auto; margin: 1.2rem 0; padding: 15px 20px; border: 4px solid #000; border-radius: 20px; background-color: var(--tan); }
+  canvas { width: 100%; height: auto; background: #FFFBEA; border: 4px solid #000; border-radius: 20px; margin-top: 1.2rem; display: block; }
+  .tabella { overflow-x: auto; margin-top: 1.2rem; }
+  table { border: 4px solid #000; border-radius: 20px; border-collapse: separate; border-spacing: 0; background: var(--tan); }
+  th, td { padding: 8px 14px; text-align: right; font-weight: normal; }
+  th { border-bottom: 2px solid #000; }
+  td:first-child, th:first-child { text-align: left; }
+  tr.tot td { border-top: 2px solid #000; }
+  td.hot { font-weight: bold; text-decoration: underline; }
+  @media (max-width: 680px) {
+    body { padding: 24px 18px; font-size: 1.15rem; }
+    h1 { font-size: 2.6em; }
+    select { width: 100%; max-width: 22rem; }
+  }
+</style>
+</head>
+<body>
+<main>
+  <h1>Convergence &amp; Bayesian Inference</h1>
+  <p class="toc">
+    Sections: <a href="#convergence">1. Modes of convergence, LLN, CLT &amp; √n</a> ·
+    <a href="#bayes">2. Conditional probability, Bayes' theorem &amp; inference</a>
+  </p>
+
+  <!-- =================================================================== -->
+  <!-- SECTION 1: MODES OF CONVERGENCE                                     -->
+  <!-- =================================================================== -->
+  <section id="convergence">
+    <h2>1. Modes of convergence in probability theory</h2>
+
+    <h3>The four principal modes</h3>
+    <p>
+      Unlike deterministic calculus, where a sequence of real numbers either approaches a limit or does not, a sequence of random variables
+      {X<sub>n</sub>} defined on a probability space (Ω, ℱ, P) can stabilize in several distinct senses:
+    </p>
+
+    <p class="eq">
+      <b>1. Convergence in probability (X<sub>n</sub> →<sup>P</sup> X):</b><br>
+      For every ε &gt; 0, lim<sub>n→∞</sub> P(|X<sub>n</sub> − X| &gt; ε) = 0.<br>
+      At large n, the chance that a <i>single</i> draw X<sub>n</sub> differs from X by more than ε vanishes. It does not prohibit rare excursions from occurring again at larger n along a sample path; it only bounds their probability at each fixed index n.
+    </p>
+
+    <p class="eq">
+      <b>2. Almost sure convergence (X<sub>n</sub> →<sup>a.s.</sup> X, with probability 1):</b><br>
+      P({ ω ∈ Ω : lim<sub>n→∞</sub> X<sub>n</sub>(ω) = X(ω) }) = 1, equivalently lim<sub>n→∞</sub> P(sup<sub>m ≥ n</sub> |X<sub>m</sub> − X| &gt; ε) = 0 for all ε &gt; 0.<br>
+      This is a <i>pathwise</i> property: for almost every individual outcome ω, the sequence of numbers X<sub>1</sub>(ω), X<sub>2</sub>(ω), … settles permanently inside (X(ω) − ε, X(ω) + ε).
+    </p>
+
+    <p class="eq">
+      <b>3. Mean-square convergence (X<sub>n</sub> →<sup>L²</sup> X, quadratic mean):</b><br>
+      Assuming E[X<sub>n</sub>²], E[X²] &lt; ∞, lim<sub>n→∞</sub> E[(X<sub>n</sub> − X)²] = 0.<br>
+      Here the average squared error shrinks to zero. For an estimator θ̂<sub>n</sub> of a constant parameter θ, E[(θ̂<sub>n</sub> − θ)²] = Bias(θ̂<sub>n</sub>)² + Var(θ̂<sub>n</sub>), so L² convergence is equivalent to vanishing Mean Squared Error (MSE).
+    </p>
+
+    <p class="eq">
+      <b>4. Convergence in distribution (X<sub>n</sub> →<sup>d</sup> X, weak convergence):</b><br>
+      lim<sub>n→∞</sub> F<sub>n</sub>(x) = F(x) at every continuity point x of the limiting CDF F (equivalently, E[g(X<sub>n</sub>)] → E[g(X)] for all bounded continuous g, or pointwise convergence of characteristic functions φ<sub>n</sub>(t) → φ(t)).<br>
+      Only the <i>probability laws</i> (shapes of distributions) converge. X<sub>n</sub> and X need not be defined on the same probability space, and realizations X<sub>n</sub>(ω) need not approach X(ω) at all.
+    </p>
+
+    <h3>Hierarchy and key distinctions</h3>
+    <p>
+      The logical implications among the modes are strict:
+      <b>X<sub>n</sub> →<sup>a.s.</sup> X ⇒ X<sub>n</sub> →<sup>P</sup> X ⇒ X<sub>n</sub> →<sup>d</sup> X</b>, and
+      <b>X<sub>n</sub> →<sup>L²</sup> X ⇒ X<sub>n</sub> →<sup>P</sup> X ⇒ X<sub>n</sub> →<sup>d</sup> X</b> (the first via Chebyshev/Markov: P(|X<sub>n</sub> − X| &gt; ε) ≤ E[(X<sub>n</sub> − X)²]/ε²).
+      No reverse implication holds in general:
+    </p>
+    <p>
+      — <b>In probability without a.s. (the typewriter sequence):</b> let U ~ Uniform(0, 1) and define X<sub>n</sub> to be 1 on intervals of shrinking width 1/k cycling repeatedly across [0, 1]. Then P(X<sub>n</sub> = 1) = 1/k → 0, so X<sub>n</sub> →<sup>P</sup> 0, yet for every ω ∈ [0, 1], X<sub>n</sub>(ω) equals 1 infinitely often and never converges.<br>
+      — <b>In probability without L²:</b> X<sub>n</sub> = n with probability 1/n and 0 otherwise gives P(|X<sub>n</sub>| &gt; ε) = 1/n → 0, yet E[X<sub>n</sub>²] = n → ∞.<br>
+      — <b>In distribution without in probability:</b> if X<sub>n</sub> = (−1)<sup>n</sup> Z with Z ~ N(0, 1), every X<sub>n</sub> has law N(0, 1), so X<sub>n</sub> →<sup>d</sup> Z, but |X<sub>n</sub> − X<sub>n+1</sub>| = 2|Z| never shrinks.<br>
+      — <b>Special converse:</b> X<sub>n</sub> →<sup>d</sup> c (a constant) <i>does</i> imply X<sub>n</sub> →<sup>P</sup> c.
+    </p>
+
+    <div class="tabella">
+      <table>
+        <tr><th>Mode</th><th>Object converging</th><th>Implications</th><th>Primary statistical role</th></tr>
+        <tr><td>Almost sure (a.s.)</td><td>Individual paths X<sub>n</sub>(ω)</td><td>⇒ P ⇒ d</td><td>Strong LLN, Glivenko–Cantelli (empirical CDF)</td></tr>
+        <tr><td>Mean-square (L²)</td><td>Expected squared error E[(X<sub>n</sub> − X)²]</td><td>⇒ P ⇒ d</td><td>MSE consistency, L² projection, regression</td></tr>
+        <tr><td>In probability (P)</td><td>Tail probability P(|X<sub>n</sub> − X| &gt; ε)</td><td>⇒ d (⇐ a.s., ⇐ L²)</td><td>Weak LLN, consistency of MLE, Slutsky's theorem</td></tr>
+        <tr><td>In distribution (d)</td><td>CDFs F<sub>n</sub>(x) / laws</td><td>Weakest (⇒ P only if limit is constant)</td><td>CLT, t/χ²/Wald asymptotics, Delta method</td></tr>
+      </table>
+    </div>
+
+    <h3>Roles in the LLN, CLT, and statistical inference</h3>
+    <p class="eq">
+      <b>Weak Law of Large Numbers (WLLN):</b> If X<sub>1</sub>, X<sub>2</sub>, … are i.i.d. with finite mean μ (Khinchin), or uncorrelated with bounded variance (Chebyshev), then X̄<sub>n</sub> →<sup>P</sup> μ. When Var(X<sub>i</sub>) = σ² &lt; ∞, Var(X̄<sub>n</sub>) = σ²/n → 0 directly gives X̄<sub>n</sub> →<sup>L²</sup> μ and hence →<sup>P</sup> μ. This establishes <i>weak consistency</i> of sample averages and moments.<br>
+      <b>Strong Law of Large Numbers (SLLN):</b> Kolmogorov's SLLN states that for i.i.d. X<sub>i</sub>, X̄<sub>n</sub> →<sup>a.s.</sup> μ if and only if E|X<sub>1</sub>| &lt; ∞. Along a single endless data stream, the running average locks onto μ with probability 1. This underpins Monte Carlo integration, ergodic averages, and the Glivenko–Cantelli theorem (sup<sub>x</sub>|F̂<sub>n</sub>(x) − F(x)| →<sup>a.s.</sup> 0).
+    </p>
+    <p class="eq">
+      <b>Central Limit Theorem (CLT):</b> If X<sub>1</sub>, X<sub>2</sub>, … are i.i.d. with mean μ and variance 0 &lt; σ² &lt; ∞, then<br>
+      <b>Z<sub>n</sub> = √n (X̄<sub>n</sub> − μ) / σ →<sup>d</sup> N(0, 1)</b>.<br>
+      Notice the contrast: the LLN sends X̄<sub>n</sub> to a <i>degenerate point mass</i> at μ (in P and a.s.), whereas magnifying the vanishing error (X̄<sub>n</sub> − μ) by √n produces a <i>non-degenerate Gaussian law</i> in distribution. Crucially, Z<sub>n</sub> does <b>not</b> converge in probability or almost surely: a new sample always generates a fresh random draw from N(0, 1).<br>
+      <b>Related statistical theorems:</b> Because sample variance S<sub>n</sub>² →<sup>P</sup> σ², <b>Slutsky's theorem</b> (if A<sub>n</sub> →<sup>d</sup> A and B<sub>n</sub> →<sup>P</sup> b, then A<sub>n</sub>/B<sub>n</sub> →<sup>d</sup> A/b) yields √n(X̄<sub>n</sub> − μ)/S<sub>n</sub> →<sup>d</sup> N(0, 1). Likewise, the <b>Delta method</b> gives √n(g(X̄<sub>n</sub>) − g(μ)) →<sup>d</sup> N(0, [g'(μ)]²σ²), and regular MLEs satisfy √n(θ̂<sub>n</sub> − θ<sub>0</sub>) →<sup>d</sup> N(0, I(θ<sub>0</sub>)⁻¹).
+    </p>
+
+    <h3>Why √n appears: variance additivity and the role of independence</h3>
+    <p class="eq">
+      For any sum S<sub>n</sub> = Σ<sub>i=1</sub><sup>n</sup> X<sub>i</sub> of square-integrable random variables,<br>
+      <b>Var(S<sub>n</sub>) = Σ<sub>i=1</sub><sup>n</sup> Var(X<sub>i</sub>) + 2 Σ<sub>1 ≤ i &lt; j ≤ n</sub> Cov(X<sub>i</sub>, X<sub>j</sub>)</b>.<br>
+      When the observations are <b>independent</b> (or merely pairwise uncorrelated) with common variance σ², every one of the n(n−1)/2 covariance terms is zero. Variance is therefore strictly additive:<br>
+      <b>Var(S<sub>n</sub>) = nσ²  ⇒  SD(S<sub>n</sub>) = √n · σ</b>, and for the mean X̄<sub>n</sub> = S<sub>n</sub>/n:  <b>Var(X̄<sub>n</sub>) = nσ² / n² = σ² / n  ⇒  SE(X̄<sub>n</sub>) = σ / √n</b>.
+    </p>
+    <p>
+      Why is n<sup>1/2</sup> the exact scaling exponent? Consider scaling the estimation error by n<sup>α</sup>:
+      Var(n<sup>α</sup>(X̄<sub>n</sub> − μ)) = n<sup>2α − 1</sup> σ².
+      If α &lt; 1/2 (e.g. α = 0 for the unscaled mean), the variance collapses to 0 and the sequence degenerates to 0 (LLN). If α &gt; 1/2 (e.g. α = 1 for the centered sum), the variance diverges to ∞. Only at the unique critical exponent <b>α = 1/2</b> does the variance stay constant at σ², explaining why parametric estimation errors are O<sub>p</sub>(n<sup>−1/2</sup>), confidence interval widths shrink as 2z<sub>α/2</sub>σ/√n (requiring 4× the sample size to halve the margin of error), and Fisher information grows linearly as I<sub>n</sub>(θ) = n I<sub>1</sub>(θ).
+    </p>
+    <p>
+      <b>What changes when independence or finite variance fails?</b><br>
+      — <i>Persistent positive correlation</i> (e.g. Cov(X<sub>i</sub>, X<sub>j</sub>) = ρσ² for all i ≠ j): there are ~n² covariance pairs, so Var(X̄<sub>n</sub>) = σ²/n + ((n−1)/n)ρσ² → ρσ² &gt; 0. Variance does not shrink at all: neither √n scaling nor even consistency holds!<br>
+      — <i>Short-range dependence</i> (e.g. stationary AR(1) with |ρ| &lt; 1, where Σ|γ(k)| &lt; ∞): the √n rate survives, but Var(√n X̄<sub>n</sub>) converges to the <i>long-run variance</i> σ²<sub>LR</sub> = γ(0) + 2Σ<sub>k≥1</sub> γ(k) rather than γ(0). Using the naive i.i.d. SE σ/√n underestimates uncertainty and produces anti-conservative confidence intervals.<br>
+      — <i>Heavy tails / infinite variance</i> (e.g. Cauchy): even under full independence, Var(X<sub>i</sub>) = ∞ prevents √n stabilization; the Cauchy sample mean has the exact same Cauchy distribution for every n.
+    </p>
+
+    <h3>Code &amp; interactive simulator</h3>
+<pre>function simulateMeans(dist, n, reps) {
+  const means = [];
+  for (let r = 0; r &lt; reps; r++) {
+    let sum = 0, x = randn(), z = randn();               // shared shock z for equicorrelated case
+    for (let i = 0; i &lt; n; i++) sum += draw(dist, x, z); // draw one observation
+    means.push(sum / n);
+  }
+  return means;                                          // compare SE vs sigma / Math.sqrt(n)
+}</pre>
+
+    <div class="controls">
+      <label>Distribution / dependence
+        <select id="conv_dist">
+          <option value="bern">Bernoulli(0.5) — i.i.d.</option>
+          <option value="unif">Uniform(0, 1) — i.i.d.</option>
+          <option value="exp">Exponential(1) — skewed, i.i.d.</option>
+          <option value="ar1">AR(1) ρ = 0.7 — short-range dependence</option>
+          <option value="eq">Equicorrelated ρ = 0.35 — LLN fails</option>
+          <option value="cauchy">Cauchy(0, 1) — infinite mean &amp; variance</option>
+        </select>
+      </label>
+      <label>Sample size n
+        <select id="conv_n">
+          <option value="25">n = 25</option>
+          <option value="100" selected>n = 100</option>
+          <option value="400">n = 400</option>
+          <option value="1600">n = 1600</option>
+        </select>
+      </label>
+      <button id="conv_run">Simulate</button>
+    </div>
+
+    <div class="tabella"><table id="t_conv"></table></div>
+    <canvas id="cv_paths" width="760" height="330" style="max-width: 760px"></canvas>
+    <p>
+      Top plot: 12 simulated sample paths of the running average X̄<sub>k</sub> for k = 1 … n; dashed curves show μ ± 2σ/√k under independence.
+    </p>
+    <canvas id="cv_clt" width="760" height="330" style="max-width: 760px"></canvas>
+    <p id="conv_note">
+      Bottom plot: histogram of Z<sub>n</sub> = √n(X̄<sub>n</sub> − μ)/σ across 800 replications against the standard normal N(0, 1) density.
+    </p>
+  </section>
+
+  <!-- =================================================================== -->
+  <!-- SECTION 2: CONDITIONAL PROBABILITY, BAYES' THEOREM & INFERENCE      -->
+  <!-- =================================================================== -->
+  <section id="bayes">
+    <h2>2. Conditional probability, Bayes' theorem &amp; inference</h2>
+
+    <h3>Conditional probability in probability theory and statistics</h3>
+    <p class="eq">
+      <b>In probability theory:</b> Given a probability space (Ω, ℱ, P) and an event B with P(B) &gt; 0, the conditional probability of A given B is<br>
+      <b>P(A | B) = P(A ∩ B) / P(B)</b>.<br>
+      Conditioning restricts the sample space from Ω to B and renormalizes all probabilities by 1/P(B) so that P(· | B) itself satisfies the Kolmogorov axioms with P(B | B) = 1. Two foundational identities follow immediately: the <i>product rule</i> P(A ∩ B) = P(A | B)P(B) = P(B | A)P(A), and the <i>law of total probability</i> P(B) = Σ<sub>i</sub> P(B | A<sub>i</sub>)P(A<sub>i</sub>) over any partition {A<sub>i</sub>} of Ω.
+    </p>
+    <p>
+      <b>In statistics:</b> Conditional probability plays two distinct roles depending on the inferential paradigm.
+      In <i>frequentist</i> statistics, parameters θ are treated as fixed unknown constants, so conditioning appears inside the sampling model p(x | θ) (describing how data X vary given a hypothesized θ), in regression E[Y | X = x], and when conditioning on ancillary statistics.
+      In <i>Bayesian</i> statistics, unknown parameters θ are themselves modeled as random quantities with probability distributions, allowing direct conditioning on the observed data D to obtain p(θ | D).
+    </p>
+
+    <h3>Bayes' theorem and the three components of Bayesian inference</h3>
+    <p class="eq">
+      <b>Discrete events:</b> P(H<sub>i</sub> | D) = P(D | H<sub>i</sub>) P(H<sub>i</sub>) / Σ<sub>j</sub> P(D | H<sub>j</sub>) P(H<sub>j</sub>).<br>
+      <b>Continuous parameters θ:</b><br>
+      <b>π(θ | D) = [ L(θ; D) · π(θ) ] / m(D) = [ p(D | θ) · π(θ) ] / ∫ p(D | θ') π(θ') dθ'  ∝  L(θ; D) · π(θ)</b>.
+    </p>
+    <p>
+      Bayesian inference connects three fundamental quantities:
+    </p>
+    <p class="eq">
+      <b>1. Prior probability π(θ):</b> Represents knowledge, structural constraints, or beliefs about θ <i>before</i> observing the current dataset D. It acts as a baseline weighting across candidate parameter values.<br>
+      <b>2. Likelihood L(θ; D) = p(D | θ):</b> The sampling distribution evaluated at the <i>fixed observed data D</i>, viewed as a function of θ. It is not a probability distribution over θ (its integral over θ need not equal 1); it quantifies the relative support that the data D provide for each value of θ.<br>
+      <b>3. Posterior probability π(θ | D):</b> The updated probability distribution over θ <i>after</i> observing D, formed by multiplying prior × likelihood and dividing by the marginal likelihood (evidence) m(D) = ∫ p(D | θ)π(θ) dθ so the distribution integrates to 1.
+    </p>
+
+    <h3>Why Bayesian updating is central to inference</h3>
+    <p>
+      The updating mechanism π(θ) → π(θ | D) sits at the core of Bayesian statistics for three reasons:
+    </p>
+    <p>
+      — <b>Sequential coherence:</b> If data arrive in two batches D<sub>1</sub>, D<sub>2</sub> (conditionally independent given θ), updating with D<sub>1</sub> and using π(θ | D<sub>1</sub>) as the new prior for D<sub>2</sub> yields the exact same posterior as updating once on (D<sub>1</sub>, D<sub>2</sub>):
+      π(θ | D<sub>1</sub>, D<sub>2</sub>) ∝ p(D<sub>2</sub> | θ) [p(D<sub>1</sub> | θ) π(θ)]. Today's posterior becomes tomorrow's prior.<br>
+      — <b>Direct probabilistic answers about θ:</b> Rather than p-values (probabilities over hypothetical repeated samples assuming H<sub>0</sub>), the posterior directly yields 95% credible intervals P(a ≤ θ ≤ b | D) = 0.95, exact hypothesis probabilities P(θ &gt; 0.5 | D), and posterior predictive distributions p(x̃ | D) = ∫ p(x̃ | θ) π(θ | D) dθ.<br>
+      — <b>Regularization in small samples:</b> Multiplying by a proper prior stabilizes estimates when n is small or counts are zero (preventing degenerate MLEs such as θ̂ = 0 when 0 successes occur in 3 trials).
+    </p>
+
+    <h3>Worked examples: priors, likelihoods, and their influence</h3>
+
+    <p class="eq">
+      <b>Example 1 — Diagnostic screening (discrete Bayes &amp; base-rate effect):</b><br>
+      Suppose a screening test has sensitivity P(+ | H) = 0.95 and false-positive rate P(+ | ¬H) = 0.05.
+      In a general population with prevalence (prior) P(H) = 0.01, a positive result gives<br>
+      P(H | +) = (0.95 × 0.01) / (0.95 × 0.01 + 0.05 × 0.99) = 0.0095 / 0.0590 ≈ <b>0.161 (16.1%)</b>.<br>
+      With the <i>exact same test likelihood</i> in a high-risk clinic where P(H) = 0.20, the posterior jumps to<br>
+      P(H | +) = (0.95 × 0.20) / (0.95 × 0.20 + 0.05 × 0.80) = 0.19 / 0.23 ≈ <b>0.826 (82.6%)</b>.<br>
+      When a single test provides moderate evidence (likelihood ratio 0.95/0.05 = 19), the prior baseline dramatically alters the conclusion.
+    </p>
+
+    <div class="controls">
+      <label>Screening scenario
+        <select id="diag_preset">
+          <option value="rare">General screening (P(H) = 0.01)</option>
+          <option value="mod">Targeted clinic (P(H) = 0.10)</option>
+          <option value="high">High-risk ward (P(H) = 0.30)</option>
+          <option value="custom">Custom rates</option>
+        </select>
+      </label>
+      <label>Prior P(H)
+        <input type="number" id="d_prev" min="0.001" max="0.999" step="0.005" value="0.01">
+      </label>
+      <label>Sensitivity P(+|H)
+        <input type="number" id="d_sens" min="0.01" max="1" step="0.01" value="0.95">
+      </label>
+      <label>False pos. P(+|¬H)
+        <input type="number" id="d_fpr" min="0.001" max="0.99" step="0.005" value="0.05">
+      </label>
+      <button id="diag_run">Update</button>
+    </div>
+    <div class="tabella"><table id="t_diag"></table></div>
+    <canvas id="cv_diag" width="760" height="210" style="max-width: 760px"></canvas>
+
+    <p class="eq" style="margin-top: 2.5rem;">
+      <b>Example 2 — Conjugate Beta–Binomial model (coin bias, conversion rate, clinical response):</b><br>
+      Likelihood for k successes in n independent trials: L(θ; k, n) ∝ θ<sup>k</sup> (1 − θ)<sup>n − k</sup>.<br>
+      Conjugate prior: θ ~ Beta(α, β), π(θ) ∝ θ<sup>α − 1</sup> (1 − θ)<sup>β − 1</sup>.<br>
+      Multiplying yields a posterior in the same family: <b>θ | k, n ~ Beta(α + k, β + n − k)</b>.<br>
+      The prior parameters (α, β) act as <i>pseudo-counts</i> with prior sample size n<sub>0</sub> = α + β. The posterior mean is an explicit precision-weighted compromise between the prior mean and the sample MLE θ̂ = k/n:<br>
+      <b>E[θ | k, n] = (α + k)/(α + β + n) = w · [α/(α + β)] + (1 − w) · (k/n)</b>,  with prior weight w = (α + β)/(α + β + n).
+    </p>
+    <p>
+      <b>How prior vs. likelihood shape conclusions:</b> For small n (say n = 5, k = 4), a strongly opinionated prior Beta(20, 20) carries n<sub>0</sub> = 40 pseudo-trials (weight w = 40/45 ≈ 89%), pulling the posterior mean down to 24/45 = 0.533 despite an 80% sample rate; a uniform prior Beta(1, 1) yields (1+4)/7 = 0.714 (Laplace's rule of succession). As n → ∞, w = (α + β)/(α + β + n) → 0, and by the <i>Bernstein–von Mises theorem</i> the posterior concentrates around the true parameter regardless of any strictly positive prior.
+    </p>
+    <p class="eq">
+      <b>Example 3 — Gaussian location updating (precision additivity):</b><br>
+      If X̄<sub>n</sub> | μ ~ N(μ, σ²/n) and μ ~ N(μ<sub>0</sub>, τ<sub>0</sub>²), then μ | X̄<sub>n</sub> ~ N(μ<sub>n</sub>, τ<sub>n</sub>²), where precisions (inverse variances) add:<br>
+      <b>1/τ<sub>n</sub>² = 1/τ<sub>0</sub>² + n/σ²</b>,   and   <b>μ<sub>n</sub> = (μ<sub>0</sub>/τ<sub>0</sub>² + n X̄<sub>n</sub>/σ²) / (1/τ<sub>0</sub>² + n/σ²)</b>.<br>
+      Again, the prior pulls noisy small-sample means toward μ<sub>0</sub> (shrinkage) and fades out at rate O(1/n) as data accumulate.
+    </p>
+
+    <h3>Applications, advantages, and limitations</h3>
+    <p>
+      <b>Applications:</b> Medical diagnostic testing and clinical trial monitoring (borrowing historical controls), A/B testing with early stopping, Naive Bayes spam/document classification, empirical Bayes and hierarchical shrinkage across small groups (e.g., school/hospital performance), and Bayesian neural/state-space filtering (Kalman filter).<br>
+      <b>Advantages:</b> Exact finite-sample uncertainty quantification without relying on asymptotics; seamless sequential updating; principled incorporation of genuine domain knowledge; natural regularization when data are sparse or counts are zero; direct probabilistic statements on parameters and predictions.<br>
+      <b>Limitations &amp; cautions:</b> Conclusions in small samples depend sensitively on the prior—subjective or poorly justified priors can bias inference (Cromwell's rule: never assign prior probability 0 to any possible parameter value, because no amount of data can ever rescue a zero prior); outside conjugate families, computing the denominator m(D) = ∫ p(D|θ)π(θ) dθ in high dimensions requires numerical integration or MCMC sampling; finally, Bayesian updating assumes the likelihood model p(D | θ) is well specified—if the likelihood itself is misspecified, the posterior will concentrate sharply on the wrong parameter value.
+    </p>
+
+    <h3>Code &amp; interactive Beta–Binomial updater</h3>
+<pre>function betaUpdate(alpha, beta, k, n) {
+  const aPost = alpha + k, bPost = beta + (n - k);       // conjugate posterior Beta(a', b')
+  const priorW = (alpha + beta) / (alpha + beta + n);    // influence of the prior on the mean
+  return {
+    aPost, bPost, priorW,
+    priorMean: alpha / (alpha + beta),
+    mle: k / n,
+    postMean: aPost / (aPost + bPost)
+  };
+}</pre>
+
+    <div class="controls">
+      <label>Preset scenario
+        <select id="bayes_preset">
+          <option value="weak_small">Uniform prior + small sample (n=5, k=4)</option>
+          <option value="strong_small">Strong fair prior + small sample (α=β=20, n=5, k=4)</option>
+          <option value="strong_large">Strong fair prior + large sample (α=β=20, n=200, k=160)</option>
+          <option value="zero_trial">Skeptical prior + zero successes (α=1, β=9, n=12, k=0)</option>
+          <option value="custom">Custom parameters</option>
+        </select>
+      </label>
+      <label>Prior α
+        <input type="number" id="b_a" min="0.2" max="500" step="0.5" value="1">
+      </label>
+      <label>Prior β
+        <input type="number" id="b_b" min="0.2" max="500" step="0.5" value="1">
+      </label>
+      <label>Successes k
+        <input type="number" id="b_k" min="0" max="5000" step="1" value="4">
+      </label>
+      <label>Trials n
+        <input type="number" id="b_n" min="1" max="5000" step="1" value="5">
+      </label>
+      <button id="bayes_run">Compute</button>
+    </div>
+    <p id="b_msg" role="alert"></p>
+    <div class="tabella"><table id="t_bayes"></table></div>
+    <canvas id="cv_bayes" width="760" height="360" style="max-width: 760px"></canvas>
+    <p>
+      Dashed curve: Prior Beta(α, β). Dotted curve: Normalized Likelihood (scaled to unit area for shape comparison). Solid curve: Posterior Beta(α + k, β + n − k), with the 95% equal-tailed credible interval shaded in tan.
+    </p>
+  </section>
+</main>
+
+<script>
+const $ = id => document.getElementById(id);
+const f3 = v => Number.isFinite(v) ? v.toFixed(3) : '—';
+const f4 = v => Number.isFinite(v) ? v.toFixed(4) : '—';
+
+function prepCanvas(cv, W, H) {
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  if (cv.width !== W * dpr || cv.height !== H * dpr) { cv.width = W * dpr; cv.height = H * dpr; }
+  const ctx = cv.getContext('2d');
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  return ctx;
+}
+
+const tab = (head, rows, cls = []) =>
+  '<tr>' + head.map(h => `<th>${h}</th>`).join('') + '</tr>' +
+  rows.map((r, i) => `<tr class="${cls[i] || ''}">` + r.map(c => `<td${c && c.hot ? ' class="hot"' : ''}>${c && c.v !== undefined ? c.v : c}</td>`).join('') + '</tr>').join('');
+
+// ---- Random & Gamma / Beta math helpers ----
+function randn() {
+  let u = 0, v = 0;
+  while (u === 0) u = Math.random();
+  while (v === 0) v = Math.random();
+  return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v);
+}
+
+function lgam(x) {
+  const c = [76.18009172947146, -86.50532032941677, 24.01409824083091, -1.231739572450155, 0.1208650973866179e-2, -0.5395239384953e-5];
+  let y = x, t = x + 5.5; t -= (x + .5) * Math.log(t); let s = 1.000000000190015;
+  for (const ci of c) s += ci / ++y;
+  return -t + Math.log(2.5066282746310005 * s / x);
+}
+
+function betacf(a, b, x) {
+  const EPS = 3e-14, FPMIN = 1e-300;
+  const qab = a + b, qap = a + 1, qam = a - 1;
+  let c = 1, d = 1 - qab * x / qap;
+  if (Math.abs(d) < FPMIN) d = FPMIN;
+  d = 1 / d;
+  let h = d;
+  for (let m = 1; m <= 200; m++) {
+    const m2 = 2 * m;
+    let aa = m * (b - m) * x / ((qam + m2) * (a + m2));
+    d = 1 + aa * d; if (Math.abs(d) < FPMIN) d = FPMIN;
+    c = 1 + aa / c; if (Math.abs(c) < FPMIN) c = FPMIN;
+    d = 1 / d; h *= d * c;
+    aa = -(a + m) * (qab + m) * x / ((a + m2) * (qap + m2));
+    d = 1 + aa * d; if (Math.abs(d) < FPMIN) d = FPMIN;
+    c = 1 + aa / c; if (Math.abs(c) < FPMIN) c = FPMIN;
+    d = 1 / d;
+    const del = d * c;
+    h *= del;
+    if (Math.abs(del - 1) < EPS) break;
+  }
+  return h;
+}
+
+function ibeta(x, a, b) {
+  if (x <= 0) return 0;
+  if (x >= 1) return 1;
+  const bt = Math.exp(lgam(a + b) - lgam(a) - lgam(b) + a * Math.log(x) + b * Math.log(1 - x));
+  if (x < (a + 1) / (a + b + 2)) return bt * betacf(a, b, x) / a;
+  return 1 - bt * betacf(b, a, 1 - x) / b;
+}
+
+function betaQuantile(p, a, b) {
+  let lo = 0, hi = 1;
+  for (let i = 0; i < 48; i++) {
+    const mid = 0.5 * (lo + hi);
+    if (ibeta(mid, a, b) < p) lo = mid; else hi = mid;
+  }
+  return 0.5 * (lo + hi);
+}
+
+function betaPdf(x, a, b) {
+  if (x <= 0 || x >= 1) return 0;
+  const lnB = lgam(a) + lgam(b) - lgam(a + b);
+  return Math.exp((a - 1) * Math.log(x) + (b - 1) * Math.log(1 - x) - lnB);
+}
+
+// =========================================================================
+// PART 1: MODES OF CONVERGENCE, LLN, CLT & √n SIMULATOR
+// =========================================================================
+const DIST_INFO = {
+  bern:   { mu: 0.5,  sigma: 0.5,              hasMom: true,  eps: 0.1 },
+  unif:   { mu: 0.5,  sigma: 1 / Math.sqrt(12), hasMom: true,  eps: 0.1 },
+  exp:    { mu: 1.0,  sigma: 1.0,              hasMom: true,  eps: 0.15 },
+  ar1:    { mu: 0.0,  sigma: 1.0,              hasMom: true,  eps: 0.25 },
+  eq:     { mu: 0.0,  sigma: 1.0,              hasMom: true,  eps: 0.25 },
+  cauchy: { mu: 0.0,  sigma: 1.0,              hasMom: false, eps: 0.5 }
+};
+
+function genSeries(dist, n) {
+  const arr = new Float64Array(n);
+  if (dist === 'bern') {
+    for (let i = 0; i < n; i++) arr[i] = Math.random() < 0.5 ? 1 : 0;
+  } else if (dist === 'unif') {
+    for (let i = 0; i < n; i++) arr[i] = Math.random();
+  } else if (dist === 'exp') {
+    for (let i = 0; i < n; i++) arr[i] = -Math.log(1 - Math.random());
+  } else if (dist === 'ar1') {
+    const rho = 0.7, s = Math.sqrt(1 - rho * rho);
+    let x = randn();
+    for (let i = 0; i < n; i++) { x = rho * x + s * randn(); arr[i] = x; }
+  } else if (dist === 'eq') {
+    const rho = 0.35, a = Math.sqrt(rho), b = Math.sqrt(1 - rho), z = randn();
+    for (let i = 0; i < n; i++) arr[i] = a * z + b * randn();
+  } else {
+    for (let i = 0; i < n; i++) arr[i] = Math.tan(Math.PI * (Math.random() - 0.5));
+  }
+  return arr;
+}
+
+function runConv() {
+  const dist = $('conv_dist').value;
+  const n = +$('conv_n').value;
+  const info = DIST_INFO[dist];
+  const reps = 800;
+
+  // Simulate sample paths (12 trajectories)
+  const nPaths = 12;
+  const sampleStep = Math.max(1, Math.floor(n / 160));
+  const paths = [];
+  for (let p = 0; p < nPaths; p++) {
+    const xs = genSeries(dist, n);
+    const pts = [];
+    let sum = 0;
+    for (let i = 0; i < n; i++) {
+      sum += xs[i];
+      if ((i + 1) % sampleStep === 0 || i === n - 1) pts.push({ k: i + 1, m: sum / (i + 1) });
+    }
+    paths.push(pts);
+  }
+
+  // Simulate replications for CLT & empirical MSE/SE
+  const means = new Float64Array(reps);
+  for (let r = 0; r < reps; r++) {
+    const xs = genSeries(dist, n);
+    let sum = 0;
+    for (let i = 0; i < n; i++) sum += xs[i];
+    means[r] = sum / n;
+  }
+
+  let mSum = 0, sqErr = 0, tailCnt = 0;
+  for (let r = 0; r < reps; r++) {
+    mSum += means[r];
+    if (Math.abs(means[r] - info.mu) > info.eps) tailCnt++;
+  }
+  const empMean = mSum / reps;
+  let varSum = 0;
+  for (let r = 0; r < reps; r++) {
+    varSum += (means[r] - empMean) ** 2;
+    sqErr += (means[r] - info.mu) ** 2;
+  }
+  const empSE = Math.sqrt(varSum / (reps - 1));
+  const empMSE = sqErr / reps;
+  const theoSE = info.hasMom ? info.sigma / Math.sqrt(n) : NaN;
+
+  $('t_conv').innerHTML = tab(
+    ['Reps', 'n', 'Target μ', 'Mean(X̄ₙ)', 'Emp. SE(X̄ₙ)', 'i.i.d. σ/√n', 'Emp. MSE', `P(|X̄ₙ−μ|>${info.eps})`],
+    [[
+      reps, n,
+      info.hasMom ? f3(info.mu) : 'undefined',
+      f3(empMean),
+      f4(empSE),
+      info.hasMom ? f4(theoSE) : '∞',
+      f4(empMSE),
+      { v: f3(tailCnt / reps), hot: true }
+    ]]
+  );
+
+  // ---- Draw Canvas 1: Sample Paths ----
+  (() => {
+    const cv = $('cv_paths'), W = 760, H = 330;
+    const c = prepCanvas(cv, W, H);
+    c.clearRect(0, 0, W, H);
+    const L = 62, R = 18, T = 38, B = 36;
+    const plotW = W - L - R, plotH = H - T - B;
+
+    let yMin = info.mu - 2.4 * info.sigma;
+    let yMax = info.mu + 2.4 * info.sigma;
+    if (dist === 'cauchy') { yMin = -6; yMax = 6; }
+    else {
+      paths.forEach(pts => pts.forEach(pt => {
+        if (pt.m < yMin) yMin = Math.max(info.mu - 4 * info.sigma, pt.m);
+        if (pt.m > yMax) yMax = Math.min(info.mu + 4 * info.sigma, pt.m);
+      }));
+    }
+    const toX = k => L + ((k - 1) / Math.max(1, n - 1)) * plotW;
+    const toY = v => {
+      const clamped = Math.max(yMin, Math.min(yMax, v));
+      return H - B - ((clamped - yMin) / (yMax - yMin)) * plotH;
+    };
+
+    // Legend
+    c.font = '14px "DM Serif Display", serif';
+    c.fillStyle = '#000';
+    c.textAlign = 'left';
+    c.fillText('12 sample paths X̄ₖ', L, 22);
+    if (info.hasMom) {
+      c.fillText(`target μ = ${info.mu}`, L + 185, 22);
+      c.fillText('dashed: μ ± 2σ/√k (i.i.d.)', L + 340, 22);
+    } else {
+      c.fillText('Cauchy has no finite mean (clipped to [−6, 6])', L + 185, 22);
+    }
+
+    // Axes & ticks
+    c.strokeStyle = '#000'; c.lineWidth = 2;
+    c.beginPath(); c.moveTo(L, T); c.lineTo(L, H - B); c.lineTo(W - R, H - B); c.stroke();
+    c.textAlign = 'right';
+    [yMin, (yMin + yMax) / 2, yMax].forEach(yv => {
+      c.fillText(yv.toFixed(2), L - 8, toY(yv) + 4);
+    });
+    c.textAlign = 'center';
+    c.fillText('k = 1', L + 14, H - 12);
+    c.fillText(`k = ${Math.round(n / 2)}`, toX(Math.round(n / 2)), H - 12);
+    c.fillText(`k = ${n}`, W - R - 14, H - 12);
+
+    // Sample paths
+    paths.forEach((pts, idx) => {
+      c.save();
+      c.strokeStyle = idx % 2 === 0 ? 'rgba(0,0,0,0.55)' : 'rgba(139,107,62,0.85)';
+      c.lineWidth = 1.6;
+      c.beginPath();
+      pts.forEach((pt, i) => {
+        const px = toX(pt.k), py = toY(pt.m);
+        if (i === 0) c.moveTo(px, py); else c.lineTo(px, py);
+      });
+      c.stroke();
+      c.restore();
+    });
+
+    // Target μ & theoretical ±2σ/√k envelope
+    if (info.hasMom) {
+      c.save();
+      c.strokeStyle = '#000'; c.lineWidth = 2.5;
+      c.beginPath(); c.moveTo(L, toY(info.mu)); c.lineTo(W - R, toY(info.mu)); c.stroke();
+      c.setLineDash([6, 5]); c.lineWidth = 2;
+      [1, -1].forEach(sgn => {
+        c.beginPath();
+        for (let s = 0; s <= 120; s++) {
+          const k = 1 + (s / 120) * (n - 1);
+          const px = toX(k), py = toY(info.mu + sgn * 2 * info.sigma / Math.sqrt(k));
+          if (s === 0) c.moveTo(px, py); else c.lineTo(px, py);
+        }
+        c.stroke();
+      });
+      c.restore();
+    }
+  })();
+
+  // ---- Draw Canvas 2: Histogram of √n(X̄ₙ - μ)/σ vs N(0, 1) ----
+  (() => {
+    const cv = $('cv_clt'), W = 760, H = 330;
+    const c = prepCanvas(cv, W, H);
+    c.clearRect(0, 0, W, H);
+    const L = 56, R = 18, T = 40, B = 36;
+    const plotW = W - L - R, plotH = H - T - B;
+    const zMin = -4.5, zMax = 4.5, nBins = 28, binW = (zMax - zMin) / nBins;
+    const counts = new Array(nBins).fill(0);
+    let outCnt = 0;
+
+    for (let r = 0; r < reps; r++) {
+      const z = Math.sqrt(n) * (means[r] - info.mu) / info.sigma;
+      if (z < zMin || z >= zMax) outCnt++;
+      else counts[Math.floor((z - zMin) / binW)]++;
+    }
+    const dens = counts.map(cnt => cnt / (reps * binW));
+    const normMax = 1 / Math.sqrt(2 * Math.PI);
+    const yMax = Math.max(normMax * 1.2, Math.max(...dens) * 1.12);
+
+    const toX = z => L + ((z - zMin) / (zMax - zMin)) * plotW;
+    const toY = y => H - B - (y / yMax) * plotH;
+
+    // Histogram bars
+    dens.forEach((d, i) => {
+      const x0 = toX(zMin + i * binW), x1 = toX(zMin + (i + 1) * binW);
+      const y0 = toY(d);
+      c.fillStyle = '#D2B48C';
+      c.strokeStyle = '#000';
+      c.lineWidth = 1.6;
+      c.fillRect(x0, y0, x1 - x0, H - B - y0);
+      c.strokeRect(x0, y0, x1 - x0, H - B - y0);
+    });
+
+    // Standard Normal PDF curve
+    c.save();
+    c.strokeStyle = '#000'; c.lineWidth = 3;
+    c.beginPath();
+    for (let i = 0; i <= 200; i++) {
+      const z = zMin + (i / 200) * (zMax - zMin);
+      const phi = Math.exp(-0.5 * z * z) / Math.sqrt(2 * Math.PI);
+      const px = toX(z), py = toY(phi);
+      if (i === 0) c.moveTo(px, py); else c.lineTo(px, py);
+    }
+    c.stroke();
+    c.restore();
+
+    // Axes & labels
+    c.strokeStyle = '#000'; c.lineWidth = 2;
+    c.beginPath(); c.moveTo(L, T); c.lineTo(L, H - B); c.lineTo(W - R, H - B); c.stroke();
+    c.font = '14px "DM Serif Display", serif';
+    c.fillStyle = '#000';
+    c.textAlign = 'center';
+    [-4, -2, 0, 2, 4].forEach(z => c.fillText(String(z), toX(z), H - 12));
+    c.textAlign = 'right';
+    c.fillText('0', L - 8, H - B + 4);
+    c.fillText('0.4', L - 8, toY(0.4) + 4);
+
+    c.textAlign = 'left';
+    c.fillText('Bars: √n(X̄ₙ − μ)/σ   |   Curve: N(0, 1) density', L, 22);
+    if (outCnt > 0) {
+      c.textAlign = 'right';
+      c.fillText(`Outside [−4.5, 4.5]: ${((outCnt / reps) * 100).toFixed(1)}%`, W - R, 22);
+    }
+  })();
+
+  const notes = {
+    bern: 'Bernoulli(0.5): i.i.d. with finite variance. Sample paths converge to 0.5 (a.s./P), and Zₙ stabilizes to N(0, 1) (d).',
+    unif: 'Uniform(0, 1): i.i.d. symmetric. Error shrinks at rate 1/√n and the CLT approximation is already tight by n = 25.',
+    exp:  'Exponential(1): skewed distribution. Even though single draws are asymmetric, √n(X̄ₙ − 1) still converges in distribution to N(0, 1) as n grows.',
+    ar1:  'AR(1) with ρ = 0.7: X̄ₙ still converges to 0, but positive serial covariance inflates the limiting variance of √n X̄ₙ by (1+ρ)/(1−ρ) = 5.67× relative to N(0, 1).',
+    eq:   'Equicorrelated ρ = 0.35: pairwise covariances do not vanish! Paths converge to different random levels Z instead of 0, and √n X̄ₙ diverges as n increases.',
+    cauchy: 'Cauchy(0, 1): infinite mean and variance. X̄ₙ retains the Cauchy(0, 1) law for every n — neither LLN nor CLT holds.'
+  };
+  $('conv_note').textContent = notes[dist];
+}
+
+$('conv_run').addEventListener('click', runConv);
+$('conv_dist').addEventListener('change', runConv);
+$('conv_n').addEventListener('change', runConv);
+
+// =========================================================================
+// PART 2A: DISCRETE BAYES DIAGNOSTIC TEST
+// =========================================================================
+const DIAG_PRESETS = {
+  rare: { prev: 0.01, sens: 0.95, fpr: 0.05 },
+  mod:  { prev: 0.10, sens: 0.95, fpr: 0.05 },
+  high: { prev: 0.30, sens: 0.95, fpr: 0.05 }
+};
+
+function runDiag(fromPreset = false) {
+  const pre = $('diag_preset').value;
+  if (fromPreset && DIAG_PRESETS[pre]) {
+    $('d_prev').value = DIAG_PRESETS[pre].prev;
+    $('d_sens').value = DIAG_PRESETS[pre].sens;
+    $('d_fpr').value  = DIAG_PRESETS[pre].fpr;
+  }
+  const prev = Math.min(0.999, Math.max(0.001, +$('d_prev').value || 0.01));
+  const sens = Math.min(1, Math.max(0.001, +$('d_sens').value || 0.95));
+  const fpr  = Math.min(0.999, Math.max(0.001, +$('d_fpr').value  || 0.05));
+
+  const tp = prev * sens;
+  const fn = prev * (1 - sens);
+  const fp = (1 - prev) * fpr;
+  const tn = (1 - prev) * (1 - fpr);
+  const pPos = tp + fp;
+  const pNeg = fn + tn;
+  const postPos = tp / pPos;
+  const postNeg = fn / pNeg;
+  const bf = sens / fpr;
+
+  $('t_diag').innerHTML = tab(
+    ['Prior P(H)', 'TP P(H∩+)', 'FP P(¬H∩+)', 'Evidence P(+)', 'Posterior P(H|+)', 'Posterior P(H|−)', 'LR+ = P(+|H)/P(+|¬H)'],
+    [[f3(prev), f4(tp), f4(fp), f4(pPos), { v: `${(postPos * 100).toFixed(1)}% (${f3(postPos)})`, hot: true }, `${(postNeg * 100).toFixed(2)}%`, bf.toFixed(2)]]
+  );
+
+  const cv = $('cv_diag'), W = 760, H = 210;
+  const c = prepCanvas(cv, W, H);
+  c.clearRect(0, 0, W, H);
+  const L = 190, R = 24, bw = W - L - R, bh = 42;
+
+  c.font = '15px "DM Serif Display", serif';
+  c.fillStyle = '#000';
+  c.textAlign = 'left';
+  c.fillText('All people (100%)', 18, 62);
+  c.fillText('Positive tests only (+)', 18, 146);
+
+  // Bar 1: Population split into TP, FP, FN, TN
+  const segs1 = [
+    { w: tp, col: '#8B6B3E', lab: 'TP', txt: '#FFFBEA' },
+    { w: fp, col: '#D2B48C', lab: 'FP', txt: '#000' },
+    { w: fn, col: '#A67B5B', lab: 'FN', txt: '#FFFBEA' },
+    { w: tn, col: '#FFFBEA', lab: 'TN', txt: '#000' }
+  ];
+  let x = L;
+  segs1.forEach(s => {
+    const sw = s.w * bw;
+    c.fillStyle = s.col; c.fillRect(x, 36, sw, bh);
+    c.strokeStyle = '#000'; c.lineWidth = 2; c.strokeRect(x, 36, sw, bh);
+    if (sw > 30) {
+      c.fillStyle = s.txt; c.textAlign = 'center';
+      c.fillText(`${s.lab} ${(s.w * 100).toFixed(1)}%`, x + sw / 2, 62);
+    }
+    x += sw;
+  });
+
+  // Bar 2: Conditional on + (Posterior P(H|+) vs P(¬H|+))
+  const segs2 = [
+    { w: postPos,     col: '#8B6B3E', lab: `True Pos P(H|+) = ${(postPos * 100).toFixed(1)}%`, txt: '#FFFBEA' },
+    { w: 1 - postPos, col: '#D2B48C', lab: `False Pos = ${((1 - postPos) * 100).toFixed(1)}%`,  txt: '#000' }
+  ];
+  x = L;
+  segs2.forEach(s => {
+    const sw = s.w * bw;
+    c.fillStyle = s.col; c.fillRect(x, 120, sw, bh);
+    c.strokeStyle = '#000'; c.lineWidth = 2; c.strokeRect(x, 120, sw, bh);
+    if (sw > 145) {
+      c.fillStyle = s.txt; c.textAlign = 'center';
+      c.fillText(s.lab, x + sw / 2, 146);
+    }
+    x += sw;
+  });
+
+  c.textAlign = 'left'; c.fillStyle = '#000'; c.font = '14px "DM Serif Display", serif';
+  c.fillText(`Out of 1000 tested: ~${Math.round(tp * 1000)} true positives vs ~${Math.round(fp * 1000)} false positives → P(H|+) = ${(postPos * 100).toFixed(1)}%.`, 18, 192);
+}
+
+$('diag_preset').addEventListener('change', () => runDiag(true));
+$('diag_run').addEventListener('click', () => runDiag(false));
+['d_prev', 'd_sens', 'd_fpr'].forEach(id => $(id).addEventListener('change', () => { $('diag_preset').value = 'custom'; runDiag(false); }));
+
+// =========================================================================
+// PART 2B: BETA-BINOMIAL CONJUGATE BAYES UPDATER
+// =========================================================================
+const BAYES_PRESETS = {
+  weak_small:   { a: 1,  b: 1,  k: 4,   n: 5 },
+  strong_small: { a: 20, b: 20, k: 4,   n: 5 },
+  strong_large: { a: 20, b: 20, k: 160, n: 200 },
+  zero_trial:   { a: 1,  b: 9,  k: 0,   n: 12 }
+};
+
+function runBayes(fromPreset = false) {
+  const pre = $('bayes_preset').value;
+  if (fromPreset && BAYES_PRESETS[pre]) {
+    $('b_a').value = BAYES_PRESETS[pre].a;
+    $('b_b').value = BAYES_PRESETS[pre].b;
+    $('b_k').value = BAYES_PRESETS[pre].k;
+    $('b_n').value = BAYES_PRESETS[pre].n;
+  }
+  const a = +$('b_a').value, b = +$('b_b').value, k = Math.round(+$('b_k').value), n = Math.round(+$('b_n').value);
+  if (!(a > 0 && b > 0 && n >= 1 && k >= 0 && k <= n)) {
+    $('b_msg').textContent = 'Check inputs: α, β > 0, n ≥ 1, and 0 ≤ k ≤ n.';
+    return;
+  }
+  $('b_msg').textContent = '';
+
+  const aPost = a + k, bPost = b + (n - k);
+  const priorMean = a / (a + b);
+  const mle = k / n;
+  const postMean = aPost / (aPost + bPost);
+  const postSD = Math.sqrt((aPost * bPost) / ((aPost + bPost) ** 2 * (aPost + bPost + 1)));
+  const postMode = (aPost > 1 && bPost > 1) ? (aPost - 1) / (aPost + bPost - 2) : (aPost <= 1 && bPost > 1 ? 0 : (bPost <= 1 && aPost > 1 ? 1 : 0.5));
+  const priorW = (a + b) / (a + b + n);
+  const qLo = betaQuantile(0.025, aPost, bPost);
+  const qHi = betaQuantile(0.975, aPost, bPost);
+
+  $('t_bayes').innerHTML = tab(
+    ['Prior Beta(α,β)', 'Prior mean', 'Prior weight w', 'Data MLE (k/n)', 'Posterior Beta', 'Post. mean', 'Post. mode', 'Post. SD', '95% Credible Int.'],
+    [[
+      `Beta(${a}, ${b})`, f3(priorMean), `${(priorW * 100).toFixed(1)}%`, f3(mle),
+      `Beta(${aPost}, ${bPost})`, { v: f3(postMean), hot: true }, f3(postMode), f3(postSD), `[${f3(qLo)}, ${f3(qHi)}]`
+    ]]
+  );
+
+  // Draw Canvas: Prior, Normalized Likelihood, Posterior + 95% CI
+  const cv = $('cv_bayes'), W = 760, H = 360;
+  const c = prepCanvas(cv, W, H);
+  c.clearRect(0, 0, W, H);
+  const L = 56, R = 18, T = 44, B = 38;
+  const plotW = W - L - R, plotH = H - T - B;
+
+  const steps = 250;
+  const xs = [], yPrior = [], yLik = [], yPost = [];
+  for (let i = 1; i < steps; i++) {
+    const x = i / steps;
+    xs.push(x);
+    yPrior.push(betaPdf(x, a, b));
+    yLik.push(betaPdf(x, k + 1, n - k + 1)); // normalized binomial likelihood
+    yPost.push(betaPdf(x, aPost, bPost));
+  }
+  const yMax = Math.max(1.2, ...yPrior, ...yLik, ...yPost) * 1.12;
+  const toX = x => L + x * plotW;
+  const toY = y => H - B - Math.min(1.03, y / yMax) * plotH;
+
+  // Shaded 95% Credible Interval under Posterior
+  c.save();
+  c.beginPath();
+  let started = false;
+  xs.forEach((x, idx) => {
+    if (x >= qLo && x <= qHi) {
+      if (!started) { c.moveTo(toX(x), H - B); started = true; }
+      c.lineTo(toX(x), toY(yPost[idx]));
+    }
+  });
+  c.lineTo(toX(qHi), H - B);
+  c.closePath();
+  c.fillStyle = 'rgba(210, 180, 140, 0.55)';
+  c.fill();
+  c.restore();
+
+  // Helper to stroke density curve
+  const drawCurve = (ys, width, dash, color) => {
+    c.save();
+    c.strokeStyle = color; c.lineWidth = width; c.setLineDash(dash);
+    c.beginPath();
+    xs.forEach((x, idx) => {
+      const px = toX(x), py = toY(ys[idx]);
+      if (idx === 0) c.moveTo(px, py); else c.lineTo(px, py);
+    });
+    c.stroke();
+    c.restore();
+  };
+
+  drawCurve(yPrior, 2.2, [7, 5], '#000');        // Prior: dashed black
+  drawCurve(yLik,   2.4, [2, 4], '#8B6B3E');     // Normalized Likelihood: dotted umber
+  drawCurve(yPost,  3.2, [],     '#000');        // Posterior: solid thick black
+
+  // Vertical markers for MLE and Posterior mean
+  c.save();
+  c.font = '13px ui-monospace, Menlo, Consolas, monospace';
+  c.setLineDash([3, 3]); c.strokeStyle = '#8B6B3E'; c.lineWidth = 1.6;
+  c.beginPath(); c.moveTo(toX(mle), T + 6); c.lineTo(toX(mle), H - B); c.stroke();
+  c.setLineDash([]); c.strokeStyle = '#000'; c.lineWidth = 1.8;
+  c.beginPath(); c.moveTo(toX(postMean), T + 6); c.lineTo(toX(postMean), H - B); c.stroke();
+  c.restore();
+
+  // Axes & legend
+  c.strokeStyle = '#000'; c.lineWidth = 2;
+  c.beginPath(); c.moveTo(L, T); c.lineTo(L, H - B); c.lineTo(W - R, H - B); c.stroke();
+  c.font = '14px "DM Serif Display", serif';
+  c.fillStyle = '#000';
+  c.textAlign = 'center';
+  [0, 0.25, 0.5, 0.75, 1].forEach(xv => c.fillText(String(xv), toX(xv), H - 12));
+  c.textAlign = 'right';
+  c.fillText('0', L - 8, H - B + 4);
+  c.fillText(yMax.toFixed(1), L - 8, T + 8);
+
+  c.textAlign = 'left';
+  c.fillText('--- Prior', L, 22);
+  c.fillStyle = '#8B6B3E';
+  c.fillText('··· Likelihood (norm.)', L + 92, 22);
+  c.fillStyle = '#000';
+  c.fillText('— Posterior (shaded: 95% CI)', L + 280, 22);
+  c.textAlign = 'right';
+  c.fillText(`MLE=${f3(mle)} · Post=${f3(postMean)}`, W - R, 22);
+}
+
+$('bayes_preset').addEventListener('change', () => runBayes(true));
+$('bayes_run').addEventListener('click', () => runBayes(false));
+['b_a', 'b_b', 'b_k', 'b_n'].forEach(id => $(id).addEventListener('change', () => { $('bayes_preset').value = 'custom'; runBayes(false); }));
+
+// Initialize all interactive modules
+runConv();
+runDiag(true);
+runBayes(true);
+</script>
+</body>
+</html>
