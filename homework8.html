@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Correlation, Regression &amp; Independence</title>
+<style>
+  :root { --sfondo: #FFF8DC; --tan: #D2B48C; }
+  * { box-sizing: border-box; }
+  body { background-color: var(--sfondo); font-family: 'DM Serif Display', serif; font-size: 1.3rem; line-height: 1.45; padding: 50px; margin: 0; color: #000; }
+  main { max-width: 960px; }
+  h1 { font-size: 4em; line-height: 1.2; margin: 0 0 4rem; max-width: 22ch; }
+  h2 { font-size: 2.6em; line-height: 1.2; margin: 0 0 1rem; }
+  h3 { font-size: 1.6rem; margin: 2rem 0 .5rem; font-weight: normal; }
+  section + section { margin-top: 5rem; }
+  p { margin: .8rem 0; max-width: 78ch; }
+  .eq { padding-left: 1rem; border-left: 5px solid #000; }
+  .controls { display: flex; flex-wrap: wrap; gap: 1.5rem; align-items: flex-end; }
+  label { display: flex; flex-direction: column; gap: .3rem; }
+  select, textarea { font-family: inherit; font-size: 1.3rem; padding: 5px 10px; outline: none; border: 4px solid #000; border-radius: 20px; background-color: var(--tan); color: #000; }
+  select { width: 22rem; text-align: center; }
+  textarea { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 1rem; width: 16rem; height: 8rem; text-align: left; }
+  button { font-family: inherit; font-size: 1.2rem; padding: 10px 16px; cursor: pointer; border: 4px solid #000; border-radius: 20px; background-color: var(--tan); color: #000; transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out; }
+  button:hover { transform: scale(1.05) translateY(-2px); box-shadow: 5px 5px 1px #000; }
+  pre { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 1rem; line-height: 1.5; width: fit-content; max-width: 100%; overflow: auto; margin: 1.2rem 0; padding: 15px 20px; border: 4px solid #000; border-radius: 20px; background-color: var(--tan); }
+  canvas { width: 100%; height: auto; background: #FFFBEA; border: 4px solid #000; border-radius: 20px; margin-top: 1.2rem; display: block; }
+  .tabella { overflow-x: auto; margin-top: 1.5rem; }
+  table { border: 4px solid #000; border-radius: 20px; border-collapse: separate; border-spacing: 0; background: var(--tan); }
+  th, td { padding: 8px 14px; text-align: right; font-weight: normal; }
+  th { border-bottom: 2px solid #000; }
+  td:first-child, th:first-child { text-align: left; }
+  tr.tot td { border-top: 2px solid #000; }
+  td.hot { font-weight: bold; text-decoration: underline; }
+  @media (max-width: 680px) {
+    body { padding: 24px 18px; font-size: 1.15rem; }
+    h1 { font-size: 2.7em; }
+    select { width: 100%; max-width: 22rem; }
+  }
+</style>
+</head>
+<body>
+<main>
+  <h1>Correlation &amp; regression</h1>
+
+  <section>
+    <h2>Theory</h2>
+
+    <h3>Correlation</h3>
+    <p class="eq">
+      Given two random variables X, Y with finite variances σ<sub>X</sub>², σ<sub>Y</sub>² &gt; 0, their covariance is
+      <b>Cov(X, Y) = E[(X − μ<sub>X</sub>)(Y − μ<sub>Y</sub>)] = E[XY] − E[X]E[Y]</b>.<br>
+      Because covariance depends on measurement units, we standardize both variables (Z<sub>X</sub> = (X − μ<sub>X</sub>)/σ<sub>X</sub>, Z<sub>Y</sub> = (Y − μ<sub>Y</sub>)/σ<sub>Y</sub>) to obtain Pearson's correlation coefficient:<br>
+      <b>ρ<sub>XY</sub> = Cov(X, Y) / (σ<sub>X</sub> σ<sub>Y</sub>) = E[Z<sub>X</sub> Z<sub>Y</sub>]</b>, and in a sample {(x<sub>i</sub>, y<sub>i</sub>)}<sub>i=1..n</sub>:<br>
+      <b>r = S<sub>XY</sub> / √(S<sub>XX</sub> S<sub>YY</sub>)</b>, where S<sub>XX</sub> = Σ(x<sub>i</sub> − x̄)², S<sub>YY</sub> = Σ(y<sub>i</sub> − ȳ)², S<sub>XY</sub> = Σ(x<sub>i</sub> − x̄)(y<sub>i</sub> − ȳ).
+    </p>
+    <p>
+      By the Cauchy–Schwarz inequality, (Σ(x<sub>i</sub> − x̄)(y<sub>i</sub> − ȳ))² ≤ Σ(x<sub>i</sub> − x̄)² Σ(y<sub>i</sub> − ȳ)², so <b>−1 ≤ r ≤ 1</b>.
+      Equality |r| = 1 holds if and only if all points lie exactly on a non-horizontal, non-vertical line y<sub>i</sub> = a + b x<sub>i</sub>.
+      Furthermore, r is dimensionless and invariant under positive affine rescalings u = αx + c, v = βy + d (αβ &gt; 0), and flips sign if αβ &lt; 0.
+      Crucially, r only measures <i>linear</i> co-movement: r = 0 does not preclude strong nonlinear dependence.
+    </p>
+
+    <h3>Solving the regression problem for a and b</h3>
+    <p class="eq">
+      In linear regression of Y on X, we approximate y<sub>i</sub> by ŷ<sub>i</sub> = a + b x<sub>i</sub> and choose (a, b) by Ordinary Least Squares (OLS), minimizing the sum of squared <i>vertical</i> residuals:<br>
+      <b>S(a, b) = Σ<sub>i=1..n</sub> (y<sub>i</sub> − a − b x<sub>i</sub>)²</b>.<br>
+      Setting partial derivatives to zero yields the normal equations:<br>
+      1) ∂S/∂a = −2 Σ(y<sub>i</sub> − a − b x<sub>i</sub>) = 0  ⇒  Σ y<sub>i</sub> = n a + b Σ x<sub>i</sub>  ⇒  <b>a = ȳ − b x̄</b>.<br>
+      Substituting a = ȳ − b x̄ centers both variables around their means: S(b) = Σ((y<sub>i</sub> − ȳ) − b(x<sub>i</sub> − x̄))².<br>
+      2) dS/db = −2 Σ(x<sub>i</sub> − x̄)((y<sub>i</sub> − ȳ) − b(x<sub>i</sub> − x̄)) = 0  ⇒  b Σ(x<sub>i</sub> − x̄)² = Σ(x<sub>i</sub> − x̄)(y<sub>i</sub> − ȳ)  ⇒<br>
+      <b>b = S<sub>XY</sub> / S<sub>XX</sub> = s<sub>XY</sub> / s<sub>X</sub>² = r · (s<sub>Y</sub> / s<sub>X</sub>)</b>.
+    </p>
+    <p>
+      The Hessian has ∂²S/∂a² = 2n &gt; 0 and determinant 4n S<sub>XX</sub> &gt; 0 whenever X is not constant, confirming a unique global minimum.
+      Notice two immediate consequences: (i) because a = ȳ − b x̄, the regression line always passes through the centroid (x̄, ȳ);
+      (ii) in standardized coordinates, the fitted line is simply <b>ẑ<sub>y</sub> = r z<sub>x</sub></b>. When |r| &lt; 1, a 1-SD shift in X predicts only an |r|-SD shift in Y—the phenomenon of <i>regression to the mean</i>.
+      Moreover, the residual variance decomposes orthogonally as SST = SSR + SSE, giving coefficient of determination <b>R² = SSR / SST = r²</b>.
+    </p>
+
+    <h3>Both regression lines and the geometric average identity</h3>
+    <p class="eq">
+      If instead we regress X on Y, x̂<sub>i</sub> = a' + b' y<sub>i</sub>, minimizing <i>horizontal</i> squared residuals Σ(x<sub>i</sub> − a' − b' y<sub>i</sub>)², swapping the roles of X and Y immediately yields:<br>
+      <b>b' = S<sub>XY</sub> / S<sub>YY</sub> = r · (s<sub>X</sub> / s<sub>Y</sub>)</b>,  and  <b>a' = x̄ − b' ȳ</b>.<br>
+      Multiplying the two regression coefficients b and b' eliminates the standard deviations:<br>
+      <b>b · b' = (r · s<sub>Y</sub>/s<sub>X</sub>) · (r · s<sub>X</sub>/s<sub>Y</sub>) = r²</b>.<br>
+      Because b and b' share the exact sign of S<sub>XY</sub> (and hence of r), their product is always non-negative and the signed geometric mean equals r:<br>
+      <b>r = sgn(b) · √(b · b')</b>   (or equivalently |r| = √(b · b')).
+    </p>
+    <p>
+      Except when |r| = 1 or r = 0, the two lines are distinct because they minimize different error directions (vertical vs. horizontal). Both cross at (x̄, ȳ).
+      Rewriting the X-on-Y line as y = −a'/b' + (1/b')x (for b' ≠ 0), its slope with respect to x is 1/b' = b / r². Since r² ≤ 1, the X-on-Y line is always steeper than the Y-on-X line when plotted in the (x, y) plane; the angle between them closes as |r| → 1 and opens to 90° (the horizontal line y = ȳ and vertical line x = x̄) when r = 0. Also, since b·b' = r² ≤ 1, |b| and |b'| cannot both exceed 1 simultaneously.
+    </p>
+
+    <h3>1) Proof that independence implies uncorrelation</h3>
+    <p class="eq">
+      <b>Theorem:</b> If X and Y are independent random variables with finite second moments (E[X²], E[Y²] &lt; ∞), then Cov(X, Y) = 0 and ρ<sub>XY</sub> = 0 (X and Y are uncorrelated).<br>
+      <b>Proof:</b> Independence means the joint distribution factors into the marginals: f<sub>XY</sub>(x, y) = f<sub>X</sub>(x) f<sub>Y</sub>(y) in the continuous case (or p<sub>XY</sub>(x, y) = p<sub>X</sub>(x) p<sub>Y</sub>(y) in the discrete case; in general P(X ∈ A, Y ∈ B) = P(X ∈ A)P(Y ∈ B)). Therefore, by factorization (Fubini's theorem, valid since E|X|, E|Y| &lt; ∞):<br>
+      E[XY] = ∬ x y f<sub>XY</sub>(x, y) dx dy = ∬ x y f<sub>X</sub>(x) f<sub>Y</sub>(y) dx dy = (∫ x f<sub>X</sub>(x) dx)(∫ y f<sub>Y</sub>(y) dy) = E[X] · E[Y]<br>
+      (and identically Σ<sub>x</sub>Σ<sub>y</sub> x y p<sub>X</sub>(x) p<sub>Y</sub>(y) = (Σ<sub>x</sub> x p<sub>X</sub>(x))(Σ<sub>y</sub> y p<sub>Y</sub>(y)) = E[X] · E[Y] in the discrete case).<br>
+      Substituting into the covariance definition:<br>
+      <b>Cov(X, Y) = E[XY] − E[X]E[Y] = E[X]E[Y] − E[X]E[Y] = 0</b>.<br>
+      Hence ρ<sub>XY</sub> = Cov(X, Y) / (σ<sub>X</sub> σ<sub>Y</sub>) = 0.  ∎
+    </p>
+    <p>
+      <b>The converse is false:</b> uncorrelation does <i>not</i> imply independence. Let X ~ Uniform(−1, 1) (or X ∈ {−1, 0, 1} with equal probability 1/3) and define Y = X².
+      By symmetry E[X] = 0 and E[XY] = E[X³] = 0, so Cov(X, Y) = 0 and ρ<sub>XY</sub> = 0; yet Y is completely determined by X (for instance P(Y = 1 | X = 1) = 1 ≠ P(Y = 1)).
+      Only in special joint families—most notably the bivariate normal distribution—does ρ<sub>XY</sub> = 0 guarantee independence.
+    </p>
+
+    <h3>Code</h3>
+<pre>function regress(pairs) {                       // pairs = [[x, y], ...]
+  const n = pairs.length;
+  const mx = pairs.reduce((s, p) =&gt; s + p[0], 0) / n, my = pairs.reduce((s, p) =&gt; s + p[1], 0) / n;
+  let sxx = 0, syy = 0, sxy = 0;
+  for (const [x, y] of pairs) {
+    const dx = x - mx, dy = y - my;
+    sxx += dx * dx; syy += dy * dy; sxy += dx * dy;
+  }
+  const b = sxy / sxx, a = my - b * mx;         // Y on X: y = a + b x
+  const bp = sxy / syy, ap = mx - bp * my;      // X on Y: x = a' + b' y
+  const r = sxy / Math.sqrt(sxx * syy);
+  const rGeom = (sxy &lt; 0 ? -1 : 1) * Math.sqrt(b * bp);
+  return { n, mx, my, sxx, syy, sxy, a, b, ap, bp, r, rGeom, diff: Math.abs(r - rGeom) };
+}</pre>
+  </section>
+
+  <section>
+    <h2>Analysis</h2>
+    <div class="controls">
+      <label>Dataset
+        <select id="ds">
+          <option value="heights">Parent × child height (r ≈ 0.75)</option>
+          <option value="study">Study hours × exam score (r ≈ 0.97)</option>
+          <option value="neg">Car weight × fuel mpg (r ≈ −0.78)</option>
+          <option value="parabola">Parabola Y = X² (r = 0, dependent)</option>
+          <option value="random">Bivariate normal (simulated, ρ = 0.65)</option>
+          <option value="custom">Custom (x, y) data</option>
+        </select>
+      </label>
+      <label>Residuals overlay
+        <select id="res_mode">
+          <option value="none">None</option>
+          <option value="v">Vertical (Y on X)</option>
+          <option value="h">Horizontal (X on Y)</option>
+          <option value="both">Both</option>
+        </select>
+      </label>
+      <label id="cl" style="display:none">One "x, y" pair per line
+        <textarea id="txt">1, 2.2
+2, 2.8
+3, 4.5
+4, 4.1
+5, 5.9
+6, 6.4
+7, 7.8
+8, 7.5</textarea>
+      </label>
+      <button id="run">Compute</button>
+    </div>
+    <p id="msg" role="alert"></p>
+    <p id="src"></p>
+
+    <h3>Summary statistics</h3>
+    <div class="tabella"><table id="t_stats"></table></div>
+
+    <h3>Both regression lines</h3>
+    <div class="tabella"><table id="t_reg"></table></div>
+
+    <h3>Verification: r as the geometric average of b and b'</h3>
+    <div class="tabella"><table id="t_verify"></table></div>
+    <p id="verdict"></p>
+
+    <canvas id="cv" width="760" height="440" style="max-width: 760px"></canvas>
+    <p>
+      Solid black line: regression of Y on X (minimizing vertical squared residuals).
+      Dashed brown line: regression of X on Y (minimizing horizontal squared residuals).
+      Both lines intersect at the centroid (x̄, ȳ), marked by the crossed circle.
+    </p>
+  </section>
+
+  <section>
+    <h2>Conclusions</h2>
+    <p>
+      Pearson's r measures the strength and direction of linear association, while the regression slopes rescale r by the ratio of standard deviations: b = r(s<sub>Y</sub>/s<sub>X</sub>) and b' = r(s<sub>X</sub>/s<sub>Y</sub>).
+      Because OLS minimizes asymmetric errors—vertical for Y on X, horizontal for X on Y—regression is not symmetric in the two variables, producing two distinct lines whenever 0 &lt; |r| &lt; 1 whose slopes multiply to r².
+    </p>
+    <p>
+      Finally, independence implies Cov(X, Y) = 0 and r = 0, as shown directly by E[XY] = E[X]E[Y], yet r = 0 only rules out <i>linear</i> dependence. As the parabola preset illustrates, variables can have r = 0 and completely flat regression lines while obeying an exact deterministic relation—and conversely, a large |r| never by itself establishes causality.
+    </p>
+  </section>
+</main>
+
+<script>
+const $ = id => document.getElementById(id);
+const f4 = v => String(+v.toPrecision(4));
+const f3 = v => v.toFixed(3);
+const fmtLine = (a, b, lhs, rhs) => `${lhs} = ${a.toFixed(3)} ${b < 0 ? '−' : '+'} ${Math.abs(b).toFixed(3)}·${rhs}`;
+
+function randn() {
+  let u = 0, v = 0;
+  while (u === 0) u = Math.random();
+  while (v === 0) v = Math.random();
+  return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v);
+}
+
+const DATA = {
+  heights: {
+    src: 'Illustrative parent mid-height (in) vs. adult child height (in), n = 12.',
+    pairs: [[65,67],[66,68],[67,66],[68,69],[68,67],[69,71],[70,68],[70,71],[71,69],[72,73],[73,70],[74,72]]
+  },
+  study: {
+    src: 'Weekly study hours vs. exam score, n = 12.',
+    pairs: [[1,52],[2,58],[2.5,54],[3,66],[4,65],[4.5,74],[5,71],[6,82],[6.5,79],[7,88],[8,86],[9,95]]
+  },
+  neg: {
+    src: 'Vehicle weight (1000 lbs) vs. fuel economy (mpg), n = 10.',
+    pairs: [[2.1,34],[2.4,26],[2.7,35],[3.0,23],[3.2,30],[3.5,20],[3.8,27],[4.1,17],[4.4,23],[4.8,14]]
+  },
+  parabola: {
+    src: 'Deterministic nonlinear relation Y = X² on symmetric X ∈ {−3, −2, −1, 0, 1, 2, 3}: uncorrelated (r = 0) yet fully dependent.',
+    pairs: [[-3,9],[-2,4],[-1,1],[0,0],[1,1],[2,4],[3,9]]
+  }
+};
+
+function pairsOf(k) {
+  if (k === 'random') {
+    const rho = 0.65, s = Math.sqrt(1 - rho * rho);
+    const pairs = Array.from({ length: 40 }, () => {
+      const x = randn();
+      const y = rho * x + s * randn();
+      return [10 + 3 * x, 50 + 12 * y];
+    });
+    return { src: '40 simulated pairs from a bivariate normal distribution with population ρ = 0.65.', pairs };
+  }
+  if (k === 'custom') {
+    const pairs = $('txt').value.split('\n').map(l => l.trim()).filter(Boolean)
+      .map(l => l.split(/[\s,;]+/).map(Number))
+      .filter(a => a.length === 2 && Number.isFinite(a[0]) && Number.isFinite(a[1]));
+    return { src: 'Custom (x, y) dataset.', pairs };
+  }
+  return DATA[k];
+}
+
+function regress(pairs) {
+  const n = pairs.length;
+  const mx = pairs.reduce((s, p) => s + p[0], 0) / n;
+  const my = pairs.reduce((s, p) => s + p[1], 0) / n;
+  let sxx = 0, syy = 0, sxy = 0;
+  for (const [x, y] of pairs) {
+    const dx = x - mx, dy = y - my;
+    sxx += dx * dx; syy += dy * dy; sxy += dx * dy;
+  }
+  const b = sxy / sxx, a = my - b * mx;
+  const bp = sxy / syy, ap = mx - bp * my;
+  const r = sxy / Math.sqrt(sxx * syy);
+  const sgn = sxy === 0 ? 0 : (sxy < 0 ? -1 : 1);
+  const rGeom = sgn * Math.sqrt(Math.max(0, b * bp));
+  let sseY = 0, sseX = 0;
+  for (const [x, y] of pairs) {
+    sseY += (y - (a + b * x)) ** 2;
+    sseX += (x - (ap + bp * y)) ** 2;
+  }
+  return {
+    n, mx, my, sxx, syy, sxy,
+    sx: Math.sqrt(sxx / (n - 1)), sy: Math.sqrt(syy / (n - 1)), cov: sxy / (n - 1),
+    a, b, ap, bp, r, r2: r * r, rGeom, diff: Math.abs(r - rGeom), sseY, sseX
+  };
+}
+
+const tab = (head, rows, cls = []) =>
+  '<tr>' + head.map(h => `<th>${h}</th>`).join('') + '</tr>' +
+  rows.map((r, i) => `<tr class="${cls[i] || ''}">` + r.map(c => `<td${c && c.hot ? ' class="hot"' : ''}>${c && c.v !== undefined ? c.v : c}</td>`).join('') + '</tr>').join('');
+
+function prepCanvas(cv, W, H) {
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  if (cv.width !== W * dpr || cv.height !== H * dpr) { cv.width = W * dpr; cv.height = H * dpr; }
+  const ctx = cv.getContext('2d');
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  return ctx;
+}
+
+function drawPlot(pairs, reg) {
+  const cv = $('cv'), W = 760, H = 440;
+  const c = prepCanvas(cv, W, H);
+  c.clearRect(0, 0, W, H);
+  const L = 66, R = 22, T = 44, B = 44;
+  const plotW = W - L - R, plotH = H - T - B;
+
+  const xs = pairs.map(p => p[0]), ys = pairs.map(p => p[1]);
+  let xMin = Math.min(...xs), xMax = Math.max(...xs);
+  let yMin = Math.min(...ys), yMax = Math.max(...ys);
+  const padX = (xMax - xMin) * 0.14 || 1;
+  const padY = (yMax - yMin) * 0.14 || 1;
+  xMin -= padX; xMax += padX;
+  yMin -= padY; yMax += padY;
+
+  const toX = x => L + ((x - xMin) / (xMax - xMin)) * plotW;
+  const toY = y => H - B - ((y - yMin) / (yMax - yMin)) * plotH;
+
+  // Grid & Axes
+  c.font = '14px "DM Serif Display", serif';
+  c.fillStyle = '#000';
+  c.strokeStyle = 'rgba(0,0,0,0.09)';
+  c.lineWidth = 1;
+  for (let i = 0; i <= 4; i++) {
+    const xv = xMin + (i / 4) * (xMax - xMin);
+    const yv = yMin + (i / 4) * (yMax - yMin);
+    const px = toX(xv), py = toY(yv);
+    c.beginPath(); c.moveTo(px, T); c.lineTo(px, H - B); c.stroke();
+    c.beginPath(); c.moveTo(L, py); c.lineTo(W - R, py); c.stroke();
+    c.textAlign = 'center';
+    c.fillText(f4(xv), px, H - 14);
+    c.textAlign = 'right';
+    c.fillText(f4(yv), L - 8, py + 4);
+  }
+  c.strokeStyle = '#000'; c.lineWidth = 2;
+  c.strokeRect(L, T, plotW, plotH);
+
+  // Legend
+  c.textAlign = 'left';
+  c.fillStyle = '#000';
+  c.fillText('— Y on X: ŷ = a + bx', L, 24);
+  c.fillStyle = '#8B6B3E';
+  c.fillText('--- X on Y: x̂ = a\' + b\'y', L + 215, 24);
+  c.fillStyle = '#000';
+  c.fillText('⊕ centroid (x̄, ȳ)', L + 440, 24);
+
+  const resMode = $('res_mode').value;
+
+  // Clipped plot interior
+  c.save();
+  c.beginPath(); c.rect(L, T, plotW, plotH); c.clip();
+
+  // Centroid guidelines
+  c.save();
+  c.setLineDash([3, 4]);
+  c.strokeStyle = 'rgba(0,0,0,0.28)';
+  c.lineWidth = 1.4;
+  c.beginPath(); c.moveTo(toX(reg.mx), T); c.lineTo(toX(reg.mx), H - B); c.stroke();
+  c.beginPath(); c.moveTo(L, toY(reg.my)); c.lineTo(W - R, toY(reg.my)); c.stroke();
+  c.restore();
+
+  // Residuals if toggled
+  if (resMode === 'v' || resMode === 'both') {
+    c.save();
+    c.strokeStyle = 'rgba(0,0,0,0.45)';
+    c.lineWidth = 1.5;
+    for (const [x, y] of pairs) {
+      const yh = reg.a + reg.b * x;
+      c.beginPath(); c.moveTo(toX(x), toY(y)); c.lineTo(toX(x), toY(yh)); c.stroke();
+    }
+    c.restore();
+  }
+  if (resMode === 'h' || resMode === 'both') {
+    c.save();
+    c.strokeStyle = 'rgba(139,107,62,0.65)';
+    c.setLineDash([3, 3]);
+    c.lineWidth = 1.5;
+    for (const [x, y] of pairs) {
+      const xh = reg.ap + reg.bp * y;
+      c.beginPath(); c.moveTo(toX(x), toY(y)); c.lineTo(toX(xh), toY(y)); c.stroke();
+    }
+    c.restore();
+  }
+
+  // Line 2: X on Y (drawn parametrically across yMin..yMax so b'=0 works smoothly)
+  c.save();
+  c.strokeStyle = '#8B6B3E';
+  c.setLineDash([8, 6]);
+  c.lineWidth = 3;
+  c.beginPath();
+  c.moveTo(toX(reg.ap + reg.bp * yMin), toY(yMin));
+  c.lineTo(toX(reg.ap + reg.bp * yMax), toY(yMax));
+  c.stroke();
+  c.restore();
+
+  // Line 1: Y on X
+  c.save();
+  c.strokeStyle = '#000';
+  c.lineWidth = 3;
+  c.beginPath();
+  c.moveTo(toX(xMin), toY(reg.a + reg.b * xMin));
+  c.lineTo(toX(xMax), toY(reg.a + reg.b * xMax));
+  c.stroke();
+  c.restore();
+
+  // Data points
+  for (const [x, y] of pairs) {
+    c.fillStyle = '#D2B48C';
+    c.strokeStyle = '#000';
+    c.lineWidth = 2;
+    c.beginPath();
+    c.arc(toX(x), toY(y), 5.5, 0, Math.PI * 2);
+    c.fill();
+    c.stroke();
+  }
+
+  // Centroid marker
+  const cx = toX(reg.mx), cy = toY(reg.my);
+  c.fillStyle = '#FFFBEA';
+  c.strokeStyle = '#000';
+  c.lineWidth = 2.5;
+  c.beginPath(); c.arc(cx, cy, 7, 0, Math.PI * 2); c.fill(); c.stroke();
+  c.beginPath(); c.moveTo(cx - 5, cy); c.lineTo(cx + 5, cy); c.moveTo(cx, cy - 5); c.lineTo(cx, cy + 5); c.stroke();
+
+  c.restore();
+}
+
+let lastPairs = null, lastReg = null;
+
+function run() {
+  const k = $('ds').value;
+  $('cl').style.display = k === 'custom' ? '' : 'none';
+  const { src, pairs } = pairsOf(k);
+  $('src').textContent = src;
+
+  if (pairs.length < 2) {
+    $('msg').textContent = 'At least two valid (x, y) pairs are needed.';
+    return;
+  }
+  const reg = regress(pairs);
+  if (!(reg.sxx > 0 && reg.syy > 0)) {
+    $('msg').textContent = 'Both X and Y must have non-zero variance (at least two distinct values in each variable).';
+    return;
+  }
+  $('msg').textContent = '';
+
+  lastPairs = pairs; lastReg = reg;
+
+  $('t_stats').innerHTML = tab(
+    ['n', 'x̄', 'ȳ', 's_X', 's_Y', 's_XY (cov)', 'S_XX', 'S_YY', 'S_XY'],
+    [[reg.n, f4(reg.mx), f4(reg.my), f4(reg.sx), f4(reg.sy), f4(reg.cov), f4(reg.sxx), f4(reg.syy), f4(reg.sxy)]]
+  );
+
+  $('t_reg').innerHTML = tab(
+    ['Regression line', 'Equation', 'Intercept', 'Slope', 'Minimized SSE', 'R²'],
+    [
+      ['Y on X (vertical)', fmtLine(reg.a, reg.b, 'ŷ', 'x'), f4(reg.a), { v: f4(reg.b), hot: true }, f4(reg.sseY), f4(reg.r2)],
+      ['X on Y (horizontal)', fmtLine(reg.ap, reg.bp, 'x̂', 'y'), f4(reg.ap), { v: f4(reg.bp), hot: true }, f4(reg.sseX), f4(reg.r2)]
+    ]
+  );
+
+  $('t_verify').innerHTML = tab(
+    ['Pearson r', 'b (Y on X)', "b' (X on Y)", "b · b'", 'r²', "sgn(b)·√(b·b')", '|r − geom. avg|'],
+    [[
+      { v: reg.r.toFixed(6), hot: true },
+      reg.b.toFixed(6),
+      reg.bp.toFixed(6),
+      (reg.b * reg.bp).toFixed(6),
+      reg.r2.toFixed(6),
+      { v: reg.rGeom.toFixed(6), hot: true },
+      reg.diff.toExponential(2)
+    ]]
+  );
+
+  $('verdict').textContent = reg.sxy === 0
+    ? `Here S_XY = 0, so r = 0, b = 0 (ŷ = ${f3(reg.my)}), and b' = 0 (x̂ = ${f3(reg.mx)}): the two lines meet perpendicularly at (${f3(reg.mx)}, ${f3(reg.my)}).`
+    : `Direct r = ${reg.r.toFixed(6)} and signed geometric mean sgn(b)·√(b·b') = ${reg.rGeom.toFixed(6)} agree to machine precision (|Δ| = ${reg.diff.toExponential(2)}). In the (x, y) plane, X on Y has slope 1/b' = ${f4(1 / reg.bp)} compared to b = ${f4(reg.b)}.`;
+
+  drawPlot(pairs, reg);
+}
+
+$('run').addEventListener('click', run);
+$('ds').addEventListener('change', run);
+$('res_mode').addEventListener('change', () => { if (lastPairs && lastReg) drawPlot(lastPairs, lastReg); });
+run();
+</script>
+</body>
+</html>
